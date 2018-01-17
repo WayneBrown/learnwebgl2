@@ -1,0 +1,6 @@
+/* Wayne Brown, Fall 2017 */
+/* Change some of the default runestone CSS settings. */
+
+span.caption-text {
+    display: inline;
+}

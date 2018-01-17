@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, camera lookat">
+  <meta name="description" content="WebGL tutorials - camera lookat parameterers">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <p>Perform a camera <strong>truck</strong> motion.<br>
+  The left canvas shows the relative location of the scene objects and the camera. <br>
+  The right canvas shows the scene from the camera's vantage point.<br>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="400" height="400">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <canvas id="my_canvas_b" class="webgldemo_canvas" width="250" height="250">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <button id="my_truck_left">Truck Left</button> &nbsp;&nbsp;&nbsp;&nbsp;<button id="my_truck_right">Truck Right</button><br><br>
+
+  Manipulate the <strong>camera's</strong> definition:<br>
+  <br>
+  <table cellspacing="30">
+    <tr>
+      <td style="text-align:center"><span id="my_eye_text"><strong>eye (0.0, 0.0, 5.0)</strong></span></td>
+      <td style="text-align:center"><span id="my_vectors_text"><strong>u <1.00, 0.00, 0.00><br>
+                                                         v <0.00, 1.00, 0.00><br>
+                                                         n <0.00, 0.00, 1.00></strong></span></td>
+    </tr>
+    <tr>
+      <td style="padding-right:15px">X: -5.0 <input type="range" id="my_eyeX" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:125px"> +5.0</td>
+      <td style="padding-right:15px">u angle: -180.0 <input type="range" id="my_u_angle" min="-180.0" max="180.0" value="0.0" step="0.1" style="width:125px"> +180.0</td>
+    </tr>
+
+    <tr>
+      <td style="padding-right:15px">Y: -5.0 <input type="range" id="my_eyeY" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:125px"> +5.0</td>
+      <td style="padding-right:15px">v angle: -180.0 <input type="range" id="my_v_angle" min="-180.0" max="180.0" value="0.0" step="0.1" style="width:125px"> +180.0</td>
+    </tr>
+
+    <tr>
+      <td>Z: -5.0 <input type="range" id="my_eyeZ" min="-5.0" max="5.0" value="5.0" step="0.1" style="width:125px"> +5.0</td>
+      <td>n angle: -180.0 <input type="range" id="my_n_angle" min="-180.0" max="180.0" value="0.0" step="0.1" style="width:125px"> +180.0</td>
+    </tr>
+
+  </table>
+
+  <button id="my_reset">Reset camera</button><br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glpoint3.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="./ray_model.js"></script>
+  <script src="./camera_truck2_scene.js"></script>
+  <script src="./camera_truck2_events.js"></script>
+  <script src="./axes_camera.js"></script>
+  <script src="./camera_scene2.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert",
+                      "../shaders/color_per_vertex.frag",
+                      "../shaders/uniform_color.vert",
+                      "../shaders/uniform_color.frag"];
+    let my_models = ["../models/xyz_blocks.obj",
+                     "../models/camera.obj",
+                     "../models/axes_2units.obj",
+                     "../models/sphere.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "CameraTruck2Scene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

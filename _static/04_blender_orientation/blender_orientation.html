@@ -1,0 +1,53 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - Blender orientation">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  Show the orientation of the sides of an object as viewed by Blender.
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input type="checkbox" id="my_pause" /> Animate<br>
+  <input type="button" id="my_reset_blender" value="Reset to Blender default view" style="margin:3px"/><br>
+  <input type="button" id="my_reset_webgl" value="Reset to WebGL default view"  style="margin:3px"/><br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="./blender_orientation_scene.js"></script>
+  <script src="./blender_orientation_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/sides_labeled.obj"];
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "BlenderOrientationScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example, viewports">
+  <meta name="description" content="WebGL tutorials - an example of viewports">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <h2>Experiment with a viewport.</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br />
+
+  <div id="my_controls" class="webgldemo_controls">
+    <input type="checkbox" id="my_animate_status" checked> Animate <br>
+    <input type="checkbox" id="my_show_boundary" checked> Show the viewport boundary <br>
+    <p>Manipulate the parameters of <strong>gl.viewport(xoffset, yoffset, width, height)</strong></p>
+    <table>
+      <tr>
+        <td>x_offset :</td>
+        <td style="width:40px; text-align: right"><strong><span id="my_x_offset_text">0</span></strong></td>
+        <td style="padding-left: 6px">-100 <input type="range" id="my_x_offset" min="-100" max="300" value="0" step="1" style="width:250px"> 300</td>
+      </tr>
+      <tr>
+        <td>y_offset :</td>
+        <td style="width:40px; text-align: right"><strong><span id="my_y_offset_text">0</span></strong></td>
+        <td style="padding-left: 6px">-100 <input type="range" id="my_y_offset" min="-100" max="300" value="0" step="1" style="width:250px"> 300</td>
+      </tr>
+      <tr>
+        <td>width :</td>
+        <td style="width:40px; text-align: right"><strong><span id="my_width_text">150</span></strong></td>
+        <td style="padding-left: 27px">0 <input type="range" id="my_width" min="0" max="400" value="150" step="1" style="width:250px"> 400 </td>
+      </tr>
+      <tr>
+        <td>height :</td>
+        <td style="width:40px; text-align: right"><strong><span id="my_height_text">150</span></strong></td>
+        <td style="padding-left: 27px">0 <input type="range" id="my_height" min="0" max="400" value="150" step="1" style="width:250px"> 400 </td>
+      </tr>
+    </table>
+    <button id="my_reset">Reset</button><br>
+  </div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./viewport1_scene.js"></script>
+  <script src="./viewport1_events.js"></script>
+  <script src="./viewport_model.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class to start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code, and
+    so that the paths to the program resources can be changed when runestone
+    builds a textbook web page.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag",
+                      "../shaders/uniform_color.vert", "../shaders/uniform_color.frag"];
+    let my_models = ["../models/xyz_blocks.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "Viewport1Scene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

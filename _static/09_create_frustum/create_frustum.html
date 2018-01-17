@@ -1,0 +1,85 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, viewing volume">
+  <meta name="description" content="WebGL tutorials - perspective parameters">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <h2>Experiment with an Perspective (frustum) Projection</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <canvas id="my_canvas_b" class="webgldemo_canvas" width="200" height="200">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  Manipulate parameters of
+  <span style="font-family:Courier New, courier, monospace"; font-size=10pt"><strong>createFrustum(left, right, bottom, top, near, far)</strong></span>:<br><br>
+  <table>
+    <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
+      <td><strong>left :</strong>  </td>
+      <td><strong>-2.0</strong>  </td>
+      <td>-5.0 <input type="range" id="my_left"   min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:150px"> 5.0 </td>
+      <td style='padding-left:10px'><strong>right :</strong> </td>
+      <td><strong>2.0</strong> </td>
+      <td>-5.0 <input type="range" id="my_right" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:150px"> 5.0 </td>
+    </tr>
+    <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
+      <td><strong>bottom :</strong></td>
+      <td><strong>-2.0</strong></td>
+      <td>-5.0 <input type="range" id="my_bottom" min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:150px"> 5.0</td>
+      <td style='padding-left:10px'><strong>top :</strong></td>
+      <td><strong>2.0</strong></td>
+      <td> -5.0 <input type="range" id="my_top" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:150px"> 5.0</td>
+    </tr>
+    <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
+      <td><strong>near :</strong></td>
+      <td><strong>3.0</strong></td>
+      <td>1.0 <input type="range" id="my_near"   min="1.0" max="10.0" value="3.0" step="0.1" style="width:150px"> 10.0</td>
+      <td style='padding-left:10px'><strong>far :</strong></td>
+      <td style="display:inline-block; width:30px;"><strong>10.0</strong></td>
+      <td>2.0 <input type="range" id="my_far" min="2.0" max="15.0" value="10.0" step="0.1" style="width:150px"> 15.0</td>
+    </tr>
+  </table>
+  <input type="checkbox" id="my_change_canvas"> Change canvas size to match aspect ratio.<br>
+  <button id="my_reset">Reset Projection</button><br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./create_frustum_scene.js"></script>
+  <script src="./create_frustum_events.js"></script>
+  <script src="./frustum_scene.js"></script>
+  <script src="./frustum_model2.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag",
+                      "../shaders/uniform_color.vert", "../shaders/uniform_color.frag"];
+    let my_models = ["../models/xyz_blocks.obj", "../models/camera.obj", "../models/sphere.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "CreateFrustumScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

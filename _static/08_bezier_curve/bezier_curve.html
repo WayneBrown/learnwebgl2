@@ -1,0 +1,73 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - an example">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <p>Use a parametric equation to calculate points along a path.<br>
+     Intermediate points influence acceleration and deceleration.</p>
+  <div style="border:1px solid black;"><strong>Calculated Animation Properties:</strong><br>
+    speed : <span id="my_speed" style="display:inline-block; width:20px;">---</span><br>
+    acceleration : <span id="my_acceleration" style="display:inline-block; width:20px;">---</span><br>
+    frames per second : <span id="my_frame_rate" style="display:inline-block; width:20px;">---</span><br>
+  </div>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br />
+
+  <div id="my_controls" class="webgldemo_controls">
+    <button id="my_animate">Animate</button><br>
+    <div style="border:1px solid black;"><strong>Timing:</strong><br>
+      current frame <span style="display:inline-block; width:20px;">0</span> : 0 <input type="range" id="my_frame" min="0" max="120" value="0" step="1" style="width:150px"> 120 <br>
+      animation: start frame: <input type="number" id="my_start_frame" min="0" max="50" value="30" step="1">
+      end frame: <input type="number" id="my_end_frame" min="50" max="100" value="60" step="1"><br>
+    </div>
+    <div style="border:1px solid black;"><strong>Control Points:</strong><br>
+      <input type="checkbox" id="my_display_curve" checked> Show path <br>
+      Scale &lt;p1-p0&gt; <span style="display:inline-block; width:30px;">1.0</span> : 0.0 <input type="range" id="my_scale_vector" min="0.0" max="3.0" value="1" step="0.01" style="width:150px"> 3.0 <br>
+      <span id="my_control_points">---</span>
+    </div>
+    <button id="my_reset">Reset</button><br>
+  </div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./bezier_curve_scene.js"></script>
+  <script src="./bezier_curve_events.js"></script>
+  <script src="./bezier_curve.js"></script>
+  <script src="./path_model.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class to start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code, and
+    so that the paths to the program resources can be changed when runestone
+    builds a textbook web page.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    let my_models = ["../models/xyz_blocks.obj", "../models/axes.obj", "../models/sphere.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "BezierCurveScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

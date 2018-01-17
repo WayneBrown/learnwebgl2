@@ -1,0 +1,65 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, viewing volume">
+  <meta name="description" content="WebGL tutorials - an orthographic example">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <h2>Orthographic projection</h2>
+
+  <table>
+    <tr>
+      <td>
+        <!--The canvas window for rendering 3D graphics -->
+        <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+          Please use a browser that supports "canvas"
+        </canvas>
+      </td>
+      <td>
+        <p>Notice that:</p>
+        <ul>
+          <li>There are two renderings of the same model: one at the origin; the other at (0,0,-8).</li>
+          <li>Parallel lines stay parallel.</li>
+          <li>There is no perception of depth. The "back object" looks as big as the center object
+            and moving it or zooming the camera does not change the models relative size.</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  distance of back model from origin <span style="display:inline-block; width:40px;">0.00</span> : -20.0 <input type="range" id="my_distance" min="-20.0" max="-2.0" value="-8.0" step="-0.1" style="width:150px"> -2.0 <br>
+  <div>Click and drag in the window to rotate the objects. Mouse wheel zooms the camera.</div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./ortho_example_scene.js"></script>
+  <script src="./ortho_example_events.js"></script>
+
+  <!--
+    Create an instance of the learn_webgl class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    let my_models = ["../models/xyz_blocks.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "OrthoExampleScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

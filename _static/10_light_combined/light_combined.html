@@ -1,0 +1,176 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, camera lookat">
+  <meta name="description" content="WebGL tutorials - camera light position">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <h2>Experiment with a Combined Lighting Model</h2>
+
+  <span style="border: solid 1px black; width: 300px; text-align: center; display: inline-block;">Virtual World</span>&nbsp;
+  <span style="border: solid 1px black; width: 300px; text-align: center; display: inline-block;">Ambient, Diffuse, & Specular lighting</span><br>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  &nbsp;
+  <canvas id="my_canvas_b" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <div id="my_tabbed_controls" data-component="tabbedStuff">
+    <div data-component="tab" data-tabname="Camera">
+      <table>
+        <tr>
+          <td style="text-align:center"><span id="my_eye_text"><strong>camera eye (0.0, 0.0, 5.0)</strong></span></td>
+          <td style="text-align:center"><span id="my_center_text"><strong>camera center (0.0, 0.0, 0.0)</strong></span></td>
+        </tr>
+        <tr>
+          <td>X: -5.0 <input type="range" id="my_eyeX" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:150px"> +5.0</td>
+          <td style="padding-left: 15px">X: -5.0 <input type="range" id="my_cX" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:150px"> +5.0</td>
+        </tr>
+
+        <tr>
+          <td>Y: -5.0 <input type="range" id="my_eyeY" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:150px"> +5.0</td>
+          <td style="padding-left: 15px">Y: -5.0 <input type="range" id="my_cY" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:150px"> +5.0</td>
+        </tr>
+
+        <tr>
+          <td>Z: -5.0 <input type="range" id="my_eyeZ" min="-5.0" max="5.0" value="5.0" step="0.1" style="width:150px"> +5.0</td>
+          <td style="padding-left: 15px">Z: -5.0 <input type="range" id="my_cZ" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:150px"> +5.0</td>
+        </tr>
+
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Light Source">
+      <table>
+        <tr>
+          <td style="text-align:center"><span id="my_light_text"><strong>light position(3.0, 0.0, 5.0)</strong></span></td>
+          <td colspan="2" style="text-align:center"><span id="my_light_color_text"><strong>light color (1.00, 1.00, 1.00)</strong></span></td>
+        </tr>
+        <tr>
+          <td>X: -5.0 <input type="range" id="my_lightX" min="-5.0" max="5.0" value="3.0" step="0.1" style="width:150px"> +5.0</td>
+          <td style="padding-left: 15px">Red:</td>
+          <td>0.0 <input type="range" id="my_red" min="0.0" max="1.0" value="1.0" step="0.01" style="width:150px"> 1.0</td>
+        </tr>
+        <tr>
+          <td>Y: -5.0 <input type="range" id="my_lightY" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:150px"> +5.0</td>
+          <td style="padding-left: 15px">Green:</td>
+          <td>0.0 <input type="range" id="my_green" min="0.0" max="1.0" value="1.0" step="0.01" style="width:150px"> 1.0</td>
+        </tr>
+        <tr>
+          <td>Z: -5.0 <input type="range" id="my_lightZ" min="-5.0" max="5.0" value="5.0" step="0.1" style="width:150px"> +5.0</td>
+          <td style="padding-left: 15px">Blue:</td>
+          <td>0.0 <input type="range" id="my_blue"  min="0.0" max="1.0" value="1.0" step="0.01" style="width:150px"> 1.0</td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Light Environment">
+      <table>
+        <tr>
+          <td colspan="2" style="text-align:center"><span id="my_ambient_text"><strong>ambient intensities<br>(0.30, 0.30, 0.30)</strong></span></td>
+        </tr>
+        <tr>
+          <td>Red:</td>
+          <td>0.0 <input type="range" id="my_ambient_red" min="0.0" max="1.0" value="0.3" step="0.01" style="width:150px"> 1.0</td>
+        </tr>
+        <tr>
+          <td>Green:</td>
+          <td>0.0 <input type="range" id="my_ambient_green" min="0.0" max="1.0" value="0.3" step="0.01" style="width:150px"> 1.0</td>
+        </tr>
+        <tr>
+          <td>Blue:</td>
+          <td>0.0 <input type="range" id="my_ambient_blue" min="0.0" max="1.0" value="0.3" step="0.01" style="width:150px"> 1.0</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <input type="checkbox" id="my_group_colors"> Change all intensities at once.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Model Properties">
+      <table>
+        <tr>
+          <td colspan="4" style="text-align:center"><span id="my_shininess_text"><strong>shininess = 30.0</strong></span></td>
+        </tr>
+        <tr style="text-align:center;">
+          <td colspan="4" >0.1 <input type="range" id="my_shininess"   min="0.1" max="128.0" value="30.0" step="0.1" style="width:200px"> 128.0</td>
+        </tr>
+        <tr>
+          <td>
+            <input type="radio" id="my_shininess0" name="my_model" value="0" checked/>Red Cube<br>
+            <input type="radio" id="my_shininess1" name="my_model" value="1" />Red X<br>
+          </td>
+          <td style="padding-left:10px">
+            <input type="radio" id="my_shininess2" name="my_model" value="2" />Green Cube<br>
+            <input type="radio" id="my_shininess3" name="my_model" value="3" />Green Y<br>
+          </td>
+          <td style="padding-left:10px">
+            <input type="radio" id="my_shininess4" name="my_model" value="4" />Blue Cube<br>
+            <input type="radio" id="my_shininess5" name="my_model" value="5" />Blue Z<br>
+          </td>
+          <td style="padding-left:10px">
+            <input type="radio" id="my_shininess6" name="my_model" value="6" />White Cube
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <input type="checkbox" id="my_all_models"> Change the shininess of all models.
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <!-- end of tabbed content -->
+
+  <button id="my_reset">Reset scene</button><br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/render_lighting.js"></script>
+  <script src="./light_combined_scene.js"></script>
+  <script src="./light_combined_events.js"></script>
+  <script src="./light_combined_scene2.js"></script>
+
+  <!--
+    Create an instance of the learn_webgl class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert",
+                      "../shaders/color_per_vertex.frag",
+                      "../shaders/uniform_color.vert",
+                      "../shaders/uniform_color.frag",
+                      "../shaders/lighting.vert",
+                      "../shaders/lighting.frag"];
+    let my_models = ["../models/xyz_blocks.obj",
+                     "../models/camera.obj",
+                     "../models/axes_2units.obj",
+                     "../models/sphere.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "SpecularLightScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

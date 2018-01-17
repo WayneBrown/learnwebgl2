@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - a simple render class">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <p>A robot arm with 2 linkages.</p>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  Forearm angle about Z axis: <span style="display:inline-block; width:40px; text-align: right;">0.00</span> : <br>
+  -90.0 <input type="range" id="my_forearm_angle" min="-90.0" max="90.0" value="0.0" step="0.1" style="width:250px"> 90.0 <br>
+  Upper arm angle about Z axis: <span style="display:inline-block; width:40px; text-align: right;">0.00</span> : <br>
+  -90.0 <input type="range" id="my_upperarm_angle" min="-90.0" max="90.0" value="0.0" step="0.1" style="width:250px"> 90.0 <br>
+  <input type="checkbox" id="my_animate_status" checked> Animate<br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./robot_upperarm_scene.js"></script>
+  <script src="./robot_upperarm_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/robot_base.obj", "../models/robot_forearm.obj", "../models/robot_upperarm.obj"];
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "RobotUpperarmScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

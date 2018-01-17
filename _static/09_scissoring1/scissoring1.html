@@ -1,0 +1,90 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example, viewports">
+  <meta name="description" content="WebGL tutorials - an example of viewports">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <h2>Experiment with scissoring.</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <table>
+    <tr>
+      <table>
+        <tr>
+          <td style="border: solid 1px black; width: 150px; text-align: center">Top View</td>
+          <td style="border: solid 1px black; width: 150px; text-align: center">Perspective View</td>
+        </tr>
+      </table>
+    </tr>
+    <tr>
+      <td>
+        <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+          Please use a browser that supports "canvas"
+        </canvas>
+      </td>
+    </tr>
+    <table>
+      <tr>
+        <td style="border: solid 1px black; width: 150px; text-align: center">Front View</td>
+        <td style="border: solid 1px black; width: 150px; text-align: center">Right Side View</td>
+      </tr>
+    </table>
+  </table>
+
+  <div id="my_controls" class="webgldemo_controls">
+    <p>Manipulate the sizes of the scissor and viewport areas:</p>
+    <table>
+      <tr>
+        <td>x_divide :</td>
+        <td style="width:40px; text-align: right"><strong><span id="my_x_divide_text">150</span></strong></td>
+        <td style="padding-left: 6px">50 <input type="range" id="my_x_divide" min="50" max="250" value="150" step="1" style="width:150px"> 250</td>
+      </tr>
+      <tr>
+        <td>y_divide :</td>
+        <td style="width:40px; text-align: right"><strong><span id="my_y_divide_text">150</span></strong></td>
+        <td style="padding-left: 6px">50 <input type="range" id="my_y_divide" min="50" max="250" value="150" step="1" style="width:150px"> 250</td>
+      </tr>
+    </table>
+    <input type="checkbox" id="my_animate_status" checked> Animate <br>
+    <input type="checkbox" id="my_show_viewports" checked> Show the scissor and viewport boundaries <br>
+    <button id="my_reset">Reset</button><br>
+  </div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./scissoring1_scene.js"></script>
+  <script src="./scissoring1_events.js"></script>
+  <script src="./viewport_model.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class to start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code, and
+    so that the paths to the program resources can be changed when runestone
+    builds a textbook web page.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag",
+                      "../shaders/uniform_color.vert", "../shaders/uniform_color.frag"];
+    let my_models = ["../models/xyz_blocks.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "Scissoring1Scene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

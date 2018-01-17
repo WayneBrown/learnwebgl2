@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - an example">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <p>Animate an object along a path between two points.</p>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br />
+
+  <div id="my_controls" class="webgldemo_controls">
+    <button id="my_animate">Animate</button><br>
+    <div style="border:1px solid black;"><strong>Timing:</strong><br>
+      current frame <span style="display:inline-block; width:20px;">0</span> : 0 <input type="range" id="my_frame" min="0" max="120" value="0" step="1" style="width:150px"> 120 <br>
+      animation: start frame: <input type="number" id="my_start_frame" min="0" max="50" value="30" step="1">
+      end frame: <input type="number" id="my_end_frame" min="50" max="100" value="60" step="1"><br>
+    </div>
+    <button id="my_reset">Reset</button><br>
+  </div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./animate_scene.js"></script>
+  <script src="./animate_events.js"></script>
+  <script src="./path.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class to start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code, and
+    so that the paths to the program resources can be changed when runestone
+    builds a textbook web page.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    let my_models = ["../models/xyz_blocks.obj", "../models/axes.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "AnimateScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, camera lookat">
+  <meta name="description" content="WebGL tutorials - camera tilt using lookat parameters">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <p>Perform a camera <string>tilt</string> motion.<br>
+  The left canvas shows the relative location of the scene objects and the camera. <br>
+  The right canvas shows the scene from the camera's vantage point.<br>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="400" height="400">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <canvas id="my_canvas_b" class="webgldemo_canvas" width="250" height="250">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <button id="my_tilt_up">Tilt Up</button> &nbsp;&nbsp;&nbsp;&nbsp;<button id="my_tilt_down">Tilt Down</button><br><br>
+
+  Manipulate the <strong>lookAt</strong> function's parameters:<br>
+  lookAt(M, <strong>eye_x, eye_y, eye_z, center_x, center_y, center_z, up_dx, up_dy, up_dz</strong>)<br>
+  <br>
+  <table cellspacing="30">
+    <tr>
+      <td style="text-align:center"><span id="my_eye_text"><strong>eye (0.0, 0.0, 5.0)</strong></span></td>
+      <td style="text-align:center"><span id="my_center_text"><strong>center (0.0, 0.0, 0.0)</strong></span></td>
+      <td style="text-align:center"><span id="my_up_text"><strong>up &lt;0.0, 1.0, 0.0&gt;</strong></span></td>
+    </tr>
+    <tr>
+      <td style="padding-right:15px">X: -5.0 <input type="range" id="my_eyeX" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:125px"> +5.0</td>
+      <td style="padding-right:15px">X: -5.0 <input type="range" id="my_cX" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:125px"> +5.0</td>
+      <td style="padding-right:15px">X: -1.0 <input type="range" id="my_upX" min="-1.0" max="1.0" value="0.0" step="0.01" style="width:125px"> +1.0</td>
+    </tr>
+
+    <tr>
+      <td style="padding-right:15px">Y: -5.0 <input type="range" id="my_eyeY" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:125px"> +5.0</td>
+      <td style="padding-right:15px">Y: -5.0 <input type="range" id="my_cY" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:125px"> +5.0</td>
+      <td style="padding-right:15px">Y: -1.0 <input type="range" id="my_upY" min="-1.0" max="1.0" value="1.0" step="0.01" style="width:125px"> +1.0</td>
+    </tr>
+
+    <tr>
+      <td>Z: -5.0 <input type="range" id="my_eyeZ" min="-5.0" max="5.0" value="5.0" step="0.1" style="width:125px"> +5.0</td>
+      <td>Z: -5.0 <input type="range" id="my_cZ" min="-5.0" max="5.0" value="0.0" step="0.1" style="width:125px"> +5.0</td>
+      <td>Z: -1.0 <input type="range" id="my_upZ" min="-1.0" max="1.0" value="0.0" step="0.01" style="width:125px"> +1.0</td>
+    </tr>
+
+  </table>
+
+  <button id="my_reset">Reset camera</button><br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glpoint3.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="./ray_model.js"></script>
+  <script src="./camera_tilt_scene.js"></script>
+  <script src="./camera_tilt_events.js"></script>
+  <script src="./lookat_camera.js"></script>
+  <script src="./camera_scene.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert",
+                      "../shaders/color_per_vertex.frag",
+                      "../shaders/uniform_color.vert",
+                      "../shaders/uniform_color.frag"];
+    let my_models = ["../models/xyz_blocks.obj",
+                     "../models/camera.obj",
+                     "../models/axes_2units.obj",
+                     "../models/sphere.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "CameraTiltScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

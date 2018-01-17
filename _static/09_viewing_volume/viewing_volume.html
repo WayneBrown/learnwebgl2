@@ -1,0 +1,63 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, viewing volume">
+  <meta name="description" content="WebGL tutorials - an example of not using a projection transform">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+<p>Render 3 triangles with or without a projection matrix.</p>
+
+  <table>
+    <tr><!--The canvas window for rendering 3D graphics -->
+      <td>
+        <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+          Please use a browser that supports "canvas"
+        </canvas>
+      </td>
+      <td>
+        <ul>
+          <li>The red triangle is at z = -0.25</li>
+          <li>The green triangle is at z = 0.0</li>
+          <li>The blue triangle is at z = +0.25</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input id="my_use_projection" type="checkbox" unchecked>Use a projection matrix for rendering<br />
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./viewing_volume_scene.js"></script>
+  <script src="./viewing_volume_events.js"></script>
+  <script src="./viewing_volume_model_data.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    let my_models = [];
+    window.my_program = new SceneDownload("my", "my_canvas", "ViewingVolumeScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

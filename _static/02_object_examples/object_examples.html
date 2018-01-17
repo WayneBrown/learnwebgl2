@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - examples of JavaScript objects">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../lib/jquery.js"></script>
+  <link rel="stylesheet" href="../lib/webgldemo.css" />
+</head>
+
+<body>
+  <p>Some examples of JavaScript class definitions. Ignore the functionality
+  and exam the structure and syntax of the class definitions.</p>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="250" height="250">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input type="checkbox" id="my_pause" checked> Animate<br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="./object_examples_scene.js"></script>
+  <script src="./object_examples_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/model_cone4.obj"];
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "ObjectExampleScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

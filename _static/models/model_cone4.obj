@@ -1,0 +1,17 @@
+# Blender v2.76 (sub 0) OBJ File: 'FourTriangles.blend'
+# www.blender.org
+mtllib model_cone4.mtl
+o Cone
+v  0.0  1.00  0.00
+v  0.0 -1.00 -1.00
+v  1.0 -1.00  1.00
+v -1.0 -1.00  1.00
+s on
+usemtl Green
+f 3 1 4
+usemtl Blue
+f 4 1 2
+usemtl Red
+f 2 1 3
+usemtl Purple
+f 2 3 4

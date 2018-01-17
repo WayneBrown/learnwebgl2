@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2017 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - an example">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <p>An example of <strong>rotation</strong> about the Z axis.</p>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br />
+
+  <div id="my_controls" class="webgldemo_controls">
+    Rotation angle about Z axis: <span style="display:inline-block; width:50px; text-align: right;">0.00</span> : -180.0 <input type="range" id="my_angle" min="-180.0" max="180.0" value="0.0" step="0.01" style="width:250px"> 180.0 <br>
+    <br>
+    Translate:<br>
+    X translation <span style="display:inline-block; width:40px; text-align: right;">0.00</span> : -2.0 <input type="range" id="my_tx" min="-2.0" max="2.0" value="0.0" step="0.01" style="width:250px"> 2.0 <br>
+    Y translation <span style="display:inline-block; width:40px; text-align: right;">0.00</span> : -2.0 <input type="range" id="my_ty" min="-2.0" max="2.0" value="0.0" step="0.01" style="width:250px"> 2.0 <br>
+    Z translation <span style="display:inline-block; width:40px; text-align: right;">0.00</span> : -2.0 <input type="range" id="my_tz" min="-2.0" max="2.0" value="0.0" step="0.01" style="width:250px"> 2.0 <br>
+    <input type="checkbox" id="my_animate_status"> Animate <br>
+    <button id="my_reset">Reset</button><br>
+  </div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_color_per_vertex.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="./rotate_about_z_scene.js"></script>
+  <script src="./rotate_about_z_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class to start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code, and
+    so that the paths to the program resources can be changed when runestone
+    builds a textbook web page.
+  -->
+  <script>
+    let my_shaders = ["../shaders/color_per_vertex.vert", "../shaders/color_per_vertex.frag"];
+    let my_models = ["../models/xyz_blocks.obj", "../models/axes.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "RotateAboutZScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

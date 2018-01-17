@@ -1,0 +1,59 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example, render">
+  <meta name="description" content="WebGL tutorials - render a simple model with a procedural texture map">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../../lib/jquery.js"></script>
+  <link rel="stylesheet" href="../../lib/webglcode.css" />
+</head>
+
+<body>
+  <p>A simple, 3D model where pixel colors are calculated using a procedural texture map.</p>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="canvas3D" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input type="checkbox" id="my_pause"> Animate<br>
+  <input type="checkbox" id="my_draw_edges"> Draw the edges of the triangles using a gl.LINE_LOOP<br>
+  <input type="checkbox" id="my_wireframe"> Render the model as a "wireframe"<br>
+  <input type="checkbox" id="my_axes" checked> Render the global axes (x:red, y:green, z:blue)<br>
+  <div> Average time to render the model is <span id="my_avg_time">0.00000</span> milliseconds.</div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/render_uniform_color.js"></script>
+  <script src="./simple_model4.js"></script>
+  <script src="./model_to_gpu4.js"></script>
+  <script src="./simple_model_render4.js"></script>
+  <script src="./simple_pyramid_scene4.js"></script>
+  <script src="./simple_pyramid_events4.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/axes.obj"];
+    let my_shaders = ["../shaders/texture01.vert", "../shaders/texture01.frag",
+                      "../shaders/uniform_color.vert", "../shaders/uniform_color.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "SimplePyramidScene4", my_models, my_shaders);
+  </script>
+
+</body>
+</html>
