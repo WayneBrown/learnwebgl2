@@ -1,0 +1,89 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - procedural texture maps">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <h2>Experiment with Overlay Texture Maps</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <div id="my_tabbed_controls" data-component="tabbedStuff">
+    <div data-component="tab" data-tabname="Texture Coordinates" data-active>
+      <table>
+        <tr>
+          <td style="text-align:center"><span id="my_translate_text"><strong>translate (0.00, 0.00)</strong></span></td>
+          <td style="text-align:center"><span id="my_scale_text"><strong>scale 1.00</strong></span></td>
+        </tr>
+        <tr style="width:150px">
+          <td>X -10.0 <input type="range" id="my_dx" min="-10.0" max="10.0" value="0.0" step="0.1" style="width:60px"> 10.0</td>
+          <td style="padding-left: 15px">0.1 <input type="range" id="my_scale" min="0.0" max="30" value="1.0" step="0.1" style="width:60px"> 30.0</td>
+        </tr>
+        <tr style="width:150px">
+          <td>Y -10.0 <input type="range" id="my_dy" min="-10.0" max="10.0" value="0.0" step="0.1" style="width:60px"> 10.0</td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Noise parameters">
+      <table>
+        <tr>
+          <td style="text-align:center" id="my_noise_params">Noise parameters: 289.0, 34.0, 1.0, 7.0</td>
+        </tr>
+        <tr>
+          <td>0.0 <input type="range" id="my_param0" min="0.0" max="512.0" value="289.0" step="0.1" style="width:125px"> 512.0</td>
+        </tr>
+        <tr>
+          <td>0.0 <input type="range" id="my_param1" min="0.0" max="512.0" value="34.0" step="0.1" style="width:125px"> 512.0</td>
+        </tr>
+        <tr>
+          <td>0.0 <input type="range" id="my_param2" min="0.0" max="512.0" value="1.0" step="0.1" style="width:125px"> 512.0</td>
+        </tr>
+        <tr>
+          <td>0.0 <input type="range" id="my_param3" min="0.0" max="512.0" value="7.0" step="0.1" style="width:125px"> 512.0</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <input type="checkbox" id="my_pause"> Animate<br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="./render_noise.js"></script>
+  <script src="./noise_scene.js"></script>
+  <script src="./noise_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/textured_cube.obj"];
+    let my_shaders = ["../11_noise/noise.vert", "../11_noise/noise.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "NoiseScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

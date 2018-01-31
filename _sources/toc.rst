@@ -177,35 +177,21 @@ Chapter 10: Lights
 Chapter 11: Surface Properties
 ------------------------------
 
-.. admonition:: Coming Soon!
-
-  This chapter is being refined and will be available in early 2018.
-
-* Introduction to Surface Properties
-* Color Surface Properties
-* Smooth Vertex Normals
-* Texture mapping images
-* Texture mapping coordinates
-* Procedural Texture Mapping
-* Procedural Texture Mapping (continued)
-* Texture Mapping Transforms
-* Other surface Manipulators
-* Combining Lights and Surface Properties
-
-.. .. toctree::
+.. toctree::
   :titlesonly:
   :maxdepth: 1
 
-  10_surface_properties/surface_properties_introduction
-  10_surface_properties/surface_properties_color
-  10_surface_properties/smooth_vertex_normals
-  10_surface_properties/texture_mapping_images
-  10_surface_properties/texture_mapping_coordinates
-  10_surface_properties/texture_mapping_procedural
-  10_surface_properties/texture_mapping_procedural2
-  10_surface_properties/texture_mapping_transforms
-  10_surface_properties/other_surface_manipulators
-  10_surface_properties/combining_light_and_surface_properties
+  11_surface_properties/01_surface_properties_introduction
+  11_surface_properties/02_surface_properties_color
+  11_surface_properties/03_smooth_vertex_normals
+  11_surface_properties/04_texture_mapping_images
+  11_surface_properties/05_texture_mapping_coordinates
+  11_surface_properties/06_texture_mapping_procedural
+  11_surface_properties/07_texture_mapping_procedural2
+  11_surface_properties/08_texture_mapping_transforms
+  11_surface_properties/09_heightmaps
+  11_surface_properties/10_bump_maps
+  11_surface_properties/10_combining_light_and_surface_properties
 
 Chapter 12: Advanced Rendering and Transparency
 -----------------------------------------------

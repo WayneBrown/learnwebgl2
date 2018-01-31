@@ -224,6 +224,14 @@ window.GlMatrix3x3 = function () {
   };
 
   /** -----------------------------------------------------------------
+   * @param angleInDegrees {number}
+   * @return {number} Convert the input angle in degrees to radians
+   */
+  self.toRadians = function (angleInDegrees) {
+    return angleInDegrees * 0.017453292519943295;  // Math.PI / 180
+  };
+
+  /** -----------------------------------------------------------------
    * Set the matrix to a rotation matrix. The axis of rotation axis is the Z axis.
    * @paraM angle The angle of rotation (in degrees)
    */

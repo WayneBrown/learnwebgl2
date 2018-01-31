@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - texture map">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <h2>The Earth using a Displacement Map</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="400" height="400">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  Sphere: 32,514 vertices & 65,024 triangles.<br>
+  <span id="my_height_text" style="width:100px">Maximum height: 1.00</span>
+  -1.0 <input type="range" id="my_height" min="-1.0" max="1.0" value="0.15" step="0.01" style="width:200px"> 1.0<br>
+  <input type="checkbox" id="my_pause" checked> Animate<br>
+  <p>Use the mouse wheel to zoom in for a closer look.</p>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="./render_displacement_map.js"></script>
+  <script src="./earth_scene.js"></script>
+  <script src="./earth_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/earth.obj"];
+    let my_shaders = ["../11_displacement_map/displacement_map.vert", "../11_displacement_map/displacement_map.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "EarthScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

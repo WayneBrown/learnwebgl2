@@ -194,6 +194,7 @@ list of things you might try:
   :width: 300
   :height: 300
 
+
 Glossary
 --------
 

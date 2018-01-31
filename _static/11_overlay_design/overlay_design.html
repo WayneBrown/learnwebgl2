@@ -1,0 +1,221 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - procedural texture maps">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <h2>Design Overlay Texture Maps</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="400" height="400">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <div id="my_tabbed_controls" data-component="tabbedStuff">
+    <div data-component="tab" data-tabname="Layer 0" data-active>
+      <table>
+        <tr>
+          <td>Active layer</td>
+          <td><input type="checkbox" id="my_layer0" checked> Use this layer?</td>
+        </tr>
+        <tr>
+          <td>Pattern type?</td>
+          <td>
+            <input type="radio" id="my_type00" name="my_type0" />GRADIENT_PATTERN<br>
+            <input type="radio" id="my_type10" name="my_type0" />CHECKERBOARD_PATTERN<br>
+            <input type="radio" id="my_type20" name="my_type0" checked/>SIMPLEX_PATTERN<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Scale = 2.5</td>
+          <td>0.0 <input type="range" id="my_scale0" min="0.0" max="40.0" value="2.5" step="0.1" style="width:380px"> 40.0</td>
+        </tr>
+        <tr>
+          <td>Amount = 0.50</td>
+          <td>0.0 <input type="range" id="my_amount0" min="0.0" max="1.0" value="0.5" step="0.01" style="width:200px"> 1.0</td>
+        </tr>
+        <tr>
+          <td style="width:170px; vertical-align: top">Color = (0.74, 0.32, 0.54)</td>
+          <td>
+            0.0 <input type="range" id="my_color00" min="0.0" max="1.0" value="0.74" step="0.01" style="width:200px"> 1.0 <br>
+            0.0 <input type="range" id="my_color10" min="0.0" max="1.0" value="0.32" step="0.01" style="width:200px"> 1.0<br>
+            0.0 <input type="range" id="my_color20" min="0.0" max="1.0" value="0.54" step="0.01" style="width:200px"> 1.0
+          </td>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Layer 1">
+      <table>
+        <tr>
+          <td>Active layer</td>
+          <td><input type="checkbox" id="my_layer1" checked> Use this layer?</td>
+        </tr>
+        <tr>
+          <td>Pattern type?</td>
+          <td>
+            <input type="radio" id="my_type01" name="my_type1" checked/>GRADIENT_PATTERN<br>
+            <input type="radio" id="my_type11" name="my_type1" />CHECKERBOARD_PATTERN<br>
+            <input type="radio" id="my_type21" name="my_type1" />SIMPLEX_PATTERN<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Scale = 0.2</td>
+          <td>0.0 <input type="range" id="my_scale1" min="0.0" max="40.0" value="0.2" step="0.1" style="width:380px"> 40.0</td>
+        </tr>
+        <tr>
+          <td>Amount = 0.20</td>
+          <td>0.0 <input type="range" id="my_amount1" min="0.0" max="1.0" value="0.2" step="0.01" style="width:200px"> 1.0</td>
+        </tr>
+        <tr>
+          <td style="width:170px; vertical-align: top">Color = (0.35, 0.79, 0.00)</td>
+          <td>
+            0.0 <input type="range" id="my_color01" min="0.0" max="1.0" value="0.35" step="0.01" style="width:200px"> 1.0 <br>
+            0.0 <input type="range" id="my_color11" min="0.0" max="1.0" value="0.79" step="0.01" style="width:200px"> 1.0<br>
+            0.0 <input type="range" id="my_color21" min="0.0" max="1.0" value="0.00" step="0.01" style="width:200px"> 1.0
+          </td>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Layer 2">
+      <table>
+        <tr>
+          <td>Active layer</td>
+          <td><input type="checkbox" id="my_layer2" checked> Use this layer?</td>
+        </tr>
+        <tr>
+          <td>Pattern type?</td>
+          <td>
+            <input type="radio" id="my_type02" name="my_type2" />GRADIENT_PATTERN<br>
+            <input type="radio" id="my_type12" name="my_type2" checked/>CHECKERBOARD_PATTERN<br>
+            <input type="radio" id="my_type22" name="my_type2" />SIMPLEX_PATTERN<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Scale = 35.0</td>
+          <td>0.0 <input type="range" id="my_scale2" min="0.0" max="40.0" value="35.0" step="0.1" style="width:380px"> 40.0</td>
+        </tr>
+        <tr>
+          <td>Amount = 0.06</td>
+          <td>0.0 <input type="range" id="my_amount2" min="0.0" max="1.0" value="0.06" step="0.01" style="width:200px"> 1.0</td>
+        </tr>
+        <tr>
+          <td style="width:170px; vertical-align: top">Color = (1.00, 1.00, 1.00)</td>
+          <td>
+            0.0 <input type="range" id="my_color02" min="0.0" max="1.0" value="1.0" step="0.01" style="width:200px"> 1.0 <br>
+            0.0 <input type="range" id="my_color12" min="0.0" max="1.0" value="1.0" step="0.01" style="width:200px"> 1.0<br>
+            0.0 <input type="range" id="my_color22" min="0.0" max="1.0" value="1.0" step="0.01" style="width:200px"> 1.0
+          </td>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Layer 3">
+      <table>
+        <tr>
+          <td>Active layer</td>
+          <td><input type="checkbox" id="my_layer3"> Use this layer?</td>
+        </tr>
+        <tr>
+          <td>Pattern type?</td>
+          <td style="visibility: hidden;">
+            <input type="radio" id="my_type03" name="my_type3" checked/>GRADIENT_PATTERN<br>
+            <input type="radio" id="my_type13" name="my_type3" />CHECKERBOARD_PATTERN<br>
+            <input type="radio" id="my_type23" name="my_type3" />SIMPLEX_PATTERN<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Scale = 0.0</td>
+          <td style="visibility: hidden;">0.0 <input type="range" id="my_scale3" min="0.0" max="40.0" value="0.0" step="0.1" style="width:380px"> 40.0</td>
+        </tr>
+        <tr>
+          <td>Amount = 0.00</td>
+          <td style="visibility: hidden;">0.0 <input type="range" id="my_amount3" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0</td>
+        </tr>
+        <tr>
+          <td style="width:170px; vertical-align: top">Color = (0.00, 0.00, 0.00)</td>
+          <td style="visibility: hidden;">
+            0.0 <input type="range" id="my_color03" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0 <br>
+            0.0 <input type="range" id="my_color13" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0<br>
+            0.0 <input type="range" id="my_color23" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0
+          </td>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div data-component="tab" data-tabname="Layer 4">
+      <table>
+        <tr>
+          <td>Active layer</td>
+          <td><input type="checkbox" id="my_layer4"> Use this layer?</td>
+        </tr>
+        <tr>
+          <td>Pattern type?</td>
+          <td style="visibility: hidden;">
+            <input type="radio" id="my_type04" name="my_type4" checked/>GRADIENT_PATTERN<br>
+            <input type="radio" id="my_type14" name="my_type4" />CHECKERBOARD_PATTERN<br>
+            <input type="radio" id="my_type24" name="my_type4" />SIMPLEX_PATTERN<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Scale = 0.0</td>
+          <td style="visibility: hidden;">0.0 <input type="range" id="my_scale4" min="0.0" max="40.0" value="0.0" step="0.1" style="width:380px"> 40.0</td>
+        </tr>
+        <tr>
+          <td>Amount = 0.00</td>
+          <td style="visibility: hidden;">0.0 <input type="range" id="my_amount4" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0</td>
+        </tr>
+        <tr>
+          <td style="width:170px; vertical-align: top">Color = (0.00, 0.00, 0.00)</td>
+          <td style="visibility: hidden;">
+            0.0 <input type="range" id="my_color04" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0 <br>
+            0.0 <input type="range" id="my_color14" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0<br>
+            0.0 <input type="range" id="my_color24" min="0.0" max="1.0" value="0.0" step="0.01" style="width:200px"> 1.0
+          </td>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="./render_overlay_design.js"></script>
+  <script src="./overlay_design_scene.js"></script>
+  <script src="./overlay_design_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/textured_cube.obj"];
+    let my_shaders = ["../11_overlay_design/overlay_design.vert", "../11_overlay_design/overlay_design.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "OverlayDesignScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

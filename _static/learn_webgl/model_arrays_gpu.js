@@ -149,7 +149,7 @@ window.ModelArraysGPU = function (gl, model_arrays, out) {
   if (model_arrays.wireframe !== null && model_arrays.wireframe.vertices.length > 0) {
     self.wireframe = new GpuWireframeData();
 
-    self.wireframe.number = model_arrays.triangles.vertices.length / 3;
+    self.wireframe.number = model_arrays.wireframe.vertices.length / 3;
     self.wireframe.vertices = _createBufferObject(model_arrays.wireframe.vertices, 3);
   }
 

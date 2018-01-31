@@ -130,7 +130,7 @@ window.RenderLighting = function (gl, program, model_buffers, out) {
     if (model_buffers.triangles !== null && model_buffers.triangles.number > 0) {
 
       let vertices = model_buffers.triangles.vertices;
-      let normals = model_buffers.triangles.flat_normals;
+      let normals = model_buffers.triangles.smooth_normals;
       let colors = model_buffers.triangles.colors;
 
       // Activate the model's triangle vertex object buffer (VOB)
@@ -160,11 +160,32 @@ window.RenderLighting = function (gl, program, model_buffers, out) {
   }
 
   /**----------------------------------------------------------------------
+   * Render the individual lines in the model.
+   * @private
+   */
+  function _renderWireframe() {
+    if (model_buffers.wireframe !== null && model_buffers.wireframe.vertices.id !== null) {
+
+      // Activate the model's line vertex object buffer (VOB)
+      gl.bindBuffer(gl.ARRAY_BUFFER, model_buffers.wireframe.vertices.id);
+
+      // Bind the vertices VOB to the 'a_Vertex' shader variable
+      //var stride = self.vertices3[0].BYTES_PER_ELEMENT*3;
+      gl.vertexAttribPointer(program.a_Vertex, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Vertex);
+
+      // Draw all of the lines
+      gl.drawArrays(gl.LINES, 0, model_buffers.wireframe.number);
+    }
+  }
+
+  /**----------------------------------------------------------------------
    * Render the model under the specified transformation.
    * @param clipping_space {Float32Array} - A 4x4 transformation matrix.
    * @param camera_space {Float32Array} - A 4x4 transformation matrix.
+   * @param wireframe {boolean} - it true, display in wireframe
    */
-  self.render = function (clipping_space, camera_space) {
+  self.render = function (clipping_space, camera_space, wireframe = false) {
 
     gl.useProgram(program);
 
@@ -175,7 +196,11 @@ window.RenderLighting = function (gl, program, model_buffers, out) {
 
     _renderPoints();
     _renderLines();
-    _renderTriangles();
+    if (wireframe && model_buffers.wireframe !== null) {
+      _renderWireframe();
+    } else {
+      _renderTriangles();
+    }
   };
 
 };

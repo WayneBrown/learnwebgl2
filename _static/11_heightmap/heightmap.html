@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - texture map">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <h2>Experiment with a heightmap.</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas><br>
+
+  Which Model:<br>
+  <input type="radio" id="my_plane0" name="my_model" value="0" />Plane (25 vertices; 32 triangles)<br>
+  <input type="radio" id="my_plane1" name="my_model" value="1" />Plane (289 vertices; 512 triangles)<br>
+  <input type="radio" id="my_plane2" name="my_model" value="2" checked/>Plane (16,641 vertices; 32,768 triangles)<br>
+  <div id="my_height_text">Maximum height: 1.00</div>
+  0.0 <input type="range" id="my_height" min="0.0" max="2.0" value="1.0" step="0.01" style="width:200px"> 2.0<br>
+  Display options:<br>
+  <input type="checkbox" id="my_wireframe_model"> Wireframe model<br>
+  <input type="checkbox" id="my_pause"> Animate<br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/render_uniform_color.js"></script>
+  <script src="./render_heightmap.js"></script>
+  <script src="./heightmap_scene.js"></script>
+  <script src="./heightmap_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../11_heightmap/plane4x4.obj",
+                     "../11_heightmap/plane16x16.obj",
+                     "../11_heightmap/plane256x256.obj"];
+    let my_shaders = ["../11_heightmap/heightmap.vert", "../11_heightmap/heightmap.frag",
+                      "../shaders/uniform_color.vert", "../shaders/uniform_color.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "HeightmapScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

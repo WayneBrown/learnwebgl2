@@ -373,7 +373,7 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
   function _parseObjLines() {
     let sp, lines, which_line, command, model_name,
       current_material_file, x, y, z,
-      dot_position, dx, dy, dz, u, v, coords, normal;
+      dot_position, dx, dy, dz, u, v, coords, normal, mode;
 
     // Count the number of each type of data value.
     number_vertices       = (model_description.match(/\nv /g)||[]).length;
@@ -483,7 +483,8 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
             break;
 
           case 's': // smooth shading flag
-            smooth_shading = !(sp.getWord() === 'off');
+            mode = sp.getWord();
+            smooth_shading = (mode === 'on') || (mode === '1');
             break;
 
         } // end switch
@@ -598,7 +599,7 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
   //-----------------------------------------------------------------------
   function _createWireframeVertices(model) {
     let n, array, vertices, number_triangles,
-        number_edges, array_size, v, start, end;
+        number_edges, array_size, v, start, end, used, temp;
 
     // Assumes that each edge is used twice for adjacent triangles.
     // Only use the triangle edge where indexI < indexJ so that
@@ -609,11 +610,14 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
         model.triangles.vertices.length > 0) {
       vertices = model.triangles.vertices;
       number_triangles = vertices.length / 3;
-      number_edges = number_triangles * 3 / 2; // only one edge per adjacent triangle
+      number_edges = number_triangles * 3;
       array_size = number_edges * 2 * 3;
 
-      array = model.wireframe.vertices = new Float32Array(array_size);
+      array = new Float32Array(array_size);
       v = new Array(4);
+
+      // Track edges and only include them once in the edges array
+      used = new Array(vertices.length);
 
       n = 0;
       for (let j = 0; j < vertices.length; j += 3) {
@@ -626,7 +630,15 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
           start = v[k];
           end = v[k + 1];
 
-          if (start < end && n <= array_size - 6) {
+          if (start > end) {
+            temp = start;
+            start = end;
+            end = temp;
+          }
+
+          if (used[start] === undefined) used[start] = [];
+
+          if (used[start].indexOf(end) === -1 && n < array_size - 6) {
             array[n++] = all_vertices[start][0];
             array[n++] = all_vertices[start][1];
             array[n++] = all_vertices[start][2];
@@ -634,9 +646,17 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
             array[n++] = all_vertices[end][0];
             array[n++] = all_vertices[end][1];
             array[n++] = all_vertices[end][2];
+
+            used[start].push(end); // remember the edge from start to end
           }
         }
       }
+
+      // The original array was worst case for the number of edges.
+      // Copy the edges that were actually created.
+      array = array.slice(0,n);
+      model.wireframe.vertices = array;
+
     } else {
       array = null;
     }

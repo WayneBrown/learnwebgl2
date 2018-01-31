@@ -155,5 +155,6 @@ Self Assessment
   :inline_matrixeq:`([M1]*[M2])*[M3] == [M1]*([M2]*[M3])` ?
 
 
+
 .. index:: commutative, associative
 

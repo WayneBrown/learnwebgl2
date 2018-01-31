@@ -183,7 +183,7 @@ will perform all of the transformations required for the graphics pipeline,
 while the following transformation matrix will produce locations and
 orientations for lighting calculations.
 
-.. matrixeq:: Eq1
+.. matrixeq:: Eq2
 
   [M2: CameraMatrix]*[M3: ModelMatrix]*[M4: x;y;z;w] = [M5: x';y';z';w']
 

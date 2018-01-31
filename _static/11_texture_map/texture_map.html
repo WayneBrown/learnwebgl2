@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - texture map">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webgldemo.css" />
+</head>
+
+<body>
+  <h2>An Example of Texture Mapping</h2>
+
+  <table>
+    <tr>
+      <td>
+        The 3D rendering (a pyramid):<br>
+        <!--The canvas window for rendering 3D graphics -->
+        <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+          Please use a browser that supports "canvas"
+        </canvas>
+      </td>
+      <td style='vertical-align:top'>
+        The image:<br>
+        <img src="../models/flower.png" width="200" height="200" style='vertical-align:top'>
+      </td>
+    </tr>
+  </table>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input type="checkbox" id="my_pause" checked> Animate<br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="./render_texture_map.js"></script>
+  <script src="./texture_map_scene.js"></script>
+  <script src="./texture_map_events.js"></script>
+
+  <!--
+    Create an instance of the SceneDownload class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_models = ["../models/textured_pyramid.obj"];
+    let my_shaders = ["../11_texture_map/texture_map.vert", "../11_texture_map/texture_map.frag"];
+    window.my_program = new SceneDownload("my", "my_canvas", "TextureMapScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>
