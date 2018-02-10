@@ -159,7 +159,7 @@ Please study the *vertex shader* program which changes the geometry of the surfa
 * Get the color of the heightmap at a vertex location using its corresponding *texture coordinates*.
 * Multiply the color times the maximum displacement to get the displacement for this vertex.
   (The color value is a percentage in the range :code:`[0.0,1.0]`.)
-* Scale the vertex's normal vector by the displacement.
+* Scale the vertex's normal vector by the displacement to get a "displacement vector".
 * Add the displacement vector to the vertex's location.
 
 .. webglinteractive:: W2
@@ -198,9 +198,6 @@ A Fun Example
 A displacement map can be used to create a realistic model of the earth
 using publicly available data from NASA.
 The image below is a greyscale image that represents a heightmap of the earth.
-The following WebGL program renders a sphere using the image as a displacement map.
-The image has been stretched at the top and bottom to compensate for compression
-at the north and south poles. (Use the mouse wheel to zoom in for a closer look.)
 
 .. figure:: figures/GDEM-10km-BW.png
   :align: center
@@ -209,6 +206,10 @@ at the north and south poles. (Use the mouse wheel to zoom in for a closer look.
 
   :raw-html:`<style> span.caption-text { display: block; text-align: center} </style>`
   GDEM-10km-BW.png [`4`_]
+
+The following WebGL program renders a sphere using the image above as a displacement map.
+The image has been stretched at the top and bottom to compensate for compression
+at the north and south poles. (Use the mouse wheel to zoom in for a closer look.)
 
 .. webgldemo:: W3
   :htmlprogram: _static/11_earth/earth.html
@@ -224,6 +225,9 @@ The WebGL examples in this lesson were written to help you understand *displacem
 mapping* -- not to create fantastic renderings. *Displacement mapping* is typically
 combined with other surface property techniques to create life-like renderings.
 
+A disadvantage to *heightmaps* is the need for a large number of vertices
+in a model's triangular mesh, which increases memory requirements and slows rendering.
+
 Glossary
 --------
 
@@ -235,6 +239,103 @@ Glossary
   displacement map
     Use a value from a texture map to offset the location of a vertex
     along it's normal vector.
+
+Self Assessment
+---------------
+
+.. mchoice:: 11.9.1
+  :random:
+
+  Where are *heightmaps* and *displacement maps* implemented?
+
+  - *vertex shader*
+
+    + Correct. They change the 3D geometric location of a vertex, which is put into the :code:`gl_Position` variable.
+
+  - *fragment shader*
+
+    - Incorrect.
+
+  - both the *vertex shader* and the *fragment shader*
+
+    - Incorrect.
+
+  - JavaScript pre-processing code.
+
+    - Incorrect.
+
+.. mchoice:: 11.9.2
+  :random:
+
+  Which of the following modifications to a model's vertices would produce
+  a traditional *heightmap*?
+
+  - :code:`vec3 new_vertex = vec3(a_Vertex[0], height, a_Vertex[2]);`
+
+    + Correct. The y-axis component is changed.
+
+  - :code:`vec3 new_vertex = vec3(a_Vertex[0], a_Vertex[1], height);`
+
+    - Incorrect. The z-axis component is not changed.
+
+  - :code:`vec3 new_vertex = vec3(height, a_Vertex[1], a_Vertex[2]);`
+
+    - Incorrect. The x-axis component is not changed.
+
+  - :code:`vec3 new_vertex = a_Vertex + height;`
+
+    - Incorrect. This changes all three components of a vertex.
+
+.. mchoice:: 11.9.3
+  :random:
+
+  What conditions might cause a triangle to flip its orientation when
+  a *displacement map* is used?
+
+  - the underlying mesh caves inward.
+
+    + Correct. When the vertices are projected to a new location their
+      relative position to each other can cause the counter-clockwise
+      ordering of the vertices to flip. This is only important if the
+      vertex ordering is used in the *fragment shader*.
+
+  - the underlying mesh bulges outward.
+
+    - Incorrect.
+
+  - the underlying mesh has too few vertices.
+
+    - Incorrect.
+
+  - the underlying mesh has too many vertices.
+
+    - Incorrect.
+
+.. mchoice:: 11.9.4
+  :random:
+
+  A *heightmap* and a *displacement map* can be implemented with the same
+  *vertex shader* program if what is true?
+
+  - The *normal vectors* of the underlying mesh always point in the
+    direction of displacement.
+
+    + Correct. For a flat plane, the *normal vectors* will be pointing straight up from the surface.
+
+  - The underlying mesh is always planar.
+
+    - Incorrect. *Displacement maps* are defined for any surface, planar or not.
+
+  - The underlying mesh contains a sufficient number of vertices.
+
+    - Incorrect. The number of vertices determines the fine-grain accuracy of the
+      displacements, but not the code implementation.
+
+  - The image used for the mapping is used for both height displacement and the surface's color.
+
+    - Incorrect. The examples above used the same image for both displacement and color,
+      but only for the purpose of simplifying the examples.
+
 
 .. index:: heightmap, displacement map
 

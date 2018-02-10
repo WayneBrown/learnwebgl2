@@ -191,14 +191,15 @@ Chapter 11: Surface Properties
   11_surface_properties/08_texture_mapping_transforms
   11_surface_properties/09_heightmaps
   11_surface_properties/10_bump_maps
-  11_surface_properties/10_combining_light_and_surface_properties
+  11_surface_properties/11_combining_surface_properties
+
 
 Chapter 12: Advanced Rendering and Transparency
 -----------------------------------------------
 
 .. admonition:: Coming Soon!
 
-  This chapter is being refined and will be available in early 2018.
+  This chapter is being refined and will be available in late February 2018.
 
 * Introduction to Rendering
 * Hidden Surface Removal

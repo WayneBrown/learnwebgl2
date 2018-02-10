@@ -40,17 +40,18 @@
  */
 function ModelMaterial(material_name) {
   let self = this;
-  self.name = material_name;
-  self.index = -1;   // matches a material to an array index.
-  self.Ns = null;    // the specular exponent for the current material
-  self.Ka = null;    // the ambient reflectivity using RGB values
-  self.Kd = null;    // the diffuse reflectivity using RGB values
-  self.Ks = null;    // the specular reflectivity using RGB values
-  self.Ni = null;    // the optical density for the surface; index of refraction
-  self.d = null;     // the dissolve for the current material; transparency
-  self.illum = null; // illumination model code
-  self.map_Kd = null;// specifies a color texture filename
-  self.textureMap = null; // the image used for a texture map
+  self.name = material_name; // {string}
+  self.index = -1;   // {number} matches a material to an array index.
+  self.Ns = null;    // {number} the specular exponent for the current material
+  self.Ka = null;    // {Float32Array} the ambient reflectivity using RGB values
+  self.Kd = null;    // {Float32Array} the diffuse reflectivity using RGB values
+  self.Ks = null;    // {Float32Array} the specular reflectivity using RGB values
+  self.Ni = null;    // {number} the optical density for the surface; index of refraction
+  self.d = null;     // {number} the dissolve for the current material; transparency
+  self.illum = null; // {number} illumination model code
+  self.color_map = null;        // {string/img} filename, then image
+  self.displacement_map = null; // {string/img} filename, then image
+  self.bump_map = null;         // {string/img} filename, then image
 }
 
 /**------------------------------------------------------------------------

@@ -222,6 +222,98 @@ Glossary
     A vector that is perpendicular to the surface of an original, real-world object
     at a specific location.
 
+Self Assessment
+---------------
+
+.. mchoice:: 11.3.1
+  :random:
+
+  Given a triangle, a vector that is 90 degrees to every point in the plane defined
+  by the triangle is called a *normal vector*. How many *normal vectors* does a triangle
+  have?
+
+  - two
+
+    + Correct. These corresponds to the two sides of a triangle (or the two sides of a plane).
+
+  - one
+
+    - Incorrect.
+
+  - three
+
+    - Incorrect.
+
+  - infinite
+
+    - Incorrect.
+
+.. mchoice:: 11.3.2
+  :random:
+
+  "Flat shading" calculates the same diffuse color for every pixel that composes a triangle
+  because ...
+
+  - the diffuse lighting calculation uses the same *normal vector* for every fragment.
+
+    + Correct.
+
+  - diffuse lighting is not calculated for "flat shading".
+
+    - Incorrect. Diffuse lighting calculations are required for "flat shading."
+
+  - the color of the diffuse light is constant.
+
+    - Incorrect.
+
+  - every pixel of a triangle is assigned the color of the triangle.
+
+    - Incorrect.
+
+.. mchoice:: 11.3.3
+  :random:
+
+  The "*normal vector*" assigned to a vertex to implement "smooth shading"
+  is typically calculated by ...
+
+  - taking the average of the face *normal vectors* of every triangle that uses the vertex.
+
+    + Correct.
+
+  - using the *normal vector* of the largest triangle that uses the vertex.
+
+    - Incorrect.
+
+  - summing all of the *normal vectors* around it.
+
+    - Incorrect. It sums the *normal vectors* and divides by how many were added together.
+
+  - multiplying adjacent *normal vectors*.
+
+    - Incorrect.
+
+.. mchoice:: 11.3.4
+  :random:
+
+  How are triangles in an :code:`.obj` file "marked" for smooth shading?
+
+  - A line before "face" descriptions that contains "s on".
+
+    + Correct.
+
+  - A "face" description contains the word "smooth" as its last token.
+
+    - Incorrect.
+
+  - Smooth shaded triangles can't be represented in an :code:`.obj` file.
+
+    - Incorrect.
+
+  - By default, all faces from an :code:`.obj` file are "smooth shaded".
+
+    - Incorrect. The default is to use "flat shading" on triangle faces.
+
+
 .. index:: Phong shading, triangle normal vector, smooth normal vector
 
 .. _Phong shading: https://en.wikipedia.org/wiki/Phong_shading:

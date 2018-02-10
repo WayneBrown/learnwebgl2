@@ -358,6 +358,36 @@ Glossary
     Visual tools that allow a texture designer to assign *texture coordinates* to
     model vertices.
 
+Self Assessment
+---------------
+
+.. mchoice:: 11.5.1
+  :random:
+
+  In an :code:`.obj` file, which lines contain *texture coordinates*?
+
+  - Any line starting with :code:`vt`.
+
+    + Correct. :code:`vt` stands for "vertex texture."
+
+  - Any line starting with :code:`f`.
+
+    - Incorrect. This is a description of a "face".
+
+  - Any line starting with :code:`v`.
+
+    - Incorrect. This is a vertex.
+
+  - Any line starting with :code:`s`.
+
+    - Incorrect. This enables or disables "smooth shading."
+
+To self-assess your understanding of *texture coordinates* in Blender,
+create a model that is more than a simple geometric primitive and create
+and manipulate *texture coordinates* for the model. Then export the model
+into an :code:`.obj` file and verify that you understand the data.
+
+
 .. index:: texture mapping, image texture mapping, UV editing
 
 .. _Blender documentation for texture mapping: https://www.blender.org/manual/render/blender_render/textures/index.html

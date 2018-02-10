@@ -413,7 +413,100 @@ Glossary
     Given some patterns that can be created at various scales, combine multiple
     instances of the patterns at different scales to create a texture map.
 
-.. index:: texture mapping, procedural texture mapping, image texture mapping, texture coordinates, gradient pattern, checkerboard pattern, "Perlin Noise", overlaid patterns,
+Self Assessment
+---------------
+
+.. mchoice:: 11.6.1
+  :random:
+
+  A *procedural texture map* is performed by ...
+
+  - calculations on input values to produce a percentage or color output value.
+
+    + Correct.
+
+  - calculations to create a color.
+
+    - Not the best answer. Another choice is a better definition.
+
+  - getting a color from a 2D image.
+
+    - Incorrect. This is *image texture mapping*.
+
+  - a procedure.
+
+    - Not the best answer. Another choice is a better definition.
+
+.. mchoice:: 11.6.2
+  :random:
+
+  Using the gradient WebGL program in this lesson, what pattern does the
+  calculation :code:`abs(sin(s * 2.0*PI))` produce?
+
+  - Two bands of gradient color on each face.
+
+    + Correct.
+
+  - A checkerboard pattern.
+
+    - Incorrect.
+
+  - A linear change in color from one side a cube face to another.
+
+    - Incorrect.
+
+  - A sine wave.
+
+    - Incorrect.
+
+.. mchoice:: 11.6.3
+  :random:
+
+  What is the difference between "Perlin Noise" and pure randomness?
+
+  - "Perlin Noise" produces the same pattern for identical inputs; pure randomness
+    would produce a different pattern every time.
+
+    + Correct.
+
+  - "Perlin Noise" produces a different pattern for identical inputs; pure randomness
+    would produce the same pattern every time.
+
+    - Incorrect.
+
+  - "Perlin Noise" is strictly for computer graphics; randomness can be used for any application.
+
+    - While true in one sense, there is a better answer amoung your choices.
+
+  - "Perlin Noise" only works in shader programs; randomness can be used in any program.
+
+    - Incorrect. "Perlin Noise" is an algorithm that can be implemented in any programming language
+      for any purpose.
+
+.. mchoice:: 11.6.4
+  :random:
+
+  Which of the following are true concerning "overlay patterns"? (Select all that apply.)
+
+  - A pattern created by the combination of other patterns at various scales.
+
+    + Correct.
+
+  - Each pattern can use different colors.
+
+    + Correct.
+
+  - All of the patterns need to be of the same type. (E.g., all "Perlin Noise")
+
+    - Incorrect.
+
+  - The patterns should always be combined with equal percentages.
+
+    - Incorrect.
+
+
+
+
 
 For more study
 --------------
@@ -427,3 +520,6 @@ http://www.upvector.com/?section=Tutorials&subsection=Intro%20to%20Procedural%20
 .. _1: https://en.wikipedia.org/wiki/Randomness.
 .. _OpenSimplex: https://en.wikipedia.org/wiki/OpenSimplex_noise
 .. _here: http://www.geeks3d.com/20110317/shader-library-simplex-noise-glsl-opengl/
+
+.. index:: texture mapping, procedural texture mapping, image texture mapping, texture coordinates, gradient pattern, checkerboard pattern, "Perlin Noise", overlaid patterns,
+

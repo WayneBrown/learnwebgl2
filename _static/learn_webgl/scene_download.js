@@ -212,13 +212,14 @@ window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_
 
   /**----------------------------------------------------------------------
    * Download a texture map image.
-   * @param obj_filename String The full path and file name to the OBJ file.
-   * @param material ModelMaterial A material description.
-   * @param image_filename String The filename of a texture map image.
+   * @param obj_filename {string} The full path and file name to the OBJ file.
+   * @param material {ModelMaterial} A material description.
+   * @param image_filename {string} The filename of a texture map image.
+   * @param type {string} which field of the material (color_map, displacement_map, bump_map)
    * @private
    */
-  function _downloadTextureMapImage(obj_filename, material, image_filename) {
-    let file_parts, path_to_obj, filename;
+  function _downloadTextureMapImage(obj_filename, material, image_filename, type) {
+    let file_parts, path_to_obj, filename, new_image;
 
     // Use the path to the model file to get the location of the texturemap file.
     file_parts = self.parseFilename(obj_filename);
@@ -227,14 +228,16 @@ window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_
 
     downloads_needed += 1;
 
-    material.textureMap = new Image();
-    material.textureMap.src = filename;
-    material.textureMap.onload =
+    new_image = new Image();
+    new_image.src = filename;
+    new_image.onload =
       function () {
         number_retrieved += 1;
         out.displayInfo("Downloaded texture map image '" + image_filename
           + "' for OBJ model " + obj_filename + "', " + number_retrieved + " of "
           + downloads_needed);
+
+        material[type] = new_image;
 
         self.initializeRendering();
       };
@@ -274,8 +277,14 @@ window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_
         material_names = Object.keys(materials);
         for (let j = 0; j < material_names.length; j += 1) {
           name = material_names[j];
-          if (materials[name].map_Kd) {
-            _downloadTextureMapImage(obj_filename, materials[name], materials[name].map_Kd);
+          if (materials[name].color_map) {
+            _downloadTextureMapImage(obj_filename, materials[name], materials[name].color_map, "color_map");
+          }
+          if (materials[name].displacement_map) {
+            _downloadTextureMapImage(obj_filename, materials[name], materials[name].displacement_map, "displacement_map");
+          }
+          if (materials[name].bump_map) {
+            _downloadTextureMapImage(obj_filename, materials[name], materials[name].bump_map, "bump_map");
           }
         }
 

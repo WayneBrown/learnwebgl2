@@ -72,7 +72,7 @@ the surface properties can vary for each triangle of a triangular mesh.
 If the surface properties are uniform, the data will be passed to a
 *shader program* using :code:`uniform` variables. If the surface properties
 are different for each triangle, the data must be stored "per vertex" in
-a GPU *object buffer* and accessed using an :code:`attribute` variable.
+a GPU *object buffer* and accessed using :code:`attribute` variables.
 
 Surface Property Transformations
 --------------------------------
@@ -170,8 +170,9 @@ code must create three separate transformations for a model rendering:
 * A *projection-camera-model* transformation to transform a model's vertices
   into *clipping-space*.
 
-For the remainder of these tutorials we will assume there is no non-uniform
-scaling in the model's transformations.
+For the remainder of these tutorials we will assume that model transformations
+contain no scaling (or only uniform scaling). Therefore, the special matrix
+(M\ :sup:`-1`) :sup:`T` will not be needed.
 
 Glossary
 --------
@@ -180,8 +181,6 @@ Glossary
 
   surface properties
     Characteristics of a triangle that determines how light is reflected from its surface.
-
-.. index:: surface properties, matrix identities
 
 Basic Matrix Identities
 -----------------------
@@ -196,7 +195,109 @@ of A.
 * (A*B)\ :sup:`-1` = B\ :sup:`-1` * A\ :sup:`-1`
 * (A\ :sup:`T`)\ :sup:`-1` = (A\ :sup:`-1`)\ :sup:`T`
 
+Self Assessment
+---------------
+
+.. mchoice:: 11.1.1
+  :random:
+
+  Which of the follow are surface properties that can be modeled? (Select all that apply.)
+
+  - color.
+
+    + Correct.
+
+  - roughness
+
+    + Correct.
+
+  - curvature
+
+    + Correct.
+
+  - patterns (or texture)
+
+    + Correct.
+
+
+.. mchoice:: 11.1.2
+  :random:
+
+  If a surface property is the same for all triangles in a polygonal mesh, the
+  data used to model the surface property is typically stored in what type of
+  *shader program* variable?
+
+  - :code:`uniform`
+
+    + Correct.
+
+  - :code:`attribute`
+
+    - Incorrect. :code:`attribute` variables hold data that is different for each vertex.
+
+  - :code:`varying`
+
+    - Incorrect. :code:`varying` variables hold data that is interpolated between the
+      vertices that define a geometric primitive (i.e., point, line, triangle).
+
+  - global constant
+
+    - Not the preferred answer, but technically correct. However, this makes
+      the *shader program* more specific and perhaps not usable in other scenes.
+      Making the data :code:`uniform` allows a JavaScript program to "tweak"
+      rendering parameters at run-time.
+
+.. mchoice:: 11.1.3
+  :random:
+
+  Which of the following commands creates a **non-uniform** scaling transformation matrix?
+
+  - :code:`matrix.scale(transform, 0.5, 0.6, 0.7)`
+
+    + Correct. The three scale factors are not identical.
+
+  - :code:`matrix.scale(transform, 1.0, 1.0, 1.0)`
+
+    - Incorrect. This does uniform scaling, but actually no scaling since the factors are all 1.0.
+
+  - :code:`matrix.scale(transform, 4.0, 4.0, 4.0)`
+
+    - Incorrect. This does uniform scaling.
+
+  - :code:`matrix.scale(transform, 0.6, 0.6, 0.6)`
+
+    - Incorrect. This does uniform scaling.
+
+.. mchoice:: 11.1.4
+  :random:
+
+  When is the transpose of the inverse of a transformation matrix, (M\ :sup:`-1`)\ :sup:`T`
+  required for the correct placement of normal vectors into a scene?
+
+  - when the transformation matrix includes non-uniform scaling.
+
+    + Correct.
+
+  - when the camera transformation matrix includes non-uniform scaling.
+
+    - Incorrect. A camera transformation matrix contains only translation and rotation, never scaling.
+
+  - when the transformation matrix includes any type of scaling.
+
+    - Incorrect. Uniform scaling is fine. Only when non-uniform scaling is
+      included is the special matrix, (M\ :sup:`-1`)\ :sup:`T`, required.
+
+  - when the transformation matrix includes uniform scaling.
+
+    - Incorrect. Uniform scaling is fine. Only when non-uniform scaling is
+      included is the special matrix, (M\ :sup:`-1`)\ :sup:`T`, required.
+
+
+
 .. _photo-realism: https://en.wikipedia.org/wiki/Unbiased_rendering
 .. _ray tracing: https://en.wikipedia.org/wiki/Ray_tracing_(graphics)
 .. _radiosity: https://en.wikipedia.org/wiki/Radiosity_(computer_graphics)
 .. _1: http://www.web-formulas.com/Math_Formulas/Linear_Algebra_Properties_of_Transposes.aspx
+
+.. index:: surface properties, matrix identities
+

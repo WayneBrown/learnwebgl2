@@ -67,6 +67,7 @@ window.RenderDisplacementMap = function (gl, program, model_buffers, out) {
 
     // Set parameters of the texture object.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
     // Tell gl to flip the orientation of the image on the Y axis. Most
     // images have their origin in the upper-left corner. WebGL expects
@@ -152,5 +153,5 @@ window.RenderDisplacementMap = function (gl, program, model_buffers, out) {
   program.a_Normal             = gl.getAttribLocation(program, 'a_Normal');
   program.a_Texture_coordinate = gl.getAttribLocation(program, 'a_Texture_coordinate');
 
-  my_texture_object = _createTexture(model_buffers.triangles.material.textureMap);
+  my_texture_object = _createTexture(model_buffers.triangles.material.displacement_map);
 };

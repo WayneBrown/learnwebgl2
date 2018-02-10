@@ -126,6 +126,75 @@ Glossary
     For computer graphics, a homogeneous coordinate allows translation to be
     included in a transformation matrix.
 
+Self Assessment
+---------------
+
+.. mchoice:: 11.8.1
+  :random:
+
+  What does scaling a *texture map* do?
+
+  - It multiplies the *texture coordinates*, :code:`(s,t)`, by a scale factor.
+
+    + Correct.
+
+  - It changes the size of the texture map image.
+
+    - Incorrect. The size of a texture map image is constant.
+
+  - It adds an offset to the location of the *texture coordinates*, :code:`(s,t)`.
+
+    - Incorrect. Addition performs translation, not scaling.
+
+  - It increases or decreases the intensity of the color retrieved from a *texture map* image.
+
+    - Incorrect.
+
+.. mchoice:: 11.8.2
+  :random:
+
+    What is the size of a *texture map* transformation matrix?
+
+  - 3 rows, 3 columns.
+
+    + Correct. The 3rd row and column allow for translation.
+
+  - 4 rows, 4 columns.
+
+    - Incorrect. A 4-by-4 matrix could be used, but require unnecessary calculations.
+
+  - 2 rows, 2 columns. (Because there is only two values to transform: :code:`(s,t)`)
+
+    - Incorrect. A 2-by-2 would only allow for scaling and rotation.
+
+  - 2 rows, 3 columns
+
+    - Incorrect. A 2-by-3 matrix does not have an inverse, which is sometimes
+      needed to undo transformations.
+
+.. mchoice:: 11.8.3
+  :random:
+
+  *Texture coordinates*, :code:`(s,t)`, must be changed to which of the following forms
+  before being transformed by a transformation matrix?
+
+  - :code:`(s,t,1)`
+
+    + Correct. The :code:`1` in the 3rd position allows for translation.
+
+  - :code:`(s,t,0)`
+
+    - Incorrect. The :code:`0` in the 3rd position would cause the *texture coordinate* to act like a vector, not a location.
+
+  - :code:`(s,t)` (the form does not need to change)
+
+    - Incorrect. A 2-component location can't be multiplied by a 3-by-3 matrix.
+
+  - :code:`(s,t,0,1)`
+
+    - Incorrect.
+
+
 .. index:: texture map transformation, tileable texture map image, homogeneous coordinate
 
 

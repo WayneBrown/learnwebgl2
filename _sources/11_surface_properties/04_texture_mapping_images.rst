@@ -511,7 +511,171 @@ Glossary
   binding
     Create a connection between components of a GPU.
 
-.. index:: texture mapping, procedural texture mapping, image texture mapping, texture unit, texture object, tiled texture maps, texture coordinates, binding
+Self Assessment
+---------------
+
+.. mchoice:: 11.4.1
+  :random:
+
+  What is a *texture unit*?
+
+  - A special purpose processing unit in a GPU designed to perform efficient texture mapping.
+
+    + Correct. Similar to a CPU and a GPU in that they are all "processing units".
+
+  - A unit of measurement for texture mapping, as in pixels per inch.
+
+    - Incorrect. NO!
+
+  - A texture that an aspect ratio of 1 to 1.
+
+    - Incorrect.
+
+  - An image that has dimensions measured in pixels.
+
+    - Incorrect.
+
+.. mchoice:: 11.4.2
+  :random:
+
+    What is a *texture object*?
+
+  - A memory buffer in a GPU that stores the data related to a texture map.
+
+    + Correct. It is similar to a "vertex object buffer* but it has a different data organization.
+
+  - A Javascript object that stores a texture map.
+
+    - Incorrect. A *texture object* is a GPU entity used by GLSL, not JavaScript.
+
+  - A *texture map* that is defined by an image that contains real-world objects.
+
+    - Incorrect.
+
+  - An object that is a texture.
+
+    - Incorrect. Say what?
+
+.. mchoice:: 11.4.3
+  :random:
+
+  What is the data-type of a GLSL variable used to reference an *image texture map*
+  in a *shader program*?
+
+  - :code:`Sample2D`
+
+    + Correct.
+
+  - :code:`uniform`
+
+    - Incorrect. The keyword :code:`uniform` specifies a variable's storage type, not its data-type.
+
+  - :code:`float`
+
+    - Incorrect.
+
+  - :code:`varying`
+
+    - Incorrect. The keyword :code:`varying` specifies a variable's storage type, not its data-type.
+
+.. mchoice:: 11.4.4
+  :random:
+
+  *Texture Coordinate* component values are in what range?
+
+  - :code:`[0.0, 1.0]`
+
+    + Correct. They are percentage values, 0% to 100%.
+
+  - :code:`[0, image_width]` and :code:`[0, image_height]`
+
+    - Incorrect.
+
+  - :code:`[-1.0, +1.0]`
+
+    - Incorrect.
+
+  - :code:`[0, 100]`
+
+    - Incorrect.
+
+.. mchoice:: 11.4.5
+  :random:
+
+  Given an image that is 1024 pixels wide (x-axis) and 256 pixels high (y-axis),
+  which pixel in the image is related to the *texture coordinates* :code:`(0.5, 0.5)`?
+
+  - :code:`(128, 512)`
+
+    + Correct. It is half way along the x-axis, and half way along the y-axis.
+
+  - :code:`(1023, 255)`, since the pixels start numbering at zero.
+
+    - Incorrect.
+
+  - :code:`(0, 0)`
+
+    - Incorrect.
+
+  - :code:`(56, 876)`
+
+    - Incorrect.
+
+.. parsonsprob:: 11.4.6
+  :noindent:
+
+  Please correctly order the following steps needed to implement image texture mapping
+  in a WebGL program.
+  -----
+  Download a model from the server. (The model must have texture <br>coordinates defined for each vertex.)
+  Download the image used for texture mapping from the server.
+  Create a "texture object" in the GPU that contains the image.
+  Before rendering, attach the "texture object" to a GPU "texture unit".
+  In a fragment shader use a "texture2D" function to lookup a <br>color from the texture map image.
+
+.. mchoice:: 11.4.7
+  :random:
+
+  What must be true about an image that can be "tiled"? (Select all that apply.)
+
+  - the pattern at the top and bottom edge match.
+
+    + Correct.
+
+  - the pattern at the left and right edge match.
+
+    + Correct.
+
+  - the pattern at the top matches the pattern on the right edge.
+
+    - Incorrect.
+
+  - the pattern at the bottom matches the pattern on the left edge.
+
+    - Incorrect.
+
+.. mchoice:: 11.4.8
+  :random:
+
+  The *texture mapping* modes :code:`gl.REPEAT`, :code:`gl.CLAMP_TO_EDGE`,
+  and :code:`gl.MIRRORED_REPEAT` only related to which *texture coordinates*?
+
+  - *texture coordinates* outside the range :code:`[0.0, 1.0]`.
+
+    + Correct.
+
+  - *texture coordinates* that map to the edge of an image.
+
+    - Incorrect.
+
+  - *texture coordinates* inside the range :code:`[0.0, 1.0]`.
+
+    - Incorrect.
+
+  - *texture coordinates* where the component values are equal, such as :code:`(0.3, 0.3)`.
+
+    - Incorrect.
+
 
 References
 ----------
@@ -521,3 +685,6 @@ This site also contains a good tutorial on *texture coordinates*.
 
 .. _GIMP: https://www.gimp.org/
 .. _lesson 3.7: ../03_model_data/07_modeling_surfaces.html
+
+.. index:: texture mapping, procedural texture mapping, image texture mapping, texture unit, texture object, tiled texture maps, texture coordinates, binding
+

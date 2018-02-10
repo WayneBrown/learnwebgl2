@@ -152,5 +152,5 @@ window.RenderDisplacementMap = function (gl, program, model_buffers, out) {
   program.a_Normal             = gl.getAttribLocation(program, 'a_Normal');
   program.a_Texture_coordinate = gl.getAttribLocation(program, 'a_Texture_coordinate');
 
-  my_texture_object = _createTexture(model_buffers.triangles.material.textureMap);
+  my_texture_object = _createTexture(model_buffers.triangles.material.displacement_map);
 };

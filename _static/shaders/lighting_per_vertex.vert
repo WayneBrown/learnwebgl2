@@ -24,7 +24,7 @@ void main() {
 
   // Transform the face's normal vector
   transformed_face_normal = vec3(u_Normal_matrix * vec4(a_Face_normal, 0.0));
-  normalize(transformed_face_normal);
+  transformed_face_normal = normalize(transformed_face_normal);
 
   // Calculate the cosine of the angle between the triangle's face normal
   // vector and a vector going to the light.

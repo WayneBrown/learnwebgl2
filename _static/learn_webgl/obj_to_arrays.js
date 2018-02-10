@@ -957,8 +957,17 @@ function CreateObjModelMaterials(data_string, material_dictionary) {
           break;
 
         case 'map_Kd': // Read the name of the texture map image
-          current_material.map_Kd = sp.getRestOfLine();
+          current_material.color_map = sp.getRestOfLine();
           break;
+
+        case 'map_Bump': // Read the name of the texture map image
+          current_material.bump_map = sp.getRestOfLine();
+          break;
+
+        case 'disp': // Read the name of the texture map image
+          current_material.displacement_map = sp.getRestOfLine();
+          break;
+
       } // end switch
     }
   } // end for-loop for processing lines

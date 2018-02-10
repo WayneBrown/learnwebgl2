@@ -7,7 +7,7 @@
   the license is included in the section entitled "GNU Free Documentation
   License".
 
-10.2 - Surface Colors
+11.2 - Surface Colors
 :::::::::::::::::::::
 
 Light reflects from a surface into a camera which allows us to "see"
@@ -264,7 +264,7 @@ color values for each type of reflected light. However,
   of the above examples are gems or precious metals, which have a uniform
   color over their entire surface. Most real-world objects do not have uniform surfaces.
 * Special equipment is required to measure the precise colors values for a
-  particular type of surface and light reflection and access to such special equipment
+  particular type of surface and light reflection. Access to such special equipment
   is not common.
 * Using a single diffuse color for all lighting calculations provides reasonable results
   when you do not have access to more accurate data.
@@ -283,12 +283,52 @@ Glossary
   specular color
     The amount of color reflected directly into the camera from a surface by direct light.
 
+Self Assessment
+---------------
+
+.. mchoice:: 11.2.1
+  :random:
+
+  To get the most realistic light modeling possible, the color of a surface should
+  be represented by ...
+
+  - one RGBA (red, green, blue, alpha) value.
+
+    - Incorrect. This works fine for simple renderings, but not for realistic lighting.
+
+  - two RGBA (red, green, blue, alpha) values: one for reflection and one for absorption.
+
+    - Incorrect.
+
+  - three RGBA (red, green, blue, alpha) values: one for ambient reflection, one for diffuse reflection, and one specular reflection.
+
+    + Correct.
+
+  - four RGBA (red, green, blue, alpha) values: one for red light, one for green light, one for blue light, and one for transparent light.
+
+    - Incorrect. Besides, light can't be transparent.
+
+.. mchoice:: 11.2.2
+  :random:
+
+  Using three distinct RGBA values to represent the color of a surface fundamentally
+  changes how reflected light calculations are performed.
+
+  - False
+
+    + Correct. The lighting calculations are unchanged. The data for the calculations changes.
+
+  - True
+
+    - Incorrect.
+
 
 .. index:: ambient color, diffuse color, specular color
 
 .. [1] The original source of this information was
    "http://www.sgi.com/software/opengl/advanced98/notes/node119.html"
-   but the hyperlink is no longer valid.
+   but the hyperlink is no longer valid. The information have been replicated at various
+   web sites such as http://sci.tamucc.edu/~sking/Courses/COSC4328/Assignments/Materials.html.
 
 .. _`lesson 10.6`: ../10_lights/06_lights_combined.html
 
