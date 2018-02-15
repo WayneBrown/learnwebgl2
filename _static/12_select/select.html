@@ -1,0 +1,60 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Spring 2016 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - selection example">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <h2>Experiment with object selection.</h2>
+  <ul>
+    <li><strong>Right-click</strong> to select an object. The currently selected object is rendered in red.</li>
+    <li>Left-click and drag rotates your view.</li>
+  </ul>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input type="checkbox" id="my_animate" checked> Animate <br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/render_uniform_color.js"></script>
+  <script src="../learn_webgl/render_uniform_color_lighting.js"></script>
+  <script src="./color_to_id.js"></script>
+  <script src="./select_scene.js"></script>
+  <script src="./select_events.js"></script>
+
+  <!--
+    Create an instance of the learn_webgl class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/uniform_color.vert",
+                      "../shaders/uniform_color.frag",
+                      "../shaders/uniform_color_with_lighting.vert",
+                      "../shaders/uniform_color_with_lighting.frag"];
+    let my_models = ["../models/cube_with_rounded_edges2.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "SelectScene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

@@ -13,10 +13,10 @@
 </head>
 
 <body>
-  <p>An example of using WebGL to render a 3D animated object.</p>
+  <p>Display the WebGL version, vendor, and extensions.</p>
 
   <!--The canvas window for rendering 3D graphics -->
-  <canvas id="my_canvas" width="300" height="300">
+  <canvas id="my_canvas" class="webgldemo_canvas" width="100" height="100">
     Please use a browser that supports "canvas"
   </canvas>
   <br>
@@ -25,6 +25,20 @@
   <input type="checkbox" id="my_pause" checked> Animate<br>
   <button id="my_reset">Reset</button><br>
 
+  <table>
+    <tr>
+      <td>WebGL Version:</td>
+      <td><span id="my_version"></span></td>
+    </tr>
+    <tr>
+      <td>WebGL Vendor:</td>
+      <td><span id="my_vendor"></span></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">WebGL Extensions:</td>
+      <td><span id="my_extensions"></span></td>
+    </tr>
+  </table>
   <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
   <script src="../learn_webgl/scene_download.js"></script>
   <script src="../learn_webgl/console_messages.js"></script>

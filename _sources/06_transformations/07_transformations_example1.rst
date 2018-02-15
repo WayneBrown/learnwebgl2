@@ -141,7 +141,7 @@ Please study these detailed notes about the :code:`RobotBaseScene` class definit
     +---------+--------------------------------------------------------------------------+
     + Line(s) + Description                                                              +
     +=========+==========================================================================+
-    + 74      + The *frame buffer* that holds the rendered image is cleared to a         +
+    + 74      + The *color buffer* that holds the rendered image is cleared to a         +
     +         + background color, and the *depth buffer* that determines which pixels    +
     +         + are visible is cleared.                                                  +
     +---------+--------------------------------------------------------------------------+

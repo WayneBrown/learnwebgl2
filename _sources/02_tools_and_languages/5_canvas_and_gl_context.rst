@@ -136,13 +136,13 @@ An HTML canvas element has a size that determines how much area it takes up
 on a web page. Two properties of a canvas element store its dimensions:
 :code:`clientWidth` and :code:`clientHeight`. These values are always in pixels.
 
-A WebGL context has a size which determines the dimensions of the framebuffer
-it renders. Two properties of a canvas element store its framebuffer size:
+A WebGL context has a size which determines the dimensions of the *draw buffer*
+it renders. Two properties of a canvas element store its *draw buffer* size:
 :code:`width` and :code:`height`. These values are always in pixels.
 
 For example, the following HTML code will create a canvas whose physical size
-on the screen is 400-by-400 pixels, but whose context is only 100-by-100. Every
-pixel rendered to the WebGL framebuffer will be displayed in 16 pixels on the
+on the screen is 400-by-400 pixels, but whose WebGL context is only 100-by-100. Every
+pixel rendered to the WebGL *draw buffer* will be displayed in 16 pixels on the
 screen (in a 4-by-4 block) which will make the image appear blurry.
 
 .. Code-block:: html

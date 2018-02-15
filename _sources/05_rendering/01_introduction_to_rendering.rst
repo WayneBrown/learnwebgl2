@@ -72,7 +72,7 @@ basic ideas behind *shader programs*. There are two stages in the `graphics pipe
 that you must program yourself. You write programs in GLSL (GL Shader
 Language), compile them to machine instructions, link them into a "program",
 download the program to the GPU, and then activate the program when you render
-a scene. The result of a rendering is a 2D array of pixels stored in a *frame buffer*.
+a scene. The result of a rendering is a 2D array of pixels stored in a *draw buffer*.
 Many pieces of data are stored and manipulated for each pixel. The group
 of data associated with a single pixel is called a :code:`fragment`. When you
 see the word :code:`fragment`, think "pixel and its associated rendering data."
@@ -134,7 +134,7 @@ Rendering Steps
 
 Each time you render your scene, WebGL has automatically initialized its context by:
 
-* Setting every pixel in the *frame buffer* to the color you set using :code:`gl.clearColor(r,g,b,a)`, and
+* Setting every pixel in the *draw buffer* to the color you set using :code:`gl.clearColor(r,g,b,a)`, and
 * Clearing the *depth buffer* (if *hidden surface removal* has been enabled).
 
 Your JavaScript program must perform the following steps:

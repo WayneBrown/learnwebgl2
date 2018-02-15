@@ -71,8 +71,8 @@ never sees the actual rendering of a frame, only the final results of a renderin
 .. admonition:: Side note:
 
   OpenGL, from which WebGL is derived, does not perform *double buffering*
-  automatically. In OpenGL a programmer has to enable and manage *double buffering*
-  using calls to the OpenGL API.
+  automatically. In OpenGL a programmer must enable and manage *double buffering*
+  using calls to the application's window manager software (typically `GLUT`_ or `FreeGLUT`_).
 
 Updating the Screen
 -------------------
@@ -230,7 +230,7 @@ Glossary
 
   double buffering
     The use of two frame buffers: one *offscreen frame buffer* to render into,
-    and another *onscreen frame buffer* that hold what is visible to the user.
+    and another *onscreen frame buffer* that holds what is visible to the user.
 
   offscreen frame buffer
     A rectangular, 2D array of pixel values that holds a rendering.
@@ -328,3 +328,5 @@ Self Assessment
 .. _HFR: https://en.wikipedia.org/wiki/High_frame_rate
 .. _key framing: https://en.wikipedia.org/wiki/Key_frame
 .. _refresh rate: https://en.wikipedia.org/wiki/Refresh_rate
+.. _GLUT: https://www.opengl.org/resources/libraries/glut/
+.. _FreeGlut: https://en.wikipedia.org/wiki/FreeGLUT

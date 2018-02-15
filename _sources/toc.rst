@@ -197,29 +197,30 @@ Chapter 11: Surface Properties
 Chapter 12: Advanced Rendering and Transparency
 -----------------------------------------------
 
-.. admonition:: Coming Soon!
+.. toctree::
+  :titlesonly:
+  :maxdepth: 1
 
-  This chapter is being refined and will be available in late February 2018.
+  12_advanced_rendering/01_introduction
+  12_advanced_rendering/02_hidden_surface_removal
+  12_advanced_rendering/03_selecting_objects
+  12_advanced_rendering/04_transparency
+  12_advanced_rendering/05_alpha_blending
 
-* Introduction to Rendering
-* Hidden Surface Removal
-* Selecting Objects
-* Alpha Blending
+.. temp
+
+  11_advanced_rendering/shadows
+  11_advanced_rendering/particle_systems
+  11_advanced_rendering/overlays
+
+.. .. admonition:: Coming Soon!
+
+.. This chapter is being refined and will be available in late February 2018.
+
 * Shadows
 * Particle Systems
 * Overlays
 
-.. .. toctree::
-  :titlesonly:
-  :maxdepth: 1
-
-  11_advanced_rendering/introduction
-  11_advanced_rendering/hidden_surface_removal
-  11_advanced_rendering/selecting_objects
-  11_advanced_rendering/alpha_blending
-  11_advanced_rendering/shadows
-  11_advanced_rendering/particle_systems
-  11_advanced_rendering/overlays
 
 Chapter 13: Shader Language
 ---------------------------

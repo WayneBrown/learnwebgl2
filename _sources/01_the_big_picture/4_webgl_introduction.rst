@@ -194,7 +194,6 @@ a new tab.
   :width: 300
   :height: 300
 
-
 Download the files for the example above and then look in you computer's
 download folder at the files that were created. This will help you understand
 what is required for a WebGL program.

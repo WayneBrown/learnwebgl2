@@ -1,11 +1,14 @@
 ..  Copyright (C)  Wayne Brown
-    Permission is granted to copy, distribute
-    and/or modify this document under the terms of the GNU Free Documentation
-    License, Version 1.3 or any later version published by the Free Software
-    Foundation; with Invariant Sections being Forward, Prefaces, and
-    Contributor List, no Front-Cover Texts, and no Back-Cover Texts.  A copy of
-    the license is included in the section entitled "GNU Free Documentation
-    License".
+  Permission is granted to copy, distribute
+  and/or modify this document under the terms of the GNU Free Documentation
+  License, Version 1.3 or any later version published by the Free Software
+  Foundation; with Invariant Sections being Forward, Prefaces, and
+  Contributor List, no Front-Cover Texts, and no Back-Cover Texts.  A copy of
+  the license is included in the section entitled "GNU Free Documentation
+  License".
+
+.. role:: raw-html(raw)
+  :format: html
 
 1.3 - The 3D Graphics Pipeline
 ::::::::::::::::::::::::::::::
@@ -44,9 +47,10 @@ specific purposes.
 Here is a simplified diagram that shows the relationship between these components.
 
 .. figure:: figures/hardware_overview.png
-    :align: center
+  :align: center
 
-    Major hardware pieces in a computing device
+  :raw-html:`<style> span.caption-text { display: block; text-align: center} </style>`
+  Major hardware pieces in a computing device
 
 To create computer graphics imagery, all of these hardware components are used
 extensively.
@@ -66,8 +70,11 @@ manipulating graphics data in the graphics pipeline.
 potential creativity, but at the cost of added complexity.
 
 .. figure:: figures/pipeline.png
-   :alt: The Graphics Pipeline
-   :align: right
+  :alt: The Graphics Pipeline
+  :align: right
+
+  :raw-html:`<style> span.caption-text { display: block; text-align: center} </style>`
+  The Graphics Pipeline
 
 Step 1 in the pipeline is data setup. A webGL program must establish a link
 between the *attribute* variables in a *vertex shader* program and the GPU
@@ -99,7 +106,7 @@ geometric primitive and outputs a color value for the pixel.
 
 Step 7 combines (*composites*) the color of a pixel from a
 *fragment shader* with the color of the pixel already assigned
-to the output frame buffer.
+to the output *draw buffer*.
 
 Note that step 1 is performed by the CPU from instructions specified
 in JavaScript code, while the remainder of the pipeline is performed
