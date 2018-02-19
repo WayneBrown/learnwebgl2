@@ -43,6 +43,7 @@ window.ModelArraysGPU = function (gl, model_arrays, out) {
   self.lines     = null;  // {GpuLinesData} if the model contains lines
   self.triangles = null;  // {GpuTrianglesData} if the model contains triangles
   self.wireframe = null;  // {Float32Array} if the model has a wireframe definition
+  self.raw_data  = model_arrays;  // {ModelArrays} the original data for this model
 
   let color_components;
 
@@ -152,7 +153,4 @@ window.ModelArraysGPU = function (gl, model_arrays, out) {
     self.wireframe.number = model_arrays.wireframe.vertices.length / 3;
     self.wireframe.vertices = _createBufferObject(model_arrays.wireframe.vertices, 3);
   }
-
-  // Constructor initialization
-  model_arrays.gpu_model_arrays = self;
 };

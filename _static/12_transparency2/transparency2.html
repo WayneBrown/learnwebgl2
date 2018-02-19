@@ -1,0 +1,79 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Spring 2016 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - selection example">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <h2>Experiment with overlapping transparent surfaces.</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input type="checkbox" id="my_animate" checked> Animate <br>
+
+  <strong>Render mode: &nbsp;&nbsp;</strong>
+  <input type="radio" id="my_transparent" name="my_render" value="0" checked/>As transparent &nbsp;&nbsp;
+  <input type="radio" id="my_solid"       name="my_render" value="1" />As solid &nbsp;&nbsp;
+  <input type="radio" id="my_wireframe"   name="my_render" value="2" />Wireframe<br>
+  <br>
+  <strong>What to render:</strong><br>
+  Render a cube using 3 independent transforms:<br>
+  &nbsp;&nbsp;&nbsp;<input type="radio" id="my_cube0" name="my_model" value="0" checked/>Low resolution cube (96 vertices; 188 triangles)<br>
+  &nbsp;&nbsp;&nbsp;<input type="radio" id="my_cube1" name="my_model" value="1" />Medium resolution cube (378 vertices; 392 triangles)<br>
+  &nbsp;&nbsp;&nbsp;<input type="radio" id="my_cube2" name="my_model" value="2" />High resolution cube (2,905 vertices; 5,806 triangles)<br>
+  Render 1 combined model combosed of all 3 cubes:<br>
+  &nbsp;&nbsp;&nbsp;<input type="radio" id="my_cube3" name="my_model" value="3" />Low resolution combined model (288 vertices; 564 triangles)<br>
+  &nbsp;&nbsp;&nbsp;<input type="radio" id="my_cube4" name="my_model" value="4" />Medium resolution combined model (1,134 vertices; 1,176 triangles)<br>
+  &nbsp;&nbsp;&nbsp;<input type="radio" id="my_cube5" name="my_model" value="5" />High resolution combined model (8,715 vertices; 17,418 triangles)<br>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/render_uniform_color.js"></script>
+  <script src="../learn_webgl/render_uniform_color_lighting.js"></script>
+  <script src="../learn_webgl/render_lighting.js"></script>
+  <script src="../learn_webgl/render_transparency.js"></script>
+  <script src="../learn_webgl/render_uniform_transparency.js"></script>
+  <script src="../learn_webgl/render_wireframe.js"></script>
+  <script src="./combine_models.js"></script>
+  <script src="./transparency2_scene.js"></script>
+  <script src="./transparency2_events.js"></script>
+
+  <!--
+    Create an instance of the learn_webgl class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/uniform_color.vert",
+                      "../shaders/uniform_color.frag",
+                      "../shaders/lighting_alpha.vert",
+                      "../shaders/lighting_alpha.frag",
+                      "../shaders/uniform_color_with_lighting.vert",
+                      "../shaders/uniform_color_with_lighting.frag"];
+    let my_models = ["../models/cube_with_rounded_edges2.obj",
+                     "../models/cube_with_rounded_edges6.obj",
+                     "../models/cube_with_rounded_edges7.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "Transparency2Scene", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

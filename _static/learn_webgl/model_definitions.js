@@ -83,6 +83,7 @@ function LinesData() {
  */
 function TrianglesData() {
   let self = this;
+  self.number         = 0;    // {number} the number of triangles
   self.vertices       = null; // {Float32Array} 3 components per vertex (x,y,z)
   self.colors         = null; // {Float32Array} 3 or 4 components per vertex RGB or RGBA
   self.flat_normals   = null; // {Float32Array} 3 components per vertex <dx,dy,dz>
@@ -112,7 +113,6 @@ function ModelArrays(name) {
   self.triangles = null;  // {TrianglesData} if the model contains triangles
   self.wireframe = null;  // {WireframeData} if the model has a wireframe definition
   self.rgba      = false; // {boolean} if true, the colors arrays holds 4 components per color
-  self.gpu_model_arrays = null; // {GpuModelArrays} GPU buffers
 }
 
 //=========================================================================

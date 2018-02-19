@@ -147,11 +147,10 @@ window.RenderLighting = function (gl, program, model_buffers, out) {
       gl.vertexAttribPointer(program.a_Normal, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(program.a_Normal);
 
+      let size = model_buffers.triangles.colors.components_per_vertex;
       // Activate the model's triangle color object buffer
       gl.bindBuffer(gl.ARRAY_BUFFER, colors.id);
-
-      // Bind the colors VOB to the 'a_Color' shader variable
-      gl.vertexAttribPointer(program.a_Color, 3, gl.FLOAT, false, 0, 0);
+      gl.vertexAttribPointer(program.a_Color, size, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(program.a_Color);
 
       // Draw all of the triangles
