@@ -298,11 +298,6 @@ window.Transparency1Scene = function (id, download, vshaders_dictionary,
   _createRandomCubes(number_opaque_cubes, opaque_cubes, false);
   _createRandomCubes(number_transparent_cubes, transparent_cubes, true);
 
-  // Set up callbacks for user and timer events
-  let events;
-  events = new Transparency1Events(id, self);
-  if (self.animate_active) events.animate();
-
   //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // The light source is static, so set it once.
   gl.useProgram(visible_program);
@@ -313,5 +308,10 @@ window.Transparency1Scene = function (id, download, vshaders_dictionary,
   gl.uniform3fv(visible_program.u_Light_color, self.light_color);
   gl.uniform3fv(visible_program.u_Ambient_color, self.ambient_color);
   gl.uniform1f(visible_program.u_Shininess, self.shininess);
+
+  // Set up callbacks for user and timer events
+  let events;
+  events = new Transparency1Events(id, self);
+  if (self.animate_active) events.animate();
 };
 

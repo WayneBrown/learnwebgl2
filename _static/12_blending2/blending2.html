@@ -1,0 +1,135 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Spring 2016 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example">
+  <meta name="description" content="WebGL tutorials - selection example">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../jquery.js"></script>
+  <link rel="stylesheet" href="../webglcode.css" />
+</head>
+
+<body>
+  <h2>Experiment with color blending.</h2>
+
+  <!--The canvas window for rendering 3D graphics -->
+  <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
+    Please use a browser that supports "canvas"
+  </canvas>
+  <br>
+
+  <!-- An HTML control element that can be used to modify the rendering behavior -->
+  <input type="checkbox" id="my_animate" checked> Animate &nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="button" id="my_reset" value="Randomize cubes" /> <br>
+
+  <table style="border: 1px solid black; border-collapse: collapse;">
+    <tr>
+      <td colspan="2">
+        <input type="radio" name="which" id="my_color" checked /> Set COLOR percentages <br>
+        <input type="radio" name="which" id="my_alpha"         /> Set ALPHA percentages
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: center" id="my_code_example">
+        <strong>gl.blendFuncSeparate(<br>
+          gl.ONE, gl.ZERO,<br>
+          gl.ONE, gl.ZERO)</strong>
+      </td>
+    </tr>
+    <tr>
+      <td id="my_factor_title1" style="border: 1px solid black;">Source COLOR blending factors </td>
+      <td id="my_factor_title2" style="border: 1px solid black;">Destination COLOR blending factor </td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black;">
+        <input type="radio" name="color2" id="my_s0" /> gl.ZERO<br>
+        <input type="radio" name="color2" id="my_s1" checked /> gl.ONE<br>
+        <input type="radio" name="color2" id="my_s2" /> gl.SRC_COLOR<br>
+        <input type="radio" name="color2" id="my_s3" /> gl.ONE_MINUS_SRC_COLOR <br>
+        <input type="radio" name="color2" id="my_s4" /> gl.DST_COLOR<br>
+        <input type="radio" name="color2" id="my_s5" /> gl.ONE_MINUS_DST_COLOR <br>
+        <input type="radio" name="color2" id="my_s6" /> gl.SRC_ALPHA <br>
+        <input type="radio" name="color2" id="my_s7" /> gl.ONE_MINUS_SRC_ALPHA <br>
+        <input type="radio" name="color2" id="my_s8" /> gl.DST_ALPHA  <br>
+        <input type="radio" name="color2" id="my_s9" /> gl.ONE_MINUS_DST_ALPHA <br>
+        <input type="radio" name="color2" id="my_sa" /> gl.CONSTANT_COLOR <br>
+        <input type="radio" name="color2" id="my_sb" /> gl.ONE_MINUS_CONSTANT_COLOR <br>
+        <input type="radio" name="color2" id="my_sc" /> gl.CONSTANT_ALPHA <br>
+        <input type="radio" name="color2" id="my_sd" /> gl.ONE_MINUS_CONSTANT_ALPHA <br>
+        <input type="radio" name="color2" id="my_se" /> gl.SRC_ALPHA_SATURATE
+      </td>
+      <td style="border: 1px solid black; vertical-align: top">
+        <input type="radio" name="color3" id="my_d0" checked /> gl.ZERO<br>
+        <input type="radio" name="color3" id="my_d1" /> gl.ONE<br>
+        <input type="radio" name="color3" id="my_d2" /> gl.SRC_COLOR<br>
+        <input type="radio" name="color3" id="my_d3" /> gl.ONE_MINUS_SRC_COLOR <br>
+        <input type="radio" name="color3" id="my_d4" /> gl.DST_COLOR<br>
+        <input type="radio" name="color3" id="my_d5" /> gl.ONE_MINUS_DST_COLOR <br>
+        <input type="radio" name="color3" id="my_d6" /> gl.SRC_ALPHA <br>
+        <input type="radio" name="color3" id="my_d7" /> gl.ONE_MINUS_SRC_ALPHA <br>
+        <input type="radio" name="color3" id="my_d8" /> gl.DST_ALPHA  <br>
+        <input type="radio" name="color3" id="my_d9" /> gl.ONE_MINUS_DST_ALPHA <br>
+        <input type="radio" name="color3" id="my_da" /> gl.CONSTANT_COLOR <br>
+        <input type="radio" name="color3" id="my_db" /> gl.ONE_MINUS_CONSTANT_COLOR <br>
+        <input type="radio" name="color3" id="my_dc" /> gl.CONSTANT_ALPHA <br>
+        <input type="radio" name="color3" id="my_dd" /> gl.ONE_MINUS_CONSTANT_ALPHA <br>
+    </tr>
+    <tr>
+      <td colspan="2">
+        CONSTANT_COLOR: red: <input type="number" id="my_c0" value="0.0" min="0.0" max="1.0" step="0.01"/>
+                      green: <input type="number" id="my_c1" value="0.0" min="0.0" max="1.0" step="0.01"/>
+                       blue: <input type="number" id="my_c2" value="0.0" min="0.0" max="1.0" step="0.01"/>
+                      alpha: <input type="number" id="my_c3" value="1.0" min="0.0" max="1.0" step="0.01"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        Background: red: <input type="number" id="my_b0" value="0.98" min="0.0" max="1.0" step="0.01"/>
+                  green: <input type="number" id="my_b1" value="0.98" min="0.0" max="1.0" step="0.01"/>
+                   blue: <input type="number" id="my_b2" value="0.98" min="0.0" max="1.0" step="0.01"/>
+                  alpha: <input type="number" id="my_b3" value="1.0" min="0.0" max="1.0" step="0.01"/>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="border: 1px solid black;">
+        <span id="my_func_title"> <strong>gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD)</strong></span><br>
+        <input type="radio" name="func2" id="my_f0" checked /> gl.FUNC_ADD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                               (src_color * src_factor + dst_color * dst_factor)<br>
+        <input type="radio" name="func2" id="my_f1" /> gl.FUNC_SUBTRACT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                               (src_color * src_factor - dst_color * dst_factor)<br>
+        <input type="radio" name="func2" id="my_f2" /> gl.FUNC_REVERSE_SUBTRACT (dst_color * dst_factor - src_color * src_factor)<br>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+  <script src="../learn_webgl/scene_download.js"></script>
+  <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint4.js"></script>
+  <script src="../learn_webgl/glvector3.js"></script>
+  <script src="../learn_webgl/glmatrix4x4.js"></script>
+  <script src="../learn_webgl/model_definitions.js"></script>
+  <script src="../learn_webgl/model_arrays_gpu.js"></script>
+  <script src="../learn_webgl/obj_to_arrays.js"></script>
+  <script src="../learn_webgl/render_uniform_color.js"></script>
+  <script src="../learn_webgl/render_uniform_transparency.js"></script>
+  <script src="./blending_scene2.js"></script>
+  <script src="./blending_events2.js"></script>
+
+  <!--
+    Create an instance of the learn_webgl class, and start the WebGL program.
+    We do this here to pass the canvas ID into the javascript code.
+  -->
+  <script>
+    let my_shaders = ["../shaders/uniform_color_with_lighting.vert",
+                      "../shaders/uniform_color_with_lighting.frag"];
+    let my_models = ["../models/cube_with_rounded_edges2.obj"];
+    window.my_program = new SceneDownload("my", "my_canvas", "BlendingScene2", my_models, my_shaders);
+  </script>
+
+</body>
+</html>

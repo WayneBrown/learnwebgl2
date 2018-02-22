@@ -458,11 +458,6 @@ window.Transparency2Scene = function (id, download, vshaders_dictionary,
   // default cube
   self.setActiveModel(LOW_RES_3_CUBES);
 
-  // Set up callbacks for user and timer events
-  let events;
-  events = new Transparency2Events(id, self);
-  if (self.animate_active) events.animate();
-
   //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // The light source is static, so set it once.
   gl.useProgram(lighting_program);
@@ -484,5 +479,10 @@ window.Transparency2Scene = function (id, download, vshaders_dictionary,
   gl.uniform3fv(uniform_color_program.u_Light_color, self.light_color);
   gl.uniform3fv(uniform_color_program.u_Ambient_color, self.ambient_color);
   gl.uniform1f(uniform_color_program.u_Shininess, self.shininess);
+
+  // Set up callbacks for user and timer events
+  let events;
+  events = new Transparency2Events(id, self);
+  if (self.animate_active) events.animate();
 };
 

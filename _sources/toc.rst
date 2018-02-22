@@ -205,7 +205,7 @@ Chapter 12: Advanced Rendering and Transparency
   12_advanced_rendering/02_hidden_surface_removal
   12_advanced_rendering/03_selecting_objects
   12_advanced_rendering/04_transparency
-  12_advanced_rendering/05_alpha_blending
+  12_advanced_rendering/05_color_blending
 
 .. temp
 
