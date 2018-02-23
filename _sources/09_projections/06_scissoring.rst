@@ -104,7 +104,7 @@ you understand the following ideas:
 * The initial rendering is done using the entire canvas (i.e., the entire *render buffer*).
 * The second rendering is done on a *scissored* subarea starting at line 153.
 * The colors in the *render buffer* and the depth values in the *depth buffer*
-  must be cleared to ensure that the first rendering does not effect the
+  must be cleared to ensure that the first rendering does not affect the
   second rendering. (See lines 109 and 157.) The flags to the :code:`gl.clear()`
   function are *bit flags*, so make sure you use the *bitwise or* operator, :code:`|`,
   and not the *logical or* operator, :code:`||`.

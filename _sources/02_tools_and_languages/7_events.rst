@@ -7,15 +7,18 @@
     the license is included in the section entitled "GNU Free Documentation
     License".
 
+.. role:: raw-html(raw)
+  :format: html
+
 2.7 - Events
 ::::::::::::
 
 .. highlight:: javascript
 
-Web page manipulation happens because of events. The events can be some
-action that the browser has taken, such as downloading a file, or some
+Web page manipulation happens because of events. The events can be an
+action that the browser has taken, such as downloading a file; or it can be an
 action a user has taken, such as clicking on a button. We need to discuss
-five issues:
+five issues related to events:
 
 #. What events does a browser track?
 #. How do you associate events with specific DOM elements?
@@ -65,15 +68,16 @@ There are two ways you can associate an event with a specific DOM element.
 
 1. Add an event attribute to an element's HTML description. For example:
 
-  * :code:`<element onclick="myAction();">`
-  * :code:`<div onclick="var a = 5; var b = 7; callAbc(a,b);">`
+   * :code:`<element onclick="myAction();">`
+   * :code:`<div onclick="var a = 5; var b = 7; callAbc(a,b);">`
+     :raw-html:`<br><br>`
 
 2. Add an event handler to an element using JavaScript. For example:
 
-  * :code:`my_button.addEventListener("click", myAction );`
-  * :code:`$('#' + id).click( myAction );`
-  * :code:`$('#' + id).on('click', myAction);`
-  * :code:`$('#' + id).mousedown( myAction );`
+   * :code:`my_button.addEventListener("click", myAction );`
+   * :code:`$('#' + id).click( myAction );`
+   * :code:`$('#' + id).on('click', myAction);`
+   * :code:`$('#' + id).mousedown( myAction );`
 
 
 Method 1 is discouraged for several reasons. It is considered bad design to
@@ -102,27 +106,31 @@ See `Event Objects`_ for a complete list of event data included in jQuery event 
 
 The following is a partial list of the data sent to a jQuery event handler for mouse events:
 
-+---------------+---------------------------------------------------------------+
-+ Property      + Description                                                   +
-+===============+===============================================================+
-+ .target       + The DOM element that initiated the event.                     +
-+---------------+---------------------------------------------------------------+
-+ .pageX        + The mouse position relative to the left edge of the document. +
-+---------------+---------------------------------------------------------------+
-+ .pageY        + The mouse position relative to the top edge of the document.  +
-+---------------+---------------------------------------------------------------+
-+ .clientX      + The mouse position relative to the left edge of the element.  +
-+---------------+---------------------------------------------------------------+
-+ .clientY      + The mouse position relative to the top edge of the element.   +
-+---------------+---------------------------------------------------------------+
-+ .which        + The specific key or button that was pressed.                  +
-+---------------+---------------------------------------------------------------+
++-----------------------+----------------------------------------------------------------+
+| Property              | Description                                                    |
++=======================+================================================================+
+| :code:`.target`       | The DOM element that initiated the event.                      |
++-----------------------+----------------------------------------------------------------+
+| :code:`.pageX`        | The mouse position relative to the left edge of the document.  |
++-----------------------+----------------------------------------------------------------+
+| :code:`.pageY`        | The mouse position relative to the top edge of the document.   |
++-----------------------+----------------------------------------------------------------+
+| :code:`.clientX`      | The mouse position relative to the browser's visible viewport. |
++-----------------------+----------------------------------------------------------------+
+| :code:`.clientY`      | The mouse position relative to the browser's visible viewport. |
++-----------------------+----------------------------------------------------------------+
+| :code:`.offsetX`      | The mouse position relative to the target element.             |
++-----------------------+----------------------------------------------------------------+
+| :code:`.offsetY`      | The mouse position relative to the target element.             |
++-----------------------+----------------------------------------------------------------+
+| :code:`.which`        | The specific key or button that was pressed.                   |
++-----------------------+----------------------------------------------------------------+
 
 An Example Event Handler
 ------------------------
 
 Below is an example event handler for an :code:`onmousemove` event inside a
-canvas element. It calculates an offset from the previous location of the
+canvas element. The function calculates an offset from the previous location of the
 mouse and uses those offsets to modify angles of rotation for a scene.
 
 .. Code-block:: JavaScript
@@ -155,7 +163,7 @@ Consider what happens when a user's mouse moves across a web page.
 Let's assume the mouse just moved over a button, which is inside a :code:`<div>` element
 which is inside a :code:`<body>` element. So there were several HTML elements
 under the mouse when it moved. Which of the three elements does the event
-"fire" on? It is actually a complex question and depends on which elements
+"fire" on? This is actually a complex question and depends on which elements
 have registered event handlers. Let's suppose only the button has
 registered a mouse motion event handler. When the mouse moves over
 the button its event handler will be called. However, some HTML elements have
@@ -264,9 +272,9 @@ Self-Assessments
 .. mchoice:: 2.7.4
   :random:
   :answer_a: It prevents other elements that are also under the mouse cursor from processing the event.
-  :answer_b: Causes the event to perform some pre-specified actions.
-  :answer_c: Causes the event to not perform some pre-specified actions.
-  :answer_d: Makes the event happen on all other elements under the mouse's cursor.
+  :answer_b: It causes the event to perform some pre-specified actions.
+  :answer_c: It causes the event to not perform some pre-specified actions.
+  :answer_d: It makes the event happen on all other elements under the mouse's cursor.
   :correct: a
   :feedback_a: Correct. This prevents the event from being processed by other elements in the event hierarchy.
   :feedback_b: Incorrect. Events do not have "pre-specified actions".

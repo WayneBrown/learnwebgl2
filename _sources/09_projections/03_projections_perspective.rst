@@ -164,7 +164,7 @@ you understand the following ideas:
   an aspect ratio (width/height) that is consistent with the aspect ratio
   of the *viewing window* (right-left)/(top-bottom). If the aspect ratios are
   different, the rendering is distorted.
-* Changing the value of :code:`near` has a profound affect on the frustum
+* Changing the value of :code:`near` has a profound effect on the frustum
   because this is the distance from the camera to the *viewing window* and the
   entire frustum is defined by the corners of the *viewing window*. Changing
   the :code:`near` value changes the camera lens' field-of-view (.i.e., :code:`fovy`).

@@ -52,7 +52,7 @@ Disadvantages to *procedural texture mapping*:
   fragment. If the calculations are complex, rendering speeds become
   slower.
 * The calculations required for *procedural texture mapping* can be complex and
-  modifying the equations to achieve a specific affect can be difficult.
+  modifying the equations to achieve a specific effect can be difficult.
 * *Procedural texture mapping* creates patterns. If a more structured design
   is needed, such as a road sign containing words, *image based texture mapping*
   is typically the better approach.

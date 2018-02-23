@@ -15,8 +15,8 @@ is away from the origin, the model's location changes.
 Mathematically, a rotation requires that all three components be involved
 in the calculation of each component's transformed value. The component values are
 inner-connected for rotation. For example, for translation and scaling,
-the value of *y* does not effect the values of *x* or *z*. This is not
-true for rotation. The value of y can effect the rotated value of *x* and/or *z*.
+the value of *y* does not affect the values of *x* or *z*. This is not
+true for rotation. The value of y can affect the rotated value of *x* and/or *z*.
 Each component of a rotated vertex is a combination of some fraction
 of the original vertex's components. If we use *f1*, *f2*, *f3*, *f4*,
 *f5*, *f6*, *f7*, *f8* and *f9* to represent

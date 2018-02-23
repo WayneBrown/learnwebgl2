@@ -113,7 +113,7 @@ start to a WebGL program.
   // Get the rendering context for the canvas
   gl = getWebglContext( getCanvas(canvas_id) );
   if (!gl) {
-    return null;
+    return;
   }
 
   // Initialize the state of the WebGL context

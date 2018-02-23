@@ -42,7 +42,7 @@ code that looked something like this:
     ...
 
 If you have to write code like this to make JavaScript code consistent with all the
-different browsers, your job becomes 10 times harder. To solve this problem,
+different browsers, your job becomes ten times harder. To solve this problem,
 we use :code:`jQuery`, which is a 3rd party JavaScript library that provides
 an easy way to find elements on a web page and **modify them in a consistent way**.
 jQuery takes care of all the inconsistencies between browsers! A jQuery
@@ -72,8 +72,8 @@ Let's look at a simple example.
   // Add a property to the example object. The property is a reference to a function.
   example.subtract = function (c,d) { return (c-d); };
 
-  var s = example(5,6);
-  var t = example.subtract(9,4);
+  let s = example(5,6);
+  let t = example.subtract(9,4);
   console.log(s, t);
 
 You can copy and paste the above code into a JavaScript console and it works
@@ -87,7 +87,7 @@ Since functions are objects, they can be assigned to variables like any other
 value. This allows for *function aliasing*, which gives a different name
 to a function using a simple assignment statement. Remember that an identifier
 in JavaScript must start with
-a letter (A-Z,a-z), an underscore (_), or a dollar sign ($), with subsequent
+a letter (A-Z, a-z), an underscore (_), or a dollar sign ($), with subsequent
 characters being letters, digits, underscores, or dollar signs. Therefore,
 the following code aliases the *example* function defined above with a shorter
 name and then calls the function using the alias.
@@ -95,10 +95,10 @@ name and then calls the function using the alias.
 .. Code-block:: javascript
 
   // Alias the function example with a shorter name
-  var _ = example;
+  let _ = example;
 
   // Call the function to add to numbers together
-  var result;
+  let result;
   result = _(4,5);
 
 Please re-read this section if you are confused.

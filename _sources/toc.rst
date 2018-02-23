@@ -206,10 +206,10 @@ Chapter 12: Advanced Rendering and Transparency
   12_advanced_rendering/03_selecting_objects
   12_advanced_rendering/04_transparency
   12_advanced_rendering/05_color_blending
+  12_advanced_rendering/06_shadows
 
 .. temp
 
-  11_advanced_rendering/shadows
   11_advanced_rendering/particle_systems
   11_advanced_rendering/overlays
 
@@ -217,7 +217,6 @@ Chapter 12: Advanced Rendering and Transparency
 
 .. This chapter is being refined and will be available in late February 2018.
 
-* Shadows
 * Particle Systems
 * Overlays
 
@@ -246,6 +245,7 @@ Appendices
   appendices/camera_math
   appendices/derivatives
   appendices/mapping
+  appendices/webgl_context_options
 
 .. Appendices/errorsAndDebug.rst
 

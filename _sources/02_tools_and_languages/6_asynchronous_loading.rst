@@ -41,8 +41,8 @@ on the web page, while others do not. In the above example, the data downloaded
 from the :code:`script` and :code:`link` tags are never visible on the page.
 However, the data downloaded from the :code:`img` and :code:`object` tags
 become part of the visible page. You can set special properties
-on the HTML elements to hide them, but why go to all of the trouble when
-there is a second way to download files using JavaScript.
+on the HTML elements to hide them, but why go to all the trouble when
+there is a second way to download files using JavaScript?
 
 In JavaScript you can request that a file be downloaded and then ask
 JavaScript to "please call this specific function" when the file is ready
@@ -95,7 +95,7 @@ For a WebGL program we need to download several types of data files from the ser
 The number of these files will depend on the complexity of your scene and the
 complexity of the rendering. We will be using a JavaScript object called
 :code:`SceneDownload` to download all of these files. When you create a
-:code:`SceneDownload` object you pass it a list of shader file names and a list of
+:code:`SceneDownload` object, you pass it a list of shader file names and a list of
 model file names. The constructor determines how many files it needs to
 download by adding the number of files in each list together:
 

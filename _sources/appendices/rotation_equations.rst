@@ -65,7 +65,7 @@ Writing this in matrix format gives:
    [M3: x_new;y_new] = [M1: cos(beta), -sin(beta); sin(beta), cos(beta)] * [M2: x;y]
 
 This is a rotation about the Z axis. The z component of a 3D vertex is not
-affected by this rotation, so we can write the rotation in terms of a 3D transformation
+effected by this rotation, so we can write the rotation in terms of a 3D transformation
 matrix like this:
 
 .. matrixeq:: Eq6

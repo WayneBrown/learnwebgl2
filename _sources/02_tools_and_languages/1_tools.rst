@@ -34,7 +34,7 @@ or `WebStorm`_ are good options.
 Install a Web Server
 --------------------
 
-To test your WebGL programs you must run a local web server on your computer.
+To test your WebGL programs, run a local web server on your computer.
 Many features of WebGL programs will not execute in your browser if you simply
 open files locally. The program files must be loaded into your browser
 by a web server. You will load your programs using 'localhost' with a URL
@@ -45,14 +45,14 @@ something like
   http://localhost/path/to/file/file.html
 
 The `Apache2`_ web server is recommended, but any web server will do. After
-you install the web server you must configure it to access your
+you install the web server, configure it to access your
 WebGL program files. The configuration will vary based on your operating
 system and the specific web server you install.
 
-If you are on a Macintosh, the Apache2 web server is already installed. All
-you need to do is configure it using `these instructions`_.
+If you are on a Macintosh, the Apache2 web server is already installed.
+Configure it using `these instructions`_.
 
-If you are on a Microsoft Windows computer, you will need to install Apache2
+If you are on a Microsoft Windows computer, install Apache2
 from `here`_ and then `configure it`_. You should run the Apache2 web server
 as a "service" so that it starts every time you reboot.
 See the instructions for this in `configure it`_.

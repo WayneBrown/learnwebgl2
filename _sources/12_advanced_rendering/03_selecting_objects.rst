@@ -363,7 +363,7 @@ Experiments:
   selected. The background color should be a value that does not translate into
   a valid model identifier.
 
-* Note that rendering the scene twice for selection has no affect on
+* Note that rendering the scene twice for selection has no effect on
   the frame rate of the animation. What happens if you increase the number of
   cubes's from 30 to 300 in line 54? How about 3000? How about 30000?
   (Looks kind of like a Borg spaceship from Star Trek -- don't you think!)

@@ -1,11 +1,14 @@
 ..  Copyright (C)  Wayne Brown
-    Permission is granted to copy, distribute
-    and/or modify this document under the terms of the GNU Free Documentation
-    License, Version 1.3 or any later version published by the Free Software
-    Foundation; with Invariant Sections being Forward, Prefaces, and
-    Contributor List, no Front-Cover Texts, and no Back-Cover Texts.  A copy of
-    the license is included in the section entitled "GNU Free Documentation
-    License".
+  Permission is granted to copy, distribute
+  and/or modify this document under the terms of the GNU Free Documentation
+  License, Version 1.3 or any later version published by the Free Software
+  Foundation; with Invariant Sections being Forward, Prefaces, and
+  Contributor List, no Front-Cover Texts, and no Back-Cover Texts.  A copy of
+  the license is included in the section entitled "GNU Free Documentation
+  License".
+
+.. role:: raw-html(raw)
+  :format: html
 
 2.2 - HTML and CSS
 ::::::::::::::::::
@@ -51,7 +54,7 @@ If you want to experiment with HTML and CSS, https://jsfiddle.net/ is an excelle
 HTML User Input
 ---------------
 
-The main HTML element tag we will use for WebGL programs in the :code:`<input ... />`
+The main HTML element tag we will use for WebGL programs is the :code:`<input ... />`
 element which allows a user to specify values that can be used to control
 a canvas 3D rendering. Here is a list of the standard input elements we will use
 to create user interfaces:
@@ -100,7 +103,7 @@ to create user interfaces:
 +----------------+----------------------------------------------------------------------------+-----------------------------------------------------------------------+
 
 Each :code:`<input ... />` element will be assigned a unique ID so that it can be easily
-accessed and modified as needed. For example, :code:`<input id="button1" type="button" value="click me" />`.
+accessed and modified as needed. For example: :code:`<input id="button1" type="button" value="click me" />`.
 
 .. admonition:: No :code:`<form>` tags needed:
 
@@ -144,7 +147,7 @@ again now that you better understand HTML and CSS.
 +----------------------------------------------+----------------------------------------------------+----------------------------------------+
 | Always include a :code:`<html>`, :code:`<head>` and :code:`<body>` tag.                                                                    |
 +----------------------------------------------+----------------------------------------------------+----------------------------------------+
-| Include appropriate comments:                | :code:`<!-- This is a comment -->`                 |                                        |
+| Include appropriate comments.                | :code:`<!-- This is a comment -->`                 |                                        |
 +----------------------------------------------+----------------------------------------------------+----------------------------------------+
 | Use simple syntax for linking style sheets.  | :code:`<link rel="stylesheet"`                     |                                        |
 |                                              | :code:`href="styles.css">`                         |                                        |
@@ -165,6 +168,7 @@ again now that you better understand HTML and CSS.
 A complete example:
 
 .. Code-block:: html
+  :linenos:
   :emphasize-lines: 2,4,5
 
   <!doctype html>
@@ -265,4 +269,14 @@ Self-Assessments
 .. _HTML 4.0 Cheat Sheet: ../_static/documents/davechild_html4.pdf
 .. _CSS 3.0 Cheat Sheet: ../_static/documents/css3-cheat-sheet.pdf
 .. _HTML 5.0 Cheat Sheet: ../_static/documents/html5-cheat-sheet2.pdf
+
+.. comment - create an image but hide it. This makes sure the image is copied to
+             _images when the book is created.
+
+:raw-html:`<style> .hideimage { display: none; visibility: hidden; } </style>`
+
+.. image:: figures/login.png
+  :class: hideimage
+
+
 

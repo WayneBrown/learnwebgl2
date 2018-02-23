@@ -29,7 +29,7 @@ Some of the major distinctions of JavaScript are:
 * Variables are dynamically typed. The type of data in a variable can change at any time.
   One moment a variable might contain a string, the next moment a number.
 * JavaScript never "crashes". If an error occurs, the current thread of execution
-  is terminated, but this has no effect on the operation of the web browser.
+  is terminated, but this has no affect on the operation of the web browser.
 * JavaScript is a multi-paradigm language that supports ideas from
   object-oriented programming, imperative programming, and functional programming.
 * **Everything** in JavaScript is an object. In fact, functions are objects!
@@ -40,8 +40,8 @@ Learning Javascript
 If you have limited or no prior programming experience, you need to study
 JavaScript in depth. The `JavaScript tutorials at Code Academy`_ are a
 good option. The lessons force you to implement the concepts you are learning
-before moving to the next topic. The tutorials will take considerable
-time, but you will learn JavaScript well. If you would like a tutorial
+before moving to the next topic. The tutorials will take a considerable
+amount of time, but you will learn JavaScript well. If you would like a tutorial
 that allows you to work through the material at a faster pace, try
 `The Modern JavaScript Tutorial`_.
 
@@ -67,7 +67,7 @@ tab and you can see the output of :code:`console.log()` commands and
 you can execute JavaScript commands from the prompt. Try it now!
 
 The remainder of this lesson discusses critical concepts in JavaScript
-that you need to master if you want to understand the WebGL example
+that you must master if you want to understand the WebGL example
 programs in this textbook.
 
 Context
@@ -79,12 +79,17 @@ functions that can manipulate that data. Functions of an object
 have a context in which they work. Their context is defined by the data they
 can access and the current state of that data. The idea that every function
 in JavaScript is executed from a "context" is central to understanding how
-JavaScript works. Let's walk through some examples. If a function is called
-because a user clicked on a button, then the function is executed in the
-context of the HTML button element. If a function is called from code loaded
-from a JavaScript file, then it is executed in the context of the global
-address space. If a function is called from inside an object, then its context
-is that object. There is a keyword in JavaScript that always references the
+JavaScript works. Let's walk through some examples:
+
+* If a function is called because a user clicked on a button, then the
+  function is executed in the context of the HTML button element.
+
+* If a function is called from code loaded from a JavaScript file,
+  then it is executed in the context of the global address space.
+
+* If a function is called from inside an object, then its context is that object.
+
+There is a keyword in JavaScript that always references the
 context from which a function is called. The keyword is called :code:`this`. The
 keyword :code:`this` in Java, C++ and other object-oriented programming languages
 means something totally different. Do not get them confused.
@@ -121,7 +126,7 @@ Or, you can create an object from the definition like this:
 
 .. Code-block:: javascript
 
-  var my_object = new Example(alpha, beta, gamma);
+  let my_object = new Example(alpha, beta, gamma);
 
 When you create an object, any data defined inside the function is retained
 inside the object and the data can be accessed and modified at a later time.
@@ -140,7 +145,7 @@ private functions will have a name starting with an underscore, :code:`_`.)
 
   function ExampleClass(a,b,c) {
     // Private class variables
-    var s,t,u;
+    let s,t,u;
 
     // Private functions
     function _innerOne() {
@@ -173,7 +178,7 @@ both *public*  and *private* data and functions.
 
   function ExampleClass(a,b,c) {
     // Private class variables
-    var s,t,u;
+    let s,t,u;
 
     // Public class variables (actually properties of the object)
     this.m = value1;
@@ -196,7 +201,7 @@ An instance of this class (an object) can be created like this:
 
 .. Code-block:: javascript
 
-  var my_object = new ExampleClass(alpha, beta, gamma);
+  let my_object = new ExampleClass(alpha, beta, gamma);
 
 Now that :code:`my_object` exists, the following statements are **valid**
 because they are accessing the public members of the object.
@@ -217,10 +222,10 @@ to use the private members of the object.
 But wait! The above example has a major flaw. The value of the keyword
 :code:`this` changes with context. When the object is actually used,
 the keyword :code:`this` will take on various other values besides a reference
-to the object. This can cause the code to fail. The solution is to not use the keyword
+to the object and cause the code to fail. The solution is to not use the keyword
 :code:`this` for accessing public members. Instead, set a reference to the object
 as a separate local variable and always use the local reference. The first statement
-of a class definition will typically be :code:`var self = this` which creates
+of a class definition will typically be :code:`let self = this` which creates
 :code:`self` as a local reference to itself. (There is nothing special about the name :code:`self` --
 you could use any variable name -- but using a different name would add more
 confusion than it is worth.)
@@ -237,10 +242,10 @@ variable :code:`self` is used throughout the rest of the class definition.
 
   function ExampleClass(a,b,c) {
 
-    var self = this; // store a local reference to the new object
+    let self = this; // store a local reference to the new object
 
     // Private class variables
-    var s,t,u;
+    let s,t,u;
 
     // Public class variables (actually properties of the object)
     self.m = value1;
@@ -310,9 +315,9 @@ program, the first definition would be more common.
 Some Examples
 -------------
 
-In the WebGL example code below there are two examples of JavaScript class definitions.
+In the WebGL example code below, there are two examples of JavaScript class definitions.
 Do not attempt to understand the functionality of the code at this time, but
-rather exam the structure of the class definitions. Please do the following:
+rather examine the structure of the class definitions. Please do the following:
 
 * Hide the canvas to make the JavaScript code easier to study.
 * Notice the use of strict mode, :code:`"use strict";` at the top of both files. This
@@ -351,7 +356,7 @@ standard we will be using.
 * Avoid global variables whenever possible.
 * Use JSLint to check for errors.
 * Use two-space indentation.
-* Use shorthand for conditional statements where appropriate: :code:`var results = (test === 5) ? alert(1) : alert(2);`
+* Use shorthand for conditional statements where appropriate: :code:`let results = (test === 5) ? alert(1) : alert(2);`
 * The closing brace should be on the same indent as the original statement:
 
   .. code-block:: JavaScript
@@ -455,15 +460,15 @@ Self-Assessments
   :random:
   :answer_a: A function is an object and you make the "public" members be properties of the object.
   :answer_b: You use the keyword "public" when you declare them.
-  :answer_c: You declare them using the "var" keyword.
+  :answer_c: You declare them using the "let" keyword.
   :answer_d: All members of a class are automatically "public" unless you specify otherwise.
   :correct: a
   :feedback_a: Correct.
   :feedback_b: Incorrect, this is how Java and C++ do it, but not JavaScript.
-  :feedback_c: Incorrect, declaring a variable using "var" makes it a private member.
+  :feedback_c: Incorrect, declaring a variable using "let" makes it a private member.
   :feedback_d: Incorrect, the default for variables and functions in a class is to be "private."
 
-  In JavaScript, how do you create "public" members of an class?
+  In JavaScript, how do you create "public" members of a class?
 
 .. mchoice:: 2.3.4
   :random:
@@ -483,14 +488,14 @@ Self-Assessments
   :random:
   :answer_a: window.MyFunction = function(a,b) { ... };
   :answer_b: function MyFunction(a,b) { ... }
-  :answer_c: var MyFunction = function(a,b) { ... };
+  :answer_c: let MyFunction = function(a,b) { ... };
   :correct: a
   :feedback_a: Correct.
   :feedback_b: Incorrect.
   :feedback_c: Incorrect.
 
-  Which of the following ways to define a function will allow the function
-  to be re-defined after a web page has been loaded.
+  Which of the following function definitions allow the function
+  to be re-defined after a web page has been loaded?
 
 .. mchoice:: 2.3.6
   :random:

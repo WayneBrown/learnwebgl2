@@ -10,7 +10,7 @@
 6.3 - Translating
 :::::::::::::::::
 
-Translating a model changes the model's location. Translation does not effect the
+Translating a model changes the model's location. Translation does not affect the
 model's size or orientation. Mathematically, translating is a simple
 addition. Translating a vertex, :code:`(x, y, z)`, into a new location,
 :code:`(x_new, y_new, z_new)`, is accomplished by adding a value to each component.

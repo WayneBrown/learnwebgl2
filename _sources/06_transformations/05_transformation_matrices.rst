@@ -236,7 +236,7 @@ performing the following sequence of transformations:
 #. Then rotate about the Y axis to place :code:`<ux’, uy’, uz’>` back to its original location.
 #. Then rotate about the Z axis to place :code:`<ux, uy, uz>` back in its original location.
 
-This series of 5 rotations will provide the visual affect of rotating a model
+This series of 5 rotations will provide the visual effect of rotating a model
 about the axis :code:`<ux,uy,uz>`. But we don't want to do all of the 5 transformations
 over and over again for each vertex. We want a single transformation that
 will produce the visual motion we desire. We can accomplish this by

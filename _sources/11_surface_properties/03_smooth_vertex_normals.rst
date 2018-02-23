@@ -159,7 +159,7 @@ triangles represented by lines 5-7 will be associated with "triangle normal vect
 (Please note that :code:`CreateModelsFromOBJ` functions calculate normal vectors
 only if there are no normal vectors in the data file. If the data file contains
 normal vectors then those are used and enabling or disabling smooth shading
-has no affect.)
+has no effect.)
 
 .. Code-Block:: HTML
   :linenos:
