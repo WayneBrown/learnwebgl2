@@ -207,11 +207,12 @@ Chapter 12: Advanced Rendering and Transparency
   12_advanced_rendering/04_transparency
   12_advanced_rendering/05_color_blending
   12_advanced_rendering/06_shadows
+  12_advanced_rendering/10_3d_text
+  12_advanced_rendering/11_overlays
 
 .. temp
 
   11_advanced_rendering/particle_systems
-  11_advanced_rendering/overlays
 
 .. .. admonition:: Coming Soon!
 

@@ -22,8 +22,8 @@ understand the 3D nature of objects in a 3D scene. Without shadows a 3D scene
 is much harder to comprehend. This lesson explains how to render shadows
 using a "shadow map".
 
-The "Shadowmap" Algorithm
--------------------------
+The "Shadow map" Algorithm
+--------------------------
 
 To render shadows, a *fragment shader* must be able to determine if
 a fragment (pixel) receives direct light from the scene's
@@ -33,10 +33,14 @@ percentage of diffuse light.) If the fragment receives direct light,
 diffuse and specular light calculations can be performed to determine
 the fragment's color.
 
-In lessons `10.2`_ and `10.4`_ the diffuse and specular
-light calculations formed a vector between the fragment being rendered and
-a light source. The length of this vector can be used to determine if
-the fragment is in shadow. This is accomplished by rendering the entire
+.. tip:: If you need a refresher on modeling light, see lessons `10.2`_ and `10.4`_.
+
+To calculate diffuse and specular
+light a vector must be created between a fragment's 3D location and
+the location of a light source. (The angle between this vector and the surface
+normal determines the amount of diffuse light.) The length of this vector
+can be used to determine if
+the fragment is in a shadow. This is accomplished by rendering the entire
 scene from the location of the light source and remembering the distance
 to the closest surface to the light. When the scene is rendered normally,
 the distance to the light source is calculated and compared to the
@@ -44,113 +48,57 @@ distance from the light to the closest surface. If the distances are
 different, there is another surface closer to the light source and
 the location is in shadow.
 
-The "big idea" of a *shadowmap* algorithm is to create a rendering of
-a scene from the location of each light source and remember the distance
-between the light source and it's closest surface. These distances are
-stored in a *texture map* for later use. Then, render the scene
-from the camera's location and orientation, using the saved "closest surface
-to the light" *texture maps* to determine shadows. If a scene has three
-light sources, this requires four renderings and three *texture maps*.
-The algorithm requires extensive time and memory resources. Here are the major steps
-of the algorithm:
+The "big idea" of the *shadow map* algorithm is to create a rendering of
+a scene from the location of each light source and remember the distances
+between the light source and it's closest surfaces. These distances are
+stored in a *texture map* for later use. When the scene is rendered
+from the camera's location and orientation the saved "light-to-the-closest-surface"
+*texture maps* are used to determine shadows. If a scene has three
+light sources, this requires four renderings and three *texture maps* --
+a significant amount of time and memory resources.
+
+Steps of the "Shadow map" Algorithm
+...................................
 
 #. For each light source in a scene:
 
    a. Set the *rendering target* to a programmer-created *frame buffer* composed
-   of *texture objects*.
+      of *texture objects*.
 
    b. Place a "camera" at the light source and render the scene. This places
-   the z-value of the closest surface to the light into the *depth buffer*
-   of the *frame buffer*. (This *depth buffer* is a *texture map*.)
+      the z-value of the closest surface to the light into the *depth buffer*
+      of the *frame buffer*. (This *depth buffer* is a *texture map*.)
 
 #. Change the *rendering target* to the default *drawing buffer* and render the
    scene from the camera's location and orientation.
 
-   * The *vertex shader* calculates the location of a surface in relationship
-     to both the "light source" and the "camera view". Both locations are placed
-     into :code:`varying` variables and interpolated across the surface.
-     Therefore, for each fragment we know its location in both its "light source space"
-     and its "camera space".
-   * The *fragment shader* uses the *texture map* created by a "light source rendering"
-     from step 1 to determine if a pixel is in full light or shadow.
+   a. The *vertex shader* calculates the location of a surface in relationship
+      to each "light source" and the scene's camera. The locations are placed
+      into :code:`varying` variables and interpolated across the surface.
+      Therefore, each fragment knows its location relative to each light source
+      and to the scene's camera.
+   b. The *fragment shader* uses the *texture maps* created by the "light source renderings"
+      from step 1 to determine if a pixel is in full light or shadow.
 
-To implement the details of this algorithm the following questions must be addressed:
+To implement the details of this algorithm the following questions must be answered:
 
-* How can a scene rendering be saved to a *texture map*? (For the purposes of rendering shadows,
+* How can the data from a scene rendering be saved to a *texture map*? (For the purposes of rendering shadows,
   the resulting *texture map* is called a *shadow map*.)
 * How can a scene be rendered from the location and orientation of a light source?
-* Exactly how can a *shadow map* be used to determine if a surface is in shadow?
+* How can a *shadow map* be used to determine if a surface is in shadow?
 
-We will discuss how to implement these three ideas in the following sections, but
-first let's discuss WebGL extensions.
+Rendering a Scene to a *Texture Map*
+....................................
 
-To determine which surfaces receive direct light the scene can
-be rendered with a virtual camera positioned at the light source.
-Such a rendering puts a color into the *color buffer* and a "distance
-from the camera" value into the *depth buffer*. Therefore the
-*depth buffer* contains the distance from a light source to its
-closest surfaces.
-The information for each pixel is the distance from the light source to the closest
-surface. In theory this is a simple problem because the contents of the *z-buffer*
-(created by the *hidden surface removal* algorithm) is the information we want.
-Regrettably, WebGL does not allow access the default *z-buffer*.
-But WebGL does allow you to create a separate *frame buffer* composed of
-*texture objects* and then render an image to this "offscreen" *frame buffer*.
-This is actually very advantageous because after we render the
-scene from the light source's location, we need to use that data during
-a normal rendering and a texture map image is a convenient way to lookup
-values at specific locations.
+.. tip:: This discussion uses a **WebGL extension** which were explained in `12.1`_.
 
-twice (similar to the object-selection
-algorithm described in `lesson 12.3`_). The first rendering determines
-which surfaces receive direct light. The second rendering creates the visual image
-seen by a user, and uses information gained from the first rendering to
-correctly render shadows.
-
-WebGL Extensions
-----------------
-
-WebGL 1.0 is an evolving specification that has a standard mechanism for
-developers to propose and implement new features. You can get a list of the
-WebGL "extensions" that a particular browser supports with a call to
-:code:`gl.getSupportedExtensions()`.
-Extensions provide features at the cost of portability. Remember that
-a WebGL program runs on a client's computer in a client's browser. You
-typically have no control over the environment your WebGL program
-might be executed. If
-you want your WebGL program to execute correctly on any platform, you should
-avoid using extensions. However, for some algorithms an extension is needed to
-make the algorithm work. In other cases an extension can make an algorithm
-easier to implement and in some cases execute faster. So use extensions wisely.
-
-You can get basic information about the WebGL implementation you are executing
-on with the following function calls:
-
-.. Code-Block:: JavaScript
-
-  console.log('WebGL version: ', gl.getParameter(gl.VERSION));
-  console.log('WebGL vendor : ', gl.getParameter(gl.VENDOR));
-  console.log('WebGL supported extensions: ', gl.getSupportedExtensions());
-
-A more typical use of these commands would be to modify your WebGL program's
-behaviour based on the version of WebGL a browser supports. The code might look
-something like:
-
-.. Code-Block:: JavaScript
-
-  var version = gl.getParameter(gl.VERSION); // "WebGL 1.0"
-  if (version.substring(6,9) === "1.0") {
-    ...
-  } else {
-    ...
-  }
-
-We will be able to implement a traditional "shadow map" algorithm in an easier
-and more efficient manner
-if we use a WebGL extension that allows us to render to a *depth buffer* represented
-by a *texture object*. The following code enables the :code:`WEBGL_depth_texture`
-extension. If a call to :code:`gl.getExtension(name)` returns :code:`null`
-the request to enable the extension failed.
+The most straightforward method to render to a *texture map* requires the
+use of the :code:`WEBGL_depth_texture` extension. This allows a *texture object*
+to be used as the *depth buffer* of a *frame buffer*. (Remember, a *frame buffer*
+is a programmer defined "rendering target" that contains a *color buffer*, a
+*depth buffer*, and an optional *stencil buffer*.) The following code enables
+the :code:`WEBGL_depth_texture` extension and does something reasonable if the
+extension is not supported. (This extension is widely supported. See `here`_ for details.)
 
 .. Code-Block:: JavaScript
 
@@ -162,71 +110,57 @@ the request to enable the extension failed.
     return;
   }
 
-Please note that the variable :code:`depth_texture_extension`
-in the above code is not needed or ever used in the rest of the code. However,
-in some cases the object returned by a call to :code:`gl.getExtension()` is
-needed to access the functionality of the extension.
+.. note::
 
-Let's discuss the details of how to render to a programmer-created *frame buffer*.
+  The variable :code:`depth_texture_extension`
+  in this example code is not needed in the rest of the code. However,
+  in some cases the object returned by a call to :code:`gl.getExtension()` is
+  needed to access the functionality of the extension.
 
-Rendering to a Texture Map
---------------------------
+To create a programmer-defined *frame buffer* composed of *texture objects*
+the following steps are required:
 
-Remember that a *frame buffer* is a set of three buffers used for rendering:
-
-* The *color buffer* stores the RGBA color values of a rendered image.
-* The *depth buffer* (or *z-buffer*) stores the distance to the closest surface from
-  the camera.
-* The *stencil buffer* stores an optional "mask" that determines which pixels can be modified.
-
-A *frame buffer* that contains a *color buffer* and a *depth buffer* is automatically
-created by WebGL when its context is created. The size of the *frame buffer* matches
-the size of it's associated HTML canvas. (The *stencil buffer* is optional and is
-not created automatically.)
-
-You can render to an programmer-created *frame buffer* to create special effects.
-We would like to use the results of a rendering to produce shadows, so the
-buffers are created as *texture objects* so that we can use them after the
-rendering is finished. The steps for creating a programmer-defined
-*frame buffer* composed of *texture objects* are as follows:
-
-#. Create a new *frame buffer* object. :code:`gl.createFramebuffer()`
+#. Create a new *frame buffer* object: :code:`gl.createFramebuffer()`.
 
 #. Create a *texture object* to store the *color buffer* values. The size
    of the *texture object* determines the resolution of the rendering. It's
    internal format is RGBA (red, green, blue, alpha), where each value is
    an unsigned byte, :code:`gl.UNSIGNED_BYTE`. (This is the only format
-   WebGL 1.0 supports.)
-   :code:`gl.createTexture()`, :code:`gl.bindTexture()`, :code:`gl.texImage2D()`,
-   :code:`gl.texParameteri()`
+   WebGL 1.0 supports.) There are four steps to create a *color buffer*:
+
+   a) :code:`gl.createTexture()` creates a *texture object*.
+   b) :code:`gl.bindTexture()` makes the *texture object* the "active object".
+   c) :code:`gl.texImage2D()` creates the buffer that holds the *texture object*'s image data.
+   d) :code:`gl.texParameteri()` is used to set a *texture object*'s properties.
 
 #. Create a second *texture object* to store the *depth buffer* values.
-   The size of this *texture object* must match the size of the first *texture object*.
-   It's internal format
-   is :code:`gl.DEPTH_COMPONENT` and each value will be a 32-bit integer,
+   The size of this *texture object* must match the size of the *color buffer*.
+   It's internal format is :code:`gl.DEPTH_COMPONENT` and each value will be a 32-bit integer,
    :code:`gl.UNSIGNED_INT`, which will represent a depth value in the range
-   [0.0, +1.0]. (The integer values are scaled such that 0.0 represents
-   the *z-near* clipping plane, and 1.0 represents the *z-far* clipping plane.)
+   [0.0, +1.0]. The integer values are scaled such that 0.0 represents
+   the *z-near* clipping plane, and 1.0 represents the *z-far* clipping plane.
 
-#. Attach the first *texture object* to the "Color attachment" of the *frame buffer*,
-   and attach the second *texture object* to the "Depth attachment" of the *frame buffer*.
-   :code:`gl.bindFramebuffer()`, :code:`gl.framebufferTexture2D()`
+#. Attach the first *texture object* to the "Color attachment" of the *frame buffer*.
+   Attach the second *texture object* to the "Depth attachment" of the *frame buffer*.
 
-#. Verify that the *frame buffer* object is valid. :code:`gl.checkFramebufferStatus()`
+   a) :code:`gl.bindFramebuffer()` makes a specific *frame buffer* the "active" *frame buffer*.
+   b) :code:`gl.framebufferTexture2D()` attaches a *texture object* to a *frame buffer*.
 
-Here is a typical *frame buffer* creation function.
+#. Verify that the *frame buffer* object is valid using :code:`gl.checkFramebufferStatus()`.
+
+The following function creates a typical *frame buffer*.
 
 .. Code-Block:: JavaScript
 
   /** ---------------------------------------------------------------------
    * Create a frame buffer for rendering into texture objects.
-   * @param gl WebGLRenderingContext
-   * @param width Number The width (in pixels) of the rendering (must be power of 2)
-   * @param height Number The height (in pixels) of the rendering (must be power of 2)
-   * @returns WebGLFramebuffer object
+   * @param gl {WebGLRenderingContext}
+   * @param width  {number} Rendering width in pixels.  (must be power of 2)
+   * @param height {number} Rendering height in pixels. (must be power of 2)
+   * @returns {WebGLFramebuffer} object
    */
   function _createFrameBufferObject(gl, width, height) {
-    var frame_buffer, color_buffer, depth_buffer, status;
+    let frame_buffer, color_buffer, depth_buffer, status;
 
     // Step 1: Create a frame buffer object
     frame_buffer = gl.createFramebuffer();
@@ -244,6 +178,10 @@ Here is a typical *frame buffer* creation function.
     // Step 3: Create and initialize a texture buffer to hold the depth values.
     // Note: the WEBGL_depth_texture extension is required for this to work
     //       and for the gl.DEPTH_COMPONENT texture format to be supported.
+    //depth_buffer = gl.createRenderbuffer();
+    //gl.bindRenderbuffer(gl.RENDERBUFFER, depth_buffer);
+    //gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+
     depth_buffer = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, depth_buffer);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, width, height, 0,
@@ -253,213 +191,266 @@ Here is a typical *frame buffer* creation function.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    // Step 4: Attach the specific buffers to the frame buffer.
+    // Step 4: Attach the color and depth buffers to the frame buffer.
     gl.bindFramebuffer(gl.FRAMEBUFFER, frame_buffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, color_buffer, 0);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,  gl.TEXTURE_2D, depth_buffer, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
+                            color_buffer, 0);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
+                               gl.RENDERBUFFER, depth_buffer);
 
     // Step 5: Verify that the frame buffer is valid.
     status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (status !== gl.FRAMEBUFFER_COMPLETE) {
       console.log("The created frame buffer is invalid: " + status.toString());
+      if (color_buffer) gl.deleteBuffer(color_buffer);
+      if (depth_buffer) gl.deleteBuffer(depth_buffer);
+      if (frame_buffer) gl.deleteBuffer(frame_buffer);
+      frame_buffer = null;
     }
 
-    // Unbind these new objects, which makes the default frame buffer the
-    // target for rendering.
+    // Unbind these objects, which makes the "draw buffer" the rendering target.
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     return frame_buffer;
   }
 
-Note that the above *frame buffer* definition only works if the :code:`WEBGL_depth_texture`
-extension is available and enabled. Also note that this function could fail
-for many reasons, the most common error being lack of sufficient memory for
-the buffers. The version of this function included in the demo programs below contain
-error checking and appropriate error messages if the function fails.
+This code to create a *frame buffer* only works if the :code:`WEBGL_depth_texture`
+extension is available and enabled. The function can fail
+for many reasons. Perhaps the most common problem is the lack of sufficient memory for
+the buffers.
 
-Also, take special note of the parameters that control the texture maps. It is important
-that the lookups into the texture maps interpolate between discrete values by
-setting the minification and magnify filters to :code:`gl.LINEAR`. This makes the
-lookups into the texture maps as accurate as possible. You can experiment with
+Please take special note of the parameters that control the texture maps.
+It is important that the lookups into the *texture maps* interpolate between discrete values by
+setting the minify and magnify filters to :code:`gl.LINEAR`. This makes the
+lookups into the *texture maps* as accurate as possible. (You can experiment with
 the demo code below and change the filters to :code:`gl.NEAREST`, but the results
-will be very poor.
-
-The "wrapping" parameters of the texture maps are also important. What is the
-appropriate behaviour if we try to access a value that is outside the texture map?
-There is no good choice, but the least bad choice is to repeat the values of the
-shadow map at the edges. Thus the setting of :code:`gl.CLAMP_TO_EDGE`.
+will be very poor.) The "wrapping" parameters of the *texture maps* are also important.
+There is no good choice for the *texture map* behaviour if a *texture coordinate*
+is outside the *texture map*'s boundaries! Perhaps the least bad choice is to
+repeat the values of the *shadow map* at its edges (:code:`gl.CLAMP_TO_EDGE`).
 
 Rendering from a Light Source
------------------------------
+.............................
 
-We need to render the scene from the vantage point of the light source to
-determine which surfaces receive direct light. Only the surfaces closest
-to the light source receive direct light, so the z-component of the
-*depth buffer* can tell us how far away the closest surface is. Let's define
-some terms so we don't get confused. Let's call the camera that
-renders a scene from a light source the "light source camera." We will call
-the camera that renders the visible scene the "view camera."
+.. admonition:: Definitions:
 
-To render the scene from the vantage point of the light source we need two pieces
-of information about the camera: 1) its location, and 2) its orientation
-(i.e., its local coordinate system). The location is easy: it is the location of the
-light source. The orientation is a harder problem -- which direction should
-the camera at the light source be pointed? It turns out that the exact direction
-is not critical. What is critical is that all of the models in the scene that
-are visible from the "view camera" are included in the rendering from the
-"light source camera." Therefore the line-of-sight and the projection used
-with the "light source camera" is a critical piece of the algorithm because
-together they define the clipping volume for a rendering. Here are the critical
-points regarding the projection used for a shadow map rendering:
+  A "scene camera" defines the view a user sees of a scene. :raw-html:`<br>`
+  A "light source camera" defines a view of a scene that captures the distances
+  to the closest surfaces from the location of a light source.
 
-* If the "view camera" is rendered using an orthographic projection, an
-  orthographic projection should be used for the shadow map rendering. Likewise
-  for perspective rendering.
-* The projection should be defined large enough to include all visible objects
-  in the scene.
-* The projection should be defined as small as possible to keep floating point
-  calculation errors to a minimum.
+To determine which surfaces receive direct light in a scene, the scene is rendered
+from the vantage point of a "light source camera." This is not a straightforward task
+since a "point light source" shines light in all directions, while a "camera view"
+has a single, specific direction and orientation. A "light source camera" must
+be based on the direction and orientation of the "scene camera" so that the maximum
+information about visible surfaces can be gathered.
 
-Therefore, a critical part of calculating good shadow map data is setting up a
-projection transformation that is just the right size for a particular scene.
+Two pieces of information are needed to define a "light source camera": 1) its location, and
+2) its orientation (i.e., its local coordinate system). The location is easy:
+it is the 3D location of the light source. The orientation is a harder problem!
+It turns out that the exact line-of-sight direction is not critical.
+What is critical is that all of the models in the scene that
+are visible from the "scene camera" are included in the rendering from the
+"light source camera." Selecting a good line-of-sight and projection matrix for
+a "light source camera" determines the accuracy of the resulting *shadow map*.
 
-Let's assume for now that each camera is defined using the standard parameters
-sent to a :code:`LookAt()` function, which are:
+Let's assume a camera is defined using the standard
+parameters of a :code:`matrix.lookAt()` function, which are:
 
-* The location of the camera; the *eye* location.
-* The location of a point in front of the camera along its line of sight; the
-  *center* location.
+* The location of the camera; the :code:`eye` location.
+* The location of a point in front of the camera along its line-of-sight; the
+  :code:`center` location.
 * A vector that points in the general direction of "up".
 
-The following demonstration program uses the following convention for setting
-up the cameras:
+A simple method for defining a "light source camera" is:
 
-* The same *center point* is used for both cameras. If the *center point* is
-  chosen wisely, this allows both renderings to include the correct models.
-  (Please note that for a normal camera defined by the :code:`LookAt()` function,
-  the exact location of the *center point* is not important because it simple defines
-  the line-of-sight of the camera. For shadow maps the *center point*'s exact
-  location is critical.)
+* The :code:`eye` is the 3D location of the light source.
+* The :code:`center` point of the "scene camera" is used as the
+  :code:`center` of the "light source camera". (Note: There are an infinite number
+  of points that can define a "scene camera"'s line-of-sight,
+  but a very restricted set of points that can define a good line-of-sight for
+  both the "scene camera" and a "light source camera" at the same time.)
 * The same *up vector* is used for both cameras. This keeps the orientation
-  of the shadow map synchronized with the visible scene.
+  of the *shadow map* consistent with the "scene camera."
 
-Using a Shadow Map to Determine Shadows
----------------------------------------
+Concerning the projection:
 
-When we render a scene from a "view camera," we need to ask this question of
-each fragment, "Is this the closest surface to the light source?" If it is,
-the fragment gets full lighting. If it is not, the fragment is in a shadow. We can answer this
-question using a *shadow map*, which is a texture map, where each component
-value is the distance from a light source to the closest fragment. The "trick"
-is to get the correct distance out of the shadow map.
+* If the "scene camera" is rendered using an orthographic projection, an
+  orthographic projection should be used for the *shadow map* rendering. Likewise
+  for perspective projection.
+* The clipping volume defined by a projection should be large enough to include
+  all visible objects in the scene.
+* The clipping volume defined by a projection should be as small as possible
+  to keep floating point roundoff errors to a minimum.
 
-When we render a scene from a "view camera," we will interpolate two different
-(x,y,z) locations on the surface.
+In summary, a critical part of calculating a good *shadow map* is setting up a
+projection transformation that is just the right size for a particular scene.
 
-#. The (x,y,z) location of the surface as calculated by the "light source camera"
-   transformation matrix. We use this location to look up "distance from the light"
-   values from the "shadow map."
+Using a *Shadow Map* to Determine Shadows
+.........................................
 
-#. The (x,y,z) location of the surface as calculated by the "view camera"
-   transformation matrix. We use this location to render the scene.
+When a scene is rendered from a "scene camera," a *fragment shader* must
+ask, "is this fragment on the closest surface to a light source?" If it is,
+the fragment receives direct light. If it is not, the fragment is in a shadow.
+To answer this question a distance value is needed from a *shadow map*. A
+full understanding of how the graphics pipeline works is required in order
+to get the correct distance values out of the *shadow map*.
 
-Here is a *vertex shader* that is calculating these two different locations in
-3D space:
+Lesson `10.1`_ explained the idea of performing lighting calculations
+in "model space", "scene space", "camera space" or "clipping space". All example
+WebGL programs in Chapter 10 used "camera space". However, "clipping space"
+must be used for shadow calculations. Why? When a *shadow map* is created
+by rendering a scene from the location of a light source, the *depth buffer* that
+becomes the *shadow map* is the result of all operations of the graphics pipeline,
+which include clipping, the perspective divide calculation, and viewport mapping.
+The data in a *shadow map* is "clipping space" data and must be treated as such.
+
+When a scene is rendered using a "scene camera," the *vertex shader* calculates
+the location of a fragment in the following 3D "spaces":
+
+#. For each light source: :raw-html:`<br>`
+   The (x,y,z) location of the surface in "light source camera" "clipping space".
+   This location is used in a *fragment shader* to look up a "distance from the light"
+   value from the light source's *shadow map*.
+
+#. The (x,y,z) location of the surface in "camera space". This location is
+   is used for lighting calculations.
+
+#. The (x,y,z) location of the surface in "clipping space." This location
+   is placed into the :code:`gl_Position` variable and used for clipping,
+   perspective divide calculations, and viewport mapping.
+
+The following is an example *vertex shader* that calculates these locations.
 
 .. Code-BLock:: GLSL
 
-  // Vertex shader
+  // Shadow map vertex shader
   // Scene transformations
-  uniform mat4 u_PVM_transform; // Projection, view, model transform
-  uniform mat4 u_Shadowmap_transform; // The transform used to render the shadow map
+  uniform mat4 u_Scene_transform;        // Projection, camera, model transform
+  uniform mat4 u_Camera_model_transform; // Camera, model transform
 
-  // Original model data
+  // Light model
+  struct light_info {
+    vec3  position;
+    vec3  color;
+    mat4  transform;  // The matrix transform used to create the light's shadow map.
+    sampler2D texture_unit;  // Which texture unit holds the shadow map.
+  };
+
+  // An array of lights
+  const int NUMBER_LIGHTS = 1;
+  uniform light_info u_Lights[NUMBER_LIGHTS];
+
+  // Original model data (in "model space")
   attribute vec3 a_Vertex;
 
   // Data (to be interpolated) that is passed on to the fragment shader
-  varying vec4 v_Vertex_relative_to_light;
+  varying vec4 v_Vertex_camera_space;
+  varying vec4 v_Vertex_shadow_map[NUMBER_LIGHTS];
 
   void main() {
 
-    // Calculate this vertex's location from the light source. This is
-    // used in the fragment shader to determine if fragments receive direct light.
-    v_Vertex_relative_to_light = u_Shadowmap_transform * vec4(a_Vertex, 1.0);
+    // Where is the vertex for each shadow-map?
+    for (int light=0; light < NUMBER_LIGHTS; j++) {
+      v_Vertex_shadow_map[j] = u_Lights[j].transform * vec4(a_Vertex, 1.0);
+    }
 
-    // Transform the location of the vertex for the rest of the graphics pipeline.
-    gl_Position = u_PVM_transform * vec4(a_Vertex, 1.0);
+    // Where is the vertex in "camera space"?
+    v_Vertex_camera_space = u_Camera_model_transform * vec4(a_Vertex, 1.0);
+
+    // Where is the vertex in "clipping space"?
+    gl_Position = u_Scene_transform * vec4(a_Vertex, 1.0);
   }
 
-Using these two 3D locations is straightforward, with the caveat that you must
-understand the exact details of how the transformations work because the values must be
-converted to appropriate units. The following GLSL *fragment shader* function
-performs the calculations and conversions. Please study the code and pay
-particularly close attention to the comments that describe each statement.
+In the *fragment shader* each light source is processed to determine
+if its light rays shine directly on a fragment. This is not a straightforward
+calculation because the precise manipulation of the rendering data must be taken
+into account. Please study the following steps carefully.
+
+#. The value :code:`v_Vertex_shadow_map[j]` if the location of a fragment
+   in *clipping space* relative to the rendering performed using a camera
+   at the location of the j\ :sup:`th` light source. This :code:`(x,y,z,w)`
+   location is in *normalized device coordinates*, but the perspective
+   division has not been performed. To put the location into
+   the clipping volume, the perspective division must be performed manually. That
+   is, each component must be divided by the homogeneous coordinate, :code:`w`.
+   The location in the clipping volume becomes :code:`(x/w,y/w,z/w,1)`.
+   (The graphics pipeline did this automatically when the *shadow map* was rendered.)
+   :raw-html:`<br><br>`
+
+#. The :code:`(x/w,y/w,z/w,1)` location is now in *normalized device coordinates*, which
+   is a 2 unit wide cube centered at the origin. (Each component is in the range
+   :code:`[-1.0,+1.0]`.) The :code:`(x/w,y/w)` components specify the location of
+   the fragment in the *shadow map*, while the :code:`z/w` component gives the distance
+   of the current surface to the light source. These values must be discussed separately.
+
+   a) When the *shadow map* was rendered, the graphics pipeline performed a
+      *viewport mapping* of :code:`(x,y)` from *normalized device coordinates* to a 2D image array.
+      Specifically, the :code:`(x,y)` components were mapped
+      from :code:`[-1.0,+1.0]` to :code:`[0,imageWidth]` and :code:`[0,imageHeight]`.
+      However, the *fragment shader* that is performing shadow calculations
+      needs to execute a "texture map lookup" which requires *texture coordinates*.
+      Therefore, the :code:`(x,y)` components need to be mapped from :code:`[-1.0,+1.0]` to
+      :code:`[0.0,+1.0]`. This is easily done using either :code:`(x,y)*0.5 + 0.5` or
+      :code:`((x,y)+1.0) * 0.5`.
+
+   b) WebGL treats the value retrieved from the *shadow map* as a color value.
+      (Internally WebGL has stored the value as a :code:`gl.UNSIGNED_INT` in the range
+      [0,2\ :sup:`n`] where :code:`n` is 32. (i.e, the range :code:`[0,4,294,967,296]`).
+      However, when the GLSL :code:`texture2D()` function is called to perform a
+      *texture map* lookup, it always returns a :code:`vec4`, RGBA, color value where
+      each component is in the range :code:`[0.0,+1.0]`. Therefore, :code:`z/w` component
+      must be converted from *normalized device coordinates*, :code:`[-1.0,+1.0]`, to
+      :code:`[0.0,+1.0]`.
+
+Please study the following *fragment shader* code that tests a "light source position"
+to determine if it is in shadow or not. The calculations are based on the above
+explanations.
 
 .. Code-BLock:: GLSL
 
-  // Fragment shader
+  // Shadow map fragment shader
   //-------------------------------------------------------------------------
-  // Determine if this fragment is in a shadow. Returns true or false.
-  bool in_shadow(void) {
+  // Determine if this fragment is in a shadow based on a particular light source.
+  // Returns true or false.
+  bool in_shadow(vec3 vertex_relative_to_light, sampler2D shadow_map) {
 
-    // The vertex location rendered from the light source is almost in Normalized
-    // Device Coordinates (NDC), but the perspective division has not been
-    // performed yet. Perform the perspective divide. The (x,y,z) vertex location
-    // components are now each in the range [-1.0,+1.0].
-    vec3 vertex_relative_to_light = v_Vertex_relative_to_light.xyz / v_Vertex_relative_to_light.w;
+    // Convert to "normalized device coordinates" using perspective division.
+    vec3 ndc = vertex_relative_to_light.xyz / vertex_relative_to_light.w;
 
-    // Convert the the values from Normalized Device Coordinates (range [-1.0,+1.0])
-    // to the range [0.0,1.0]. This mapping is done by scaling
-    // the values by 0.5, which gives values in the range [-0.5,+0.5] and then
-    // shifting the values by +0.5.
-    vertex_relative_to_light = vertex_relative_to_light * 0.5 + 0.5;
+    // Convert from range [-1.0,+1.0] to [0.0, +1.0].
+    vec3 percentages = ndc * 0.5 + 0.5;
 
-    // Get the z value of this fragment in relationship to the light source.
-    // This value was stored in the shadow map (depth buffer of the frame buffer)
-    // which was passed to the shader as a texture map.
-    vec4 shadowmap_color = texture2D(u_Sampler, vertex_relative_to_light.xy);
+    // Get the shadow map's color value.
+    vec4 shadow_map_color = texture2D(u_Sampler, percentages.xy);
 
-    // The texture map contains a single depth value for each pixel. However,
-    // the texture2D sampler always returns a color from a texture. For a
-    // gl.DEPTH_COMPONENT texture, the color contains the depth value in
-    // each of the color components. If the value was d, then the color returned
-    // is (d,d,d,1). This is a "color" (depth) value between [0.0,+1.0].
-    float shadowmap_distance = shadowmap_color.r;
+    // The shadow_map contains only one depth value, but it was retrieved
+    // as a vec4 that contains (d,0,0,1).
+    float shadow_map_distance = shadow_map_color.r;
 
-    // Test the distance between this fragment and the light source as
-    // calculated using the shadowmap transformation (vertex_relative_to_light.z) and
-    // the smallest distance between the closest fragment to the light source
-    // for this location, as stored in the shadowmap. When the closest
-    // distance to the light source was saved in the shadowmap, some
-    // precision was lost. Therefore we need a small tolerance factor to
-    // compensate for the lost precision.
-    if ( vertex_relative_to_light.z <= shadowmap_distance + u_Tolerance_constant ) {
-      // This surface receives full light because it is the closest surface
-      // to the light.
-      return false;
-    } else {
-      // This surface is in a shadow because there is a closer surface to
-      // the light source.
-      return true;
-    }
+    // Is the z component of the vertex_relative_to_light greater than
+    // the distance retrieved from the shadow map?
+    // (Compensate for roundoff errors and lost precision.)
+    return percentages.z > shadow_map_distance + u_Tolerance_constant
   }
 
-A Demo of the "Shadowmap" Approach
-----------------------------------
+A WebGL Shadow Map Program
+--------------------------
 
-As you experiment with the following demo program the shadows should make
-sense to you. After you are convinced that the shadows are correct, try
-to create scenes where the shadows fail. Can you discern what causes the errors?
+Please experiment with the following WebGL program that implements shadows.
+The program will render correct shadows in some configurations and not
+other. Try to manipulate the scene to create incorrect shadows and then discern
+why the errors are occurring.
 
-.. WebglCode:: W1
-  :caption: Shadow experiments
-  :htmlprogram: shadows_example/shadows_example.html
-  :editlist: shadows_example_render_shadows.js, ../../lib/shaders/shader_shadow.vert, ../../lib/shaders/shader_shadow.frag
+.. webglinteractive:: W1
+  :htmlprogram: _static/12_shadows/shadows.html
+  :editlist: _static/12_shadows/shadows.vert, _static/12_shadows/shadows.frag
+  :hidecode:
+
 
 Dealing with Errors in Shadow Maps
 ----------------------------------
-
 
 Shadows will be rendered incorrectly because of the following reasons:
 
@@ -572,8 +563,11 @@ Glossary
 
 .. _shadow: https://en.wikipedia.org/wiki/Shadow
 .. _shadow maps: https://en.wikipedia.org/wiki/Shadow_mapping
-.. _10.2: 02_lights_diffuse.html
-.. _10.4: 04_lights_specular.html
+.. _10.2: ../10_lights/02_lights_diffuse.html
+.. _10.4: ../10_lights/04_lights_specular.html
+.. _12.1: ./01_introduction.html#webgl-extensions
+.. _here: https://webglstats.com/webgl/extension/WEBGL_depth_texture
+.. _10.1: ../10_lights/01_lights_introduction.html#calculating-light-reflection
 
 .. Notes-to-self
 

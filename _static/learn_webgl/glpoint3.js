@@ -79,6 +79,17 @@ window.GlPoint3 = function () {
   };
 
   /** ---------------------------------------------------------------------
+   * Copy the 2nd argument point into the first argument point. (to = from)
+   * @param to {Float32Array} An existing point.
+   * @param from {Float32Array} An existing point.
+   */
+  self.copy = function (to, from) {
+    to[0] = from[0];
+    to[1] = from[1];
+    to[2] = from[2];
+  };
+
+  /** ---------------------------------------------------------------------
    * Add a point and a vector.
    * @param result {Float32Array} result = p + v
    * @param p {Float32Array} An existing point.

@@ -320,6 +320,7 @@ window.GlMatrix4x4 = function () {
 
   /** -----------------------------------------------------------------
    * Create an orthographic projection matrix.
+   * @param M {Float32Array} 4x4 transformation matrix
    * @param left   {Number} Farthest left on the x-axis
    * @param right  {Number} Farthest right on the x-axis
    * @param bottom {Number} Farthest down on the y-axis
@@ -328,15 +329,12 @@ window.GlMatrix4x4 = function () {
    * @param far    {Number} Distance to the far clipping plane along the -Z axis
    * @return {Float32Array} The orthographic transformation matrix
    */
-  self.createOrthographic = function (left, right, bottom, top, near, far) {
-
-    let M = self.create();
+  self.orthographic = function (M, left, right, bottom, top, near, far) {
 
     // Make sure there is no division by zero
     if (left === right || bottom === top || near === far) {
       console.log("Invalid createOrthographic parameters");
       self.setIdentity(M);
-      return M;
     }
 
     let widthRatio  = 1.0 / (right - left);
@@ -355,12 +353,28 @@ window.GlMatrix4x4 = function () {
     M[1] = 0;   M[5] = sy;  M[9] = 0;   M[13] = ty;
     M[2] = 0;   M[6] = 0;   M[10] = sz; M[14] = tz;
     M[3] = 0;   M[7] = 0;   M[11] = 0;  M[15] = 1;
+  };
 
+  /** -----------------------------------------------------------------
+   * Create an orthographic projection matrix.
+   * @param left   {Number} Farthest left on the x-axis
+   * @param right  {Number} Farthest right on the x-axis
+   * @param bottom {Number} Farthest down on the y-axis
+   * @param top    {Number} Farthest up on the y-axis
+   * @param near   {Number} Distance to the near clipping plane along the -Z axis
+   * @param far    {Number} Distance to the far clipping plane along the -Z axis
+   * @return {Float32Array} The orthographic transformation matrix
+   */
+  self.createOrthographic = function (left, right, bottom, top, near, far) {
+
+    let M = self.create();
+    self.orthographic(M, left, right, bottom, top, near, far);
     return M;
   };
 
   /** -----------------------------------------------------------------
    * Create a perspective projection matrix based on the limits of a frustum.
+   * @param M {Float32Array} 4x4 transformation matrix
    * @param left   {Number} Farthest left on the x-axis
    * @param right  {Number} Farthest right on the x-axis
    * @param bottom {Number} Farthest down on the y-axis
@@ -369,9 +383,7 @@ window.GlMatrix4x4 = function () {
    * @param far    {Number} Distance to the far clipping plane along the -Z axis
    * @return {Float32Array} A perspective transformation matrix
    */
-  self.createFrustum = function (left, right, bottom, top, near, far) {
-
-    let M = self.create();
+  self.frustum = function (M, left, right, bottom, top, near, far) {
 
     // Make sure there is no division by zero
     if (left === right || bottom === top || near === far) {
@@ -397,7 +409,22 @@ window.GlMatrix4x4 = function () {
       M[2] = 0;  M[6] = 0;  M[10] = c1;  M[14] = c2;
       M[3] = 0;  M[7] = 0;  M[11] = -1;  M[15] = 0;
     }
+  };
 
+  /** -----------------------------------------------------------------
+   * Create a perspective projection matrix based on the limits of a frustum.
+   * @param left   {Number} Farthest left on the x-axis
+   * @param right  {Number} Farthest right on the x-axis
+   * @param bottom {Number} Farthest down on the y-axis
+   * @param top    {Number} Farthest up on the y-axis
+   * @param near   {Number} Distance to the near clipping plane along the -Z axis
+   * @param far    {Number} Distance to the far clipping plane along the -Z axis
+   * @return {Float32Array} A perspective transformation matrix
+   */
+  self.createFrustum = function (left, right, bottom, top, near, far) {
+
+    let M = self.create();
+    self.frustum(M, left, right, bottom, top, near, far);
     return M;
   };
 
@@ -445,6 +472,32 @@ window.GlMatrix4x4 = function () {
 
   /** -----------------------------------------------------------------
    * Create a perspective projection matrix using a field-of-view and an aspect ratio.
+   * @param M {Float32Array} 4x4 transformation matrix
+   * @param fovy   {Number} The angle between the upper and lower sides of the viewing frustum.
+   * @param aspect {Number} The aspect ratio of the view window. (width/height).
+   * @param near   {Number} Distance to the near clipping plane along the -Z axis.
+   * @param far    {Number} Distance to the far clipping plane along the -Z axis.
+   * @return {Float32Array} The perspective transformation matrix.
+   */
+  self.perspective = function (M, fovy, aspect, near, far) {
+
+    if (fovy <= 0 || fovy >= 180 || aspect <= 0 || near >= far || near <= 0) {
+      console.log('Invalid parameters to createPerspective');
+      self.setIdentity(M);
+    } else {
+      let half_fovy = self.toRadians(fovy) / 2;
+
+      let top = near * Math.tan(half_fovy);
+      let bottom = -top;
+      let right = top * aspect;
+      let left = -right;
+
+      self.frustum(M, left, right, bottom, top, near, far);
+    }
+  };
+
+  /** -----------------------------------------------------------------
+   * Create a perspective projection matrix using a field-of-view and an aspect ratio.
    * @param fovy   {Number} The angle between the upper and lower sides of the viewing frustum.
    * @param aspect {Number} The aspect ratio of the view window. (width/height).
    * @param near   {Number} Distance to the near clipping plane along the -Z axis.
@@ -453,7 +506,21 @@ window.GlMatrix4x4 = function () {
    */
   self.createPerspective = function (fovy, aspect, near, far) {
 
-    let M;
+    let M = self.create();
+    self.perspective(M, fovy, aspect, near, far);
+    return M;
+  };
+
+  /** -----------------------------------------------------------------
+   * Create a perspective projection matrix using a field-of-view and an aspect ratio.
+   * @param M {Float32Array} 4x4 transformation matrix
+   * @param fovy   {Number} The angle between the upper and lower sides of the viewing frustum.
+   * @param aspect {Number} The aspect ratio of the view window. (width/height).
+   * @param near   {Number} Distance to the near clipping plane along the -Z axis.
+   * @param far    {Number} Distance to the far clipping plane along the -Z axis.
+   * @return {Float32Array} The perspective transformation matrix.
+   */
+  self.perspective = function (M, fovy, aspect, near, far) {
 
     if (fovy <= 0 || fovy >= 180 || aspect <= 0 || near >= far || near <= 0) {
       console.log('Invalid parameters to createPerspective');
@@ -467,10 +534,8 @@ window.GlMatrix4x4 = function () {
       let right = top * aspect;
       let left = -right;
 
-      M = self.createFrustum(left, right, bottom, top, near, far);
+      self.frustum(M, left, right, bottom, top, near, far);
     }
-
-    return M;
   };
 
   /** -----------------------------------------------------------------

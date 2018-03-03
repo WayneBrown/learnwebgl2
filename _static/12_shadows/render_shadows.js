@@ -1,5 +1,5 @@
 /**
- * render_uniform_color_lighting.js, By Wayne Brown, Spring 2018
+ * render_shadows.js, By Wayne Brown, Spring 2018
  */
 
 /**
@@ -34,36 +34,50 @@
  * @param program {WebGLProgram} a shader program
  * @param model_buffers {ModelArraysGPU} GPU object buffers that hold the model data
  * @param out {ConsoleMessages} display messages to the web page
+ * @param number_lights {number} number of lights
  * @constructor
  */
-window.RenderUniformColorWithLighting = function (gl, program, model_buffers, out) {
+window.RenderShadows = function (gl, program, model_buffers, out, number_lights) {
 
   let self = this;
 
   // To delete this rendering context, call the model_buffers delete function.
   self.delete = model_buffers.delete;
-  self.model_buffers = model_buffers;
 
-  //-----------------------------------------------------------------------
-  // One-time pre-processing tasks:
-
-  // Set the specular shininess exponent
   self.shininess = 30.0; // default value
   if (model_buffers && model_buffers.triangles && model_buffers.triangles.material) {
     self.shininess = model_buffers.triangles.material.Ns; // specular exponent
   }
 
+  //-----------------------------------------------------------------------
+  // One-time pre-processing tasks:
+
   // Get the location of the shader program's uniforms and attributes
   program.u_To_clipping_space   = gl.getUniformLocation(program, "u_To_clipping_space");
   program.u_To_camera_space     = gl.getUniformLocation(program, "u_To_camera_space");
-  program.u_Light_position      = gl.getUniformLocation(program, "u_Light_position");
-  program.u_Light_color         = gl.getUniformLocation(program, "u_Light_color");
-  program.u_Shininess           = gl.getUniformLocation(program, "u_Shininess");
+
+  program.lights = new Array(number_lights);
+  for (let j=0; j<number_lights; j += 1) {
+    program.lights[j] = {};
+    program.lights[j].position = gl.getUniformLocation(program, "u_Lights[" + j + "].position");
+    program.lights[j].color = gl.getUniformLocation(program,    "u_Lights[" + j + "].color");
+    program.lights[j].is_on = gl.getUniformLocation(program,    "u_Lights[" + j + "].is_on");
+    program.lights[j].transform = gl.getUniformLocation(program,"u_Lights[" + j + "].transform");
+    program.lights[j].texture_unit = gl.getUniformLocation(program,"u_Lights[" + j + "].texture_unit");
+  }
+
+
+  program.u_Tolerance_constant = gl.getUniformLocation(program, "u_Tolerance_constant");
+
   program.u_Ambient_intensities = gl.getUniformLocation(program, "u_Ambient_intensities");
-  program.u_Color               = gl.getUniformLocation(program, 'u_Color');
+  program.u_c1                  = gl.getUniformLocation(program, "u_c1");
+  program.u_c2                  = gl.getUniformLocation(program, "u_c2");
+
+  program.u_Shininess           = gl.getUniformLocation(program, "u_Shininess");
 
   program.a_Vertex  = gl.getAttribLocation(program, 'a_Vertex');
   program.a_Normal  = gl.getAttribLocation(program, 'a_Normal');
+  program.a_Color   = gl.getAttribLocation(program, 'a_Color');
 
   /**----------------------------------------------------------------------
    * Render the individual points in the model.
@@ -81,6 +95,13 @@ window.RenderUniformColorWithLighting = function (gl, program, model_buffers, ou
       // Bind the vertices VOB to the 'a_Vertex' shader variable
       gl.vertexAttribPointer(program.a_Vertex, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(program.a_Vertex);
+
+      // Activate the model's point color object buffer
+      gl.bindBuffer(gl.ARRAY_BUFFER, colors.id);
+
+      // Bind the colors VOB to the 'a_Color' shader variable
+      gl.vertexAttribPointer(program.a_Color, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Color);
 
       // Draw all of the lines
       gl.drawArrays(gl.POINTS, 0, vertices.number_values / 3);
@@ -104,6 +125,13 @@ window.RenderUniformColorWithLighting = function (gl, program, model_buffers, ou
       gl.vertexAttribPointer(program.a_Vertex, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(program.a_Vertex);
 
+      // Activate the model's line color object buffer
+      gl.bindBuffer(gl.ARRAY_BUFFER, colors.id);
+
+      // Bind the colors VOB to the 'a_Color' shader variable
+      gl.vertexAttribPointer(program.a_Color, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Color);
+
       // Draw all of the lines
       gl.drawArrays(gl.LINES, 0, vertices.number_values / 3);
     }
@@ -117,7 +145,7 @@ window.RenderUniformColorWithLighting = function (gl, program, model_buffers, ou
     if (model_buffers.triangles !== null && model_buffers.triangles.number > 0) {
 
       let vertices = model_buffers.triangles.vertices;
-      let normals = model_buffers.triangles.smooth_normals;
+      let normals = model_buffers.triangles.flat_normals;
       let colors = model_buffers.triangles.colors;
 
       // Activate the model's triangle vertex object buffer (VOB)
@@ -134,28 +162,15 @@ window.RenderUniformColorWithLighting = function (gl, program, model_buffers, ou
       gl.vertexAttribPointer(program.a_Normal, 3, gl.FLOAT, false, 0, 0);
       gl.enableVertexAttribArray(program.a_Normal);
 
+      // Activate the model's triangle color object buffer
+      gl.bindBuffer(gl.ARRAY_BUFFER, colors.id);
+
+      // Bind the colors VOB to the 'a_Color' shader variable
+      gl.vertexAttribPointer(program.a_Color, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Color);
+
       // Draw all of the triangles
       gl.drawArrays(gl.TRIANGLES, 0, vertices.number_values / 3);
-    }
-  }
-
-  /**----------------------------------------------------------------------
-   * Render the individual lines in the model.
-   * @private
-   */
-  function _renderWireframe() {
-    if (model_buffers.wireframe !== null && model_buffers.wireframe.vertices.id !== null) {
-
-      // Activate the model's line vertex object buffer (VOB)
-      gl.bindBuffer(gl.ARRAY_BUFFER, model_buffers.wireframe.vertices.id);
-
-      // Bind the vertices VOB to the 'a_Vertex' shader variable
-      //var stride = self.vertices3[0].BYTES_PER_ELEMENT*3;
-      gl.vertexAttribPointer(program.a_Vertex, 3, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(program.a_Vertex);
-
-      // Draw all of the lines
-      gl.drawArrays(gl.LINES, 0, model_buffers.wireframe.number);
     }
   }
 
@@ -163,10 +178,8 @@ window.RenderUniformColorWithLighting = function (gl, program, model_buffers, ou
    * Render the model under the specified transformation.
    * @param clipping_space {Float32Array} - A 4x4 transformation matrix.
    * @param camera_space {Float32Array} - A 4x4 transformation matrix.
-   * @param color {Float32Array} - RGBA color value.
-   * @param wireframe {boolean} - it true, display in wireframe
    */
-  self.render = function (clipping_space, camera_space, color, wireframe = false) {
+  self.render = function (clipping_space, camera_space) {
 
     gl.useProgram(program);
 
@@ -174,15 +187,10 @@ window.RenderUniformColorWithLighting = function (gl, program, model_buffers, ou
     gl.uniformMatrix4fv(program.u_To_camera_space, false, camera_space);
 
     gl.uniform1f(program.u_Shininess, self.shininess);
-    gl.uniform4fv(program.u_Color, color);
 
     _renderPoints();
     _renderLines();
-    if (wireframe && model_buffers.wireframe !== null) {
-      _renderWireframe();
-    } else {
-      _renderTriangles();
-    }
+    _renderTriangles();
   };
 
 };

@@ -1,6 +1,6 @@
 # Blender v2.69 (sub 0) OBJ File: 'Axises.blend'
 # www.blender.org
-mtllib Axes.mtl
+mtllib axes.mtl
 o z_axis
 v -0.017179 -0.195712 8.773446
 v 0.129622 -0.134905 8.773446

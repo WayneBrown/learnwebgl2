@@ -43,6 +43,7 @@ window.RenderUniformColor = function (gl, program, model_buffers, out) {
 
   // To delete this rendering context, call the model_buffers delete function.
   self.delete = model_buffers.delete;
+  self.model_buffers = model_buffers;
 
   /**----------------------------------------------------------------------
    * Render the individual points in the model.
