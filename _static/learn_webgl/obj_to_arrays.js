@@ -204,7 +204,7 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
   function _getColorsFromMaterials() {
     let material, name, number_colors, index;
 
-    if (Object.keys(materials_dictionary).length >= 1) {
+    if (materials_dictionary && Object.keys(materials_dictionary).length >= 1) {
 
       number_colors = Object.keys(materials_dictionary).length - 1;
       all_colors = new Array(number_colors);
@@ -230,7 +230,9 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
 
     if (current_model.points === null) {
       current_model.points = new PointsData();
-      current_model.points.material = materials_dictionary[material_name];
+      if (materials_dictionary) {
+        current_model.points.material = materials_dictionary[material_name];
+      }
 
       current_model.points.vertices = [];
       current_model.points.colors = [];
@@ -241,7 +243,9 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
     while (index) {
       // Add a point to the model definition
       current_model.points.vertices.push(index);
-      current_model.points.colors.push(color_index);
+      if (materials_dictionary) {
+        current_model.points.colors.push(color_index);
+      }
 
       index = sp.getWord();
     }
@@ -551,7 +555,7 @@ function CreateModelsFromOBJ(model_description, materials_dictionary, out) {
   function _indexesToValues(indexes, source_data, n_per_value) {
     let j, k, n, array, size, index;
 
-    if (source_data.length <= 0) {
+    if (source_data === null || source_data.length <= 0) {
       return null;
     } else {
       size = indexes.length * n_per_value;

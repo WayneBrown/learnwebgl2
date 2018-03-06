@@ -62,7 +62,7 @@ window.RenderUniformColor = function (gl, program, model_buffers, out) {
       gl.enableVertexAttribArray(program.a_Vertex);
 
       // Draw all of the lines
-      gl.drawArrays(gl.POINTS, 0, vertices.number);
+      gl.drawArrays(gl.POINTS, 0, vertices.number_values/3);
     }
   }
 

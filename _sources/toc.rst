@@ -207,6 +207,8 @@ Chapter 12: Advanced Rendering and Transparency
   12_advanced_rendering/04_transparency
   12_advanced_rendering/05_color_blending
   12_advanced_rendering/06_shadows
+  12_advanced_rendering/07_rendering_points
+  12_advanced_rendering/08_particle_systems
   12_advanced_rendering/10_3d_text
   12_advanced_rendering/11_overlays
 
@@ -219,7 +221,6 @@ Chapter 12: Advanced Rendering and Transparency
 .. This chapter is being refined and will be available in late February 2018.
 
 * Particle Systems
-* Overlays
 
 
 Chapter 13: Shader Language
