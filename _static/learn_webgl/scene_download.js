@@ -40,14 +40,16 @@
  * program, get a valid webgl context, and build webgl programs from
  * shaders.
  *
- * @param id The id of the webgldemo
- * @param canvas_id The id of the canvas element to render to.
- * @param scene_object The name of a function that will create and render a scene.
- * @param model_list A list of models that will be rendered.
- * @param shader_list A list of shader programs.
+ * @param id {string} The id of the webgldemo
+ * @param canvas_id {string} The id of the canvas element to render to.
+ * @param scene_object {string} The name of a function that will create and render a scene.
+ * @param model_list {array} A list of models that will be rendered.
+ * @param shader_list {array} A list of shader programs.
+ * @param image_list {array} of strings (optional)
  * @constructor
  */
-window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_list) {
+window.SceneDownload = function(id, canvas_id, scene_object, model_list,
+                                shader_list, image_list = null) {
 
   let self = this;
 
@@ -60,6 +62,7 @@ window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_
   self.model_data_dictionary = {};  // text data from OBJ model files
   self.materials_data_dictionary = {}; // text data from MTL files
   self.materials_dictionary = {}; // materials_dictionary ['filename']['materialname']
+  self.images = { number: 0 }; // images downloaded; key is file name
 
   self.scene = null;
 
@@ -129,7 +132,13 @@ window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_
       }
 
       // Create a Scene object which does all the rendering and events
-      self.scene = new window[scene_object](id, self, self.vshaders, self.fshaders, model_dictionary);
+      if (self.images.number > 0) {
+        self.scene = new window[scene_object](id, self, self.vshaders, self.fshaders,
+                                              model_dictionary, self.images);
+      } else {
+        self.scene = new window[scene_object](id, self, self.vshaders, self.fshaders,
+                                              model_dictionary);
+      }
       self.scene.render();
     }
   };
@@ -351,6 +360,47 @@ window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_
   }
 
   /**----------------------------------------------------------------------
+   * Download an image.
+   * @param image_filename {string} The filename of a image file.
+   * @private
+   */
+  function _downloadImage(image_filename) {
+    let file_parts, key_name, new_image;
+
+    // Use the path to the model file to get the location of the texturemap file.
+    file_parts = self.parseFilename(image_filename);
+    key_name = file_parts.filename;
+
+    new_image = new Image();
+    new_image.src = image_filename;
+    new_image.onload =
+      function () {
+        number_retrieved += 1;
+        out.displayInfo("Downloaded image '" + image_filename
+          + "', " + number_retrieved + " of "
+          + downloads_needed);
+
+        self.images[key_name] = new_image;
+        self.images.number += 1;
+
+        self.initializeRendering();
+      };
+  }
+
+  /**----------------------------------------------------------------------
+   * Given a list of OBJ model data files, download all of the models.
+   * @param image_list {array} of strings; names of image files
+   * @private
+   */
+  function _downloadAllImages(image_list) {
+    if (image_list) {
+      for (let j = 0; j < image_list.length; j += 1) {
+        _downloadImage(image_list[j]);
+      }
+    }
+  }
+
+  /**----------------------------------------------------------------------
    * Get a canvas element given its unique id.
    * @param canvas_id The HTML id of the canvas to render to.
    * @return The matching canvas element
@@ -495,6 +545,9 @@ window.SceneDownload = function(id, canvas_id, scene_object, model_list, shader_
 
   // Download all of the external content
   downloads_needed = shader_list.length + model_list.length;
+  if (image_list) downloads_needed += image_list.length;
+
   _downloadAllShaders(shader_list);
   _downloadAllModels(model_list);
+  _downloadAllImages(image_list);
 };

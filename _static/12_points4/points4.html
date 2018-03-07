@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <h2>Experiment with gl_PointSize.</h2>
+  <h2>Experiment with billboards.</h2>
 
   <!--The canvas window for rendering 3D graphics -->
   <canvas id="my_canvas" class="webgldemo_canvas" width="300" height="300">
@@ -24,12 +24,10 @@
   <!-- An HTML control element that can be used to modify the rendering behavior -->
   <table>
     <tr>
-      <td style="width:90px">Size = 2.0</td>
-      <td>1.0 <input type="range" id="my_size" min="1.0" max="100.0" value="2.0" step="0.1" style="width:150px"> 100.0</td>
+      <td style="width:90px">Size = 30.0</td>
+      <td>1.0 <input type="range" id="my_size" min="1.0" max="100.0" value="30.0" step="0.1" style="width:250px"> 100.0</td>
     </tr>
   </table>
-  Valid point sizes on this WebGL system: <span id="my_point_range"></span><br>
-  (Use query: gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE))<br>
   <input type="checkbox" id="my_animate" checked> Animate <br>
 
   <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
@@ -41,20 +39,21 @@
   <script src="../learn_webgl/model_definitions.js"></script>
   <script src="../learn_webgl/model_arrays_gpu.js"></script>
   <script src="../learn_webgl/obj_to_arrays.js"></script>
-  <script src="../learn_webgl/render_uniform_color.js"></script>
-  <script src="../learn_webgl/render_uniform_transparency.js"></script>
-  <script src="./points1_scene.js"></script>
-  <script src="./points1_events.js"></script>
+  <script src="./render_point_texture2.js"></script>
+  <script src="./points4_scene.js"></script>
+  <script src="./points4_events.js"></script>
 
   <!--
     Create an instance of the learn_webgl class, and start the WebGL program.
     We do this here to pass the canvas ID into the javascript code.
   -->
   <script>
-    let my_shaders = ["../12_points1/uniform_point_size.vert",
-                      "../12_points1/uniform_point_size.frag"];
+    let my_shaders = ["../12_points4/uniform_point_size2.vert",
+                      "../12_points4/uniform_point_texture2.frag"];
     let my_models = ["../models/cube_points.obj"];
-    window.my_program = new SceneDownload("my", "my_canvas", "Points1Scene", my_models, my_shaders);
+    let my_images = ["../12_points3/explosion_seamless.png"];
+    window.my_program = new SceneDownload("my", "my_canvas", "Points4Scene",
+                                          my_models, my_shaders, my_images);
   </script>
 
 </body>

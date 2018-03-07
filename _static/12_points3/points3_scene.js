@@ -1,5 +1,5 @@
 /**
- * points1_scene.js, By Wayne Brown, Spring 2018
+ * points3_scene.js, By Wayne Brown, Spring 2018
  */
 
 /**
@@ -36,10 +36,11 @@
  * @param vshaders_dictionary A dictionary of vertex shaders.
  * @param fshaders_dictionary A dictionary of fragment shaders.
  * @param models A dictionary of models.
+ * @param images {object} A dictionary of downloaded images.
  * @constructor
  */
-window.Points1Scene = function (id, download, vshaders_dictionary,
-                               fshaders_dictionary, models) {
+window.Points3Scene = function (id, download, vshaders_dictionary,
+                               fshaders_dictionary, models, images) {
 
   // Private variables
   let self = this;
@@ -62,7 +63,7 @@ window.Points1Scene = function (id, download, vshaders_dictionary,
   self.angle_x = 0.0;
   self.angle_y = 0.0;
   self.animate_active = true;
-  self.point_size = 2.0;
+  self.point_size = 30.0;
 
   //-----------------------------------------------------------------------
   self.render = function () {
@@ -115,7 +116,7 @@ window.Points1Scene = function (id, download, vshaders_dictionary,
 
   // Set up the rendering programs
   program = download.createProgram(gl, vshaders_dictionary["uniform_point_size"],
-                                       fshaders_dictionary["uniform_point_size"]);
+                                       fshaders_dictionary["uniform_point_texture"]);
   program.u_Size = gl.getUniformLocation(program, 'u_Size');
   gl.useProgram(program);
 
@@ -127,7 +128,7 @@ window.Points1Scene = function (id, download, vshaders_dictionary,
 
   // Create Vertex Object Buffers for the models
   gpuModel = new ModelArraysGPU(gl, models["cube_points"], out);
-  cube_points = new RenderUniformColor(gl, program, gpuModel, download.out);
+  cube_points = new RenderPointTexture(gl, program, gpuModel, download.out, images["explosion_seamless"]);
 
   // Show the maximum size for a point on the current WebGL system
   let point_range = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
@@ -137,7 +138,7 @@ window.Points1Scene = function (id, download, vshaders_dictionary,
 
   // Set up callbacks for user and timer events
   let events;
-  events = new Points1Events(id, self);
+  events = new Points3Events(id, self);
   if (self.animate_active) events.animate();
 };
 

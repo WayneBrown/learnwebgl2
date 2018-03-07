@@ -62,7 +62,7 @@ window.Points2Scene = function (id, download, vshaders_dictionary,
   self.angle_x = 0.0;
   self.angle_y = 0.0;
   self.animate_active = true;
-  self.point_size = 1.0;
+  self.point_size = 2.0;
 
   //-----------------------------------------------------------------------
   self.render = function () {

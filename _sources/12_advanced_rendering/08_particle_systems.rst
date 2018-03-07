@@ -10,7 +10,7 @@
 .. role:: raw-html(raw)
   :format: html
 
-12.7 - Particle Systems
+12.8 - Particle Systems
 :::::::::::::::::::::::
 
 Natural phenomenon such as fire, clouds, water, explosions, and smoke as not
