@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <h2>Experiment with Full Screen Mode</h2>
+  <h2>Experiment with a Particle System</h2>
 
   <div id="my_container">
     <!--The canvas window for rendering 3D graphics -->
@@ -22,11 +22,50 @@
     </canvas>
   </div>
 
-  <input type="button" id="my_fullscreen", value="Start Fullscreen Mode" /><br>
+  Particle System &nbsp;&nbsp;&nbsp;&nbsp; Frames per second: <span id="my_fps"></span><br>
+  <input type="button" id="my_animate" value="Start/Continue" /> &nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="button" id="my_step" value="Pause/Step" /> &nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="button" id="my_reset" value="Stop/Reset" /><br>
+
+  <table style="margin-top: 8px;">
+    <tr>
+      <td>Number particles: <span id="my_number_text">5000</span></td>
+    </tr>
+    <tr>
+      <td>1 <input type="range" id="my_number" min="1" max="5000" value="5000" step="1" style="width:250px"> 5000</td>
+    </tr>
+  </table>
+
+  Add new particles randomly in the range
+  <input type="number" id="my_min_add" value="5" min="0" max="99" step="1"/>
+  to
+  <input type="number" id="my_max_add" value="15" min="0" max="200" step="1"/>
+  <br>
+
+  Particle speed random in the range
+  <input type="number" id="my_min_speed" value="0.01" min="0.001" max="0.3" step="0.001"/>
+  to
+  <input type="number" id="my_max_speed" value="0.1" min="0.001" max="0.3" step="0.001"/>
+  <br>
+
+  Particle lifetime random in the range
+  <input type="number" id="my_min_lifetime" value="15" min="0" max="60" step="1"/>
+  to
+  <input type="number" id="my_max_lifetime" value="30" min="0" max="60" step="1"/>
+  <br>
+
+  Particle size random in the range
+  <input type="number" id="my_min_size" value="4" min="1" max="99" step="1"/>
+  to
+  <input type="number" id="my_max_size" value="4" min="1" max="99" step="1"/>
+  <br>
+
+  <input type="checkbox" id="my_sort" checked>Sort particles back to front before rendering.<br>
 
   <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
   <script src="../learn_webgl/scene_download.js"></script>
   <script src="../learn_webgl/console_messages.js"></script>
+  <script src="../learn_webgl/glpoint3.js"></script>
   <script src="../learn_webgl/glpoint4.js"></script>
   <script src="../learn_webgl/glvector3.js"></script>
   <script src="../learn_webgl/glmatrix4x4.js"></script>
@@ -36,19 +75,20 @@
   <script src="../learn_webgl/obj_to_arrays.js"></script>
   <script src="../learn_webgl/render_color_per_vertex.js"></script>
   <script src="../learn_webgl/render_lighting.js"></script>
-  <script src="./bunny_scene.js"></script>
-  <script src="./bunny_events.js"></script>
-  <script src="./render_bunny.js"></script>
+  <script src="./particles1_scene.js"></script>
+  <script src="./particles1_events.js"></script>
+  <script src="./particle_system.js"></script>
 
   <!--
     Create an instance of the learn_webgl class, and start the WebGL program.
     We do this here to pass the canvas ID into the javascript code.
   -->
   <script>
-    let my_shaders = ["../11_bunny/bunny.vert",
-                      "../11_bunny/bunny.frag"];
-    let my_models = ["../models/bunny3.obj"];
-    window.my_program = new SceneDownload("my", "my_canvas", "BunnyScene", my_models, my_shaders);
+    let my_shaders = ["../12_particles1/particles1.vert",
+                      "../12_particles1/particles1.frag"];
+    let my_models = [];
+    let my_images = ["../12_points3/explosion_seamless.png"];
+    window.my_program = new SceneDownload("my", "my_canvas", "Particles1Scene", my_models, my_shaders, my_images);
   </script>
 
 </body>

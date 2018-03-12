@@ -13,168 +13,258 @@
 12.8 - Particle Systems
 :::::::::::::::::::::::
 
-Natural phenomenon such as fire, clouds, water, explosions, and smoke as not
-easily modeled by a triangular mesh. This lesson describes how to implement
+Natural phenomenon such as fire, clouds, water, explosions, and smoke are not
+easily modeled by a triangular mesh. This lesson describes the concept of
 a `particle system`_ which can be used to model this type of phenomenon.
 
 The Big Idea
 ------------
 
-A *particle system* models a physical phenomenon over a time span. Each
-individual particle has a "lifetime" and each particle's properties are
-independently varied over its lifetime.
-While a *particle system* is running new particles are added and some of the
-current particles "die off".
-The complexity of a *particle system* is based on two things: 1) the number of properties
-each particle has, and 2) the complexity of the manipulation of those properties
-over time.
+A *particle system* models a physical phenomenon over a time span and
+is composed of many individual "particles." Each
+particle has a "lifetime" that controls how long it is part of an animation.
+Between frames of an animation new particles
+might be added while other active particles might "die off".
+Various properties of a particle can be modified over its lifespan
+to affect how it is rendered.
+The complexity of a *particle system* is based on 1) the number of active
+particles in the system, 2) the number of properties of
+each particle, and 3) the complexity of the property manipulation over time.
+A **simple** *particle system* might define the following properties for each particle:
 
-A simple *particle system* might define the following properties for each particle:
-
-* **start_location** - a particle's initial position in 3D space when it is created.
-* **location** - a particle's current position in 3D space.
-* **direction** - a particle's direction of travel.
+* **location** - a particle's current location in 3D space.
+* **path** - a particle's path over time. (A single direction vector or perhaps a Bezier curve.)
 * **speed** - a particle's change in location over time (distance / time).
-* **lifetime** - a particle's lifetime (in frames or time).
+* **size** - a particle's size.
+* **texture coordinates** - a particle's location in a texture map.
+* **lifetime** - how long a particle is part of a *particle system* (in animation frames or clock time).
 
-A property of a particle might remain constant during the execution
-of a *particle system* or it might change on each frame. For example,
-a particle might have a constant speed during its lifetime, or the
-speed might increase or decrease during its lifetime.
+The behaviour of a *particle system* is defined by a set of "rules" that
+control how particles are initialized and modified over time. A single "rule"
+might define how a property changes during the entire lifetime of a particle,
+or separate "rules" might be used at various stages of a particle's life.
+Therefore, a *particle system* defines particle properties, "rules" for
+changing those properties, and "rules" for changing the "rules". The
+big idea behind a *particle system* is straightforward, but its implementation
+can be complex.
 
-Other possible properties of a particle include color,
-texture coordinates, texture_maps,
-normal vector, transparency, and/or spin.
+A *particle system* is often implemented with randomness built into its
+"rules." Properties and the rules that update them typically define a range
+of possible values. For example, the **size** of a particle might be some
+random value in the range 3.6 to 6.8.
+Getting a *particle system* to simulate a particular physical phenomenon
+requires careful tuning of the property ranges. (To remove all randomness,
+use the same value for the lower and upper limits of a range.)
 
-Answers to the following questions will aid in the implementation
-of a *particle system*.
+Typically the rendering of a *particle system* is intended to produce a
+visual representation of a coherent physical phenomenon -- not the rendering
+of a set of disjoint "particles." Transparency and color blending
+are often critical parts of a *particle system* rendering. If a camera is allowed to view
+a *particle system* from any angle, transparency requires that the particles
+be sorted from back-to-front before rendering. If the camera view can be restricted,
+no sorting of the particles is required as long as the particles are created and
+organized in an appropriate sorted order.
 
-* How are new particles added to a *particle system*?
-* How are particles removed when their "lifetime" expires?
-* How are properties of a particle changed over the particle's lifetime?
-* How can particles be rendered to make they look like a single phenomenon
-  and not individual elements?
+Implementing a Particle System
+------------------------------
 
-Creating New Particles
+Real-time rendering of complex scenes is possible because of the speed
+of GPU's. To render a triangular mesh, its data is copied into a
+GPU *buffer object* once and then rendered under a transformation
+thousand's of times using a single call to :code:`gl.drawArrays()`.
+This type of rendering is not possible for a *particle system* where
+the particles' properties are changing between each animation frame.
+Here are some possible scenarios for rendering a *particle system*:
+
+1. Render each particle using a call to :code:`gl.drawArrays()`. The
+   properties of a particle are modified and uploaded to a *shader program*
+   as :code:`uniform` variables before calling :code:`gl.drawArrays()`.
+   This is very inefficient and the number of particles that can be
+   rendered in real-time is limited.
+   :raw-html:`<br><br>`
+
+2. Create an array of data for each particle property. For each
+   frame of an animation, update the property values for every particle,
+   copy the arrays to the GPU, and render all of the particles with a
+   single call to :code:`gl.drawArrays()`. (Sorting of the particles
+   is possible -- if needed.)
+   :raw-html:`<br><br>`
+
+3. Create an array of data for each particle property **and** arrays of
+   data that define how the particles are changing. Use a :code:`uniform`
+   shader variable to represent a frame number (or time value). Given a
+   specific frame number, the *shader program* calculates modifications
+   to the particle properties and no data arrays
+   need to be copied to the GPU. The entire *particle system* can
+   be rendered with a single call to :code:`gl.drawArrays()`. However,
+   the *shader program* will be complex and sorting of the particles
+   is not possible because a *shader program* is not allowed to modify
+   a *vertex object buffer*.
+
+The example WebGL program in this lesson is implemented using scenario #2.
+
+Experimentation
+...............
+
+Please experiment with the following WebGL program and study the
+*particle system* implementation in :code:`particle_system.js`.
+Please note the following data arrays used to represent a *particle system*:
+
+.. Code-Block:: JavaScript
+
+  // Rendering data for particles:
+  let location            = new Float32Array(max_particles * 3);
+  let size                = new Float32Array(max_particles);
+  let texture_coordinates = new Float32Array(max_particles * 2);
+  let color_alpha         = new Float32Array(max_particles);
+
+  // Data to update and manage the particles:
+  let direction = new Array(max_particles);
+  let speed     = new Array(max_particles);
+  let alive     = new Array(max_particles);
+  let lifetime  = new Array(max_particles);
+
+Please note the functions used to create and manage a *particle system*:
+
+.. Code-Block:: JavaScript
+
+  // Private functions:
+  function _randomFloat(min, max) { .. }
+  function _randomInt(min, max) { .. }
+  function _create() { .. }
+  function _initializeParticle(index) { .. }
+  function _deleteParticle(delete_index) { .. }
+  function _updateParticle(index) { .. }
+  function _updateBufferObject(buffer_id, data) { .. }
+  function _updateGPU () { .. }
+
+  // Public functions:
+  self.reset  = function() { .. }
+  self.update = function() { .. }
+  self.render = function(transform, camera_space) { .. }
+
+.. webglinteractive:: W1
+  :htmlprogram: _static/12_particles1/particles1.html
+  :editlist: _static/12_particles1/particle_system.js
+  :hideoutput:
+
+As you experiment with the above WebGL program, please ensure
+that you observed the following:
+
+* Pause the *particle system* and then rotate the particles
+  using a click and drag in the canvas window. This allows
+  investigation of the 3D nature of the *particle system*.
+  :raw-html:`<br>`
+
+* To remove the randomness in the system, use identical values
+  for the minimum and maximum values of a property range.
+  :raw-html:`<br>`
+
+* The effect of sorting (or not sorting) the particles can best
+  be seen when the particles have a large size.
+  :raw-html:`<br>`
+
+* Set the number of particles to 1 to see individual particles
+  being created and modified.
+  :raw-html:`<br>`
+
+* The :code:`color_alpha` value is set based on the "age" of
+  a particle using a :code:`cos` function. This causes a particle
+  to "fade out" as it gets close to its "death". When :code:`percent_alive`
+  goes to 100%, the alpha value goes to 0.0. The calculations
+  are:
+
+  .. Code-Block:: JavaScript
+
+    let percent_alive = alive[index] / lifetime[index];
+    color_alpha[index] = Math.cos(percent_alive * Math.PI*0.5);
+
+
+Implementation Details
 ......................
 
-Natural phenomenon typically have a randomness to their appearance. Therefore
-the properties of a particle are typically defined using random numbers in some
-restricted range. For example, the starting location of a particle might be
-defined as some random distance between 0.0 to 2.5 from a specific location. Along the
-same idea, the number of new particles added to a *particle system* at each
-time step might be a random value between 5 and 10. The number of possible
-scenarios is only limited by your imagination.
+To efficiently render a *particle system* the particle properties must
+be stored in GPU *vertex object buffers*, which is always a :code:`Float32Array`
+for WebGL 1.0. Large arrays must be efficiently organized as new particles
+are added and other particles "die off". JavaScript allows for dynamic array growth,
+but at a cost of slower execution speeds. The following options assume that
+a large array is allocated to store a property of all particles and the array's
+size remains unchanged during the execution of a *particle system*.
 
-A *particle system* is implemented as a list of particles. New particles are
-added to the system by simply creating them and appending them to the list.
+1. Given an array of size :code:`m`, only elements :code:`[0,n)` contain
+   valid data. Elements :code:`[n,m)` are available for storing new data.
+   New particles are added to the unused array slots at the end
+   of the array. When a particle is deleted, all elements in the array with
+   a greater index must be shifted one position over to maintain the contiguous
+   organization of active particles. (For efficiency, this shifting of data
+   should be done using a single pass through the array.)
+   The particle system is drawn with a single call to :code:`gl.drawArrays(0, n)`,
+   where :code:`n` is the number of active particles.
+   :raw-html:`<br><br>`
 
-The rules for creating new particles are typically not constant. There might
-be rules for how to create the initial particles when a *particle system*
-is first started, other rules for how to create new particles over time,
-and even other rules for how to create new particles towards the end of
-a *particle system*'s lifetime.
+2. Given an array of size :code:`m`, only elements :code:`[0,n)` contain
+   valid data. Elements :code:`[n,m)` are available for storing new data.
+   New particles are added to the unused array slots at the end
+   of the array. When a particle is deleted, the last element in the
+   array is copied to the position of the element to be deleted. No
+   shifting of data is required, but the original ordering of the particles
+   is lost. The particle system is drawn with a single call to
+   :code:`gl.drawArrays(0, n)`, where :code:`n` is the number of active particles.
+   :raw-html:`<br><br>`
 
-Expiring Particles
-..................
+3. Given an array of size :code:`m`, :code:`n` of the positions contain
+   valid data, while the remaining array positions contain "unused" values.
+   A *linked list* of "free slots" is maintained to keep track of the positions
+   of "unused" elements. New particles are added to the unused "free slots"
+   and the *linked list* is updated appropriately. When a particle is deleted,
+   its position is added to the "free slots" *linked list* and its data is
+   invalidated in some way. The particle system is drawn with a single call to
+   :code:`gl.drawArrays(0, m)`, where :code:`m` is the size of the array.
+   Particles that are "dead" can be handled in two ways by a *shader program*:
+   1) a special property value can assigned to "dead" particles, such as their
+   size being :code:`-1`, and a *fragment shader* can discard all such fragments,
+   or 2) set the location of a particle outside the clipping
+   volume, (e.g., :code:`(-9999, -9999, -9999)`, which causes the particle
+   to be clipped by the graphics pipeline.
 
-When a particle's lifetime expires, the particle needs to be removed from
-the *particle system*'s list of particles. Such a list can be implemented as
-an array or as a linked list. An array is simpler, executes faster, and uses
-less memory. However, deleting elements from an array can be a costly operation.
-Since the ordering of particles
-in a list is typically not important,
-Particle Motion and Lifetime
-----------------------------
+Option #2 was used in the example WebGL program above.
 
-The motion of particles over time is obviously dependent on the type of
-phenomenon the particle system is simulating. For example, the particles of
-an explosion might travel in all directions from the center of a blast and
-move very quickly. In comparison, the particles of smoke might generally
-travel upwards and move more slowly. The number of possible variations
-is limitless.
+Particle Engines
+----------------
 
-The following WebGL program demonstrates how a set of particles can be
-created and modified over time. Most *particle systems* are based on random
-values because it would be very tedious to manually set the individual
-properties of hundreds or thousands of particles. The random values are
-typically created from a carefully selected range of values. By changing the
-initialization values in the demonstration slider bars you can create a
-wide variety of particle system effects. For this demo:
+A *particle engine* is a software system that creates a *particle system*.
+Sharing a *particle system* between computer graphic systems is problematic because
+the programming logic is a critical part of any *particle system* and simply
+storing the parameters that define the *particle system* are insufficient
+to re-create the same visual effects.
 
-* The direction of travel for each particle is set to a random direction.
-* The speed of each particle is a random value in the range [avg_speed - speed_variation,
-  avg_speed + speed_variation]. If you make the speed_variation be zero,
-  all of the particles will have the same speed.
-* The lifetime of each particle is a random value in the range [avg_lifetime - lifetime_variation,
-  avg_lifetime + lifetime_variation]. If you make the lifetime_variation be zero,
-  all of the particles will have the same lifetime.
+Blender has an extensive *particle engine* that you can experiment with.
+To create a *particle system* in Blender, follow these basic steps:
 
-.. WebglCode:: W1
-  :caption: Particle System Motion
-  :htmlprogram: ./particle_motion/particle_motion.html
-  :editlist: particle_system.js
+.. |particles_icon| image:: figures/particles_icon.png
+  :align: middle
 
-Study the example code and experiment with modifications. For example,
+1. Create any mesh object (e.g., a plane or a cube), to serve as the *particle system*'s "emitter."
+2. With the "emitter" as the currently selected object, in the property editor,
+   select the "Particles" tab, |particles_icon|.
+3. Create a new *particle system* and begin setting its parameters.
+4. To visualize a *particle system* the "Timeline" window must be used
+   to vary the active frame.
 
-* Make the directions of the particles only be in the positive Y direction
-  by changing line 100 to
-
-  .. Code-Block:: JavaScript
-
-    particle.direction[1] = _random(0.0, 1.0);
-
-* Restrict the direction of the particles to the X-Y plane by making the Z
-  direction zero. (line 101)
-
-  .. Code-Block:: JavaScript
-
-    particle.direction[2] = 0.0;
-
-Note that if your particles are not going in the directions you expect, make
-sure your speed values are all positive! (Negative speed values will make
-particles move in the negative direction of the direction vector.)
-
-Please make special note of the render function which creates a new vertex
-array and copies it to the GPU. This has the potential to greatly reduce
-rendering speeds, especially for large particle systems. OpenGL allows for
-"geometry shaders" that can generate and manipulate vertex data inside
-the graphics pipeline and the GPU, but WebGL 1.0 does not support "geometry
-shaders." In the future, when WebGL adds support for "geometry shaders" you
-will be able to render large particle systems at real-time speeds.
-
-Particle Rendering
-------------------
-
-To simulate a real world phenomenon such as smoke or explosions we need to
-render each particle with an appropriate visual image. This is best done
-using texture mapping. A point can be rendered using more than one pixel,
-so rendering each particle requires that we make the following choices:
-
-* How big of an area should be used to render each particle?
-* What portion of a texture map should be used to render a particle?
-* How can we blend the particles together to make them appear like a single phenomenon?
-
-Regarding the size of each particle, typically the size will vary over its
-lifetime. The particles can get
-bigger over time, smaller over time, or some combination. The change in size
-can be determined by any number of factors, such as the distance from its
-original location, its direction, its speed, etc. Since each particle
-will have a different size,
-
-.. WebglCode:: W2
-  :caption: Particle Explosion Example
-  :htmlprogram: ./particle_explosion/particle_explosion.html
-  :editlist: particle_system_explosion.js
+For full documentation, see https://docs.blender.org/manual/en/dev/physics/particles/particle_system_panel.html
 
 Glossary
 --------
 
 .. glossary::
 
-  billboard
-    a rendering of a texturemap onto a quad surface that is always facing the camera.
+  particle system
+    a large collection of geometric primitives (points, lines, or triangles) whose
+    properties vary over time to simulate real-world phenomenon.
 
-.. index:: particle engine
+  particle engine
+    a software system that facilitates the creation of a particle system.
+
+.. index:: particle system, particle engine
 
 .. _particle system: https://en.wikipedia.org/wiki/Particle_system

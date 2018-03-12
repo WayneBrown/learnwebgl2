@@ -140,6 +140,16 @@ function Points3Events(id, scene) {
   };
 
   //------------------------------------------------------------------------------
+  self.dX = function(event) {
+    let control = $(event.target);
+    let value = Number( control.val() );
+    scene.translate_x = value;
+    $(control).closest('td').prev('td').text("Translate X = " + value.toFixed(1));
+
+    if (! animate_is_on) scene.render();
+  };
+
+  //------------------------------------------------------------------------------
   self.removeAllEventHandlers = function () {
     $('#' + id + '_animate').unbind('click', self.animation_status);
     $('#' + id + '_size').unbind('change input', self.pointSize);
@@ -156,6 +166,7 @@ function Points3Events(id, scene) {
   // Add an onclick callback to each HTML control
   $('#' + id + '_animate').on('click', self.animation_status);
   $('#' + id + '_size').on('change input', self.pointSize);
+  $('#' + id + '_dx').on('change input', self.dX);
 
   // Add standard mouse events to the canvas
   let cid = '#' + id + "_canvas";

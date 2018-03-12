@@ -1,5 +1,5 @@
 /**
- * bunny_events.js, By Wayne Brown, Fall 2017
+ * particles1_events.js, By Wayne Brown, Fall 2017
  *
  * These event handlers can modify the characteristics of a scene.
  * These will be specific to a scene's models and the models' attributes.
@@ -34,12 +34,20 @@
 /**------------------------------------------------------------------------
  * Event handlers for a scene.
  * @param id - the webgldemo ID used to give HTML tags unique names
- * @param scene {BunnyScene} an instance of the rendering object
+ * @param scene {Particles1Scene} an instance of the rendering object
  * @constructor
  */
-window.BunnyEvents = function (id, scene) {
+window.Particles1Events = function (id, scene) {
 
   let self = this;
+
+  let previous_time = Date.now();
+  let frame_rate = 30;
+  let time_between_frames = Math.round((1.0 / frame_rate) * 1000); // in milliseconds
+
+  let total_frames = 0;
+  let start_time = Date.now();
+  let frames_per_second = 0;
 
   //------------------------------------------------------------------------------
   // Constructor code for the class.
@@ -82,134 +90,158 @@ window.BunnyEvents = function (id, scene) {
   };
 
   //-----------------------------------------------------------------------
-  self.changeAlpha = function (event) {
-    let value = Number( $(event.target).val() );
-    scene.background_color[3] = value;
-    $('#' + id + '_bk_text').text("[0.85, 0.60, 0.60, " + value.toFixed(2) + "]");
+  self.startAnimation = function (event) {
+    scene.animate_active = true;
+    total_frames = 0;
+    start_time = Date.now();
+    frames_per_second = 0;
+    self.animate();
+  };
+
+  //-----------------------------------------------------------------------
+  self.stepAnimation = function (event) {
+    scene.animate_active = false;
+    scene.particle_system.update();
     scene.render();
   };
 
-  /** ---------------------------------------------------------------------
-   * Initiate full screen mode.
-   * @param id {string} The ID of the element that will be made full screen.
-   */
-  self.startFullScreenMode = function (id) {
+  //-----------------------------------------------------------------------
+  self.resetAnimation = function (event) {
+    scene.animate_active = false;
+    scene.particle_system.reset();
+    scene.render();
+  };
 
-    // Get the element that will take up the entire screen
-    let element = document.getElementById(id);
+  //-----------------------------------------------------------------------
+  self.numberParticles = function (event) {
+    let control = $(event.target);
+    let value = Number( control.val() );
+    scene.particle_system.particle_limit = value;
+    $('#' + id + '_number_text').text(value.toFixed(0));
+  };
 
-    // Make sure the element is allowed to go full screen.
-    if (!element.fullscreenElement &&
-      !element.mozFullScreenElement &&
-      !element.webkitFullscreenElement &&
-      !element.msFullscreenElement) {
+  //------------------------------------------------------------------------------
+  self.animate = function () {
 
-      // Enter full screen mode
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    let now, elapsed_time;
+
+    if (scene.animate_active) {
+
+      now = Date.now();
+      elapsed_time = now - previous_time;
+
+      if (elapsed_time >= time_between_frames) {
+        scene.particle_system.update();
+        scene.render();
+        previous_time = now;
+
+        total_frames++;
+        elapsed_time = now - start_time;
+        frames_per_second = total_frames / (elapsed_time / 1000.0);
+        if ((total_frames % 30) === 0) {
+          $('#' + id + '_fps').text(frames_per_second.toFixed(1));
+        }
       }
-    } else {
-      window.console.log("The element " + id + " can't go into full screen mode.");
+
+      requestAnimationFrame(self.animate);
     }
   };
 
-  /** ---------------------------------------------------------------------
-   * Reset the size of the affected elements after a fullscreen event.
-   * @param new_width {Number} The new width for the HTML elements.
-   * @param new_height {Number} The new height for the HTML elements.
-   */
-  self.updateCanvasSize = function (new_width, new_height) {
-
-    // Change the CSS size of the main canvas window.
-    $('#' + id + '_canvas').css('width', new_width).css('height', new_height);
-
-    // Re-size the WebGL draw buffer.
-    let canvas = document.getElementById(id + '_canvas');
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+  //-----------------------------------------------------------------------
+  self.minAdd = function (event) {
+    let control = $(event.target);
+    scene.particle_system.new_particles_range[0] = Number( control.val() );
   };
 
   //-----------------------------------------------------------------------
-  self.onFullScreenChange = function (event) {
-    if (document.fullscreenElement ||
-        document.webkitIsFullScreen ||
-        document.mozFullScreen ||
-        document.msFullscreenElement) {
-      // The document is in full screen mode.
-      self.updateCanvasSize( screen.width, screen.height );
-    } else {
-      // The document is NOT in full screen mode.
-      self.updateCanvasSize(300, 300);
-    }
-    scene.render();
+  self.maxAdd = function (event) {
+    let control = $(event.target);
+    scene.particle_system.new_particles_range[1] = Number( control.val() );
   };
 
   //-----------------------------------------------------------------------
-  self.enterFullScreen = function (event) {
-    self.startFullScreenMode(id + '_canvas');
+  self.minSpeed = function (event) {
+    let control = $(event.target);
+    scene.particle_system.particle_speed_range[0] = Number( control.val() );
+  };
+
+  //-----------------------------------------------------------------------
+  self.maxSpeed = function (event) {
+    let control = $(event.target);
+    scene.particle_system.particle_speed_range[1] = Number( control.val() );
+  };
+
+  //-----------------------------------------------------------------------
+  self.minLifetime = function (event) {
+    let control = $(event.target);
+    scene.particle_system.particle_lifetime_range[0] = Number( control.val() );
+  };
+
+  //-----------------------------------------------------------------------
+  self.maxLifetime = function (event) {
+    let control = $(event.target);
+    scene.particle_system.particle_lifetime_range[1] = Number( control.val() );
+  };
+
+  //-----------------------------------------------------------------------
+  self.minSize = function (event) {
+    let control = $(event.target);
+    scene.particle_system.particle_size_range[0] = Number( control.val() );
+  };
+
+  //-----------------------------------------------------------------------
+  self.maxSize = function (event) {
+    let control = $(event.target);
+    scene.particle_system.particle_size_range[1] = Number( control.val() );
+  };
+
+  //------------------------------------------------------------------------------
+  self.sortMode = function (event) {
+    scene.particle_system.sort_before_rendering = $(event.target).is(":checked");
   };
 
   //------------------------------------------------------------------------------
   self.removeAllEventHandlers = function () {
-    $('#' + id + '_bk_alpha').unbind("input change", self.changeAlpha);
-    $('#' + id + '_fullscreen').unbind("click", self.enterFullScreen);
+    $('#' + id + '_number').unbind("input change", self.numberParticles);
+    $('#' + id + '_animate').unbind("click", self.startAnimation);
+    $('#' + id + '_step').unbind("click", self.stepAnimation);
+    $('#' + id + '_reset').unbind("click", self.resetAnimation);
+    $('#' + id + '_min_add').unbind("input change", self.minAdd);
+    $('#' + id + '_max_add').unbind("input change", self.maxAdd);
+    $('#' + id + '_min_speed').unbind("input change", self.minSpeed);
+    $('#' + id + '_max_speed').unbind("input change", self.maxSpeed);
+    $('#' + id + '_min_lifetime').unbind("input change", self.minLifetime);
+    $('#' + id + '_max_lifetime').unbind("input change", self.maxLifetime);
+    $('#' + id + '_min_size').unbind("input change", self.minSize);
+    $('#' + id + '_max_size').unbind("input change", self.maxSize);
+    $('#' + id + '_sort').unbind("click", self.sortMode);
 
-    try {
-      let cid = '#graphics_under';
-      $( cid ).unbind("mousedown", self.mouse_drag_started );
-      $( cid ).unbind("mouseup",   self.mouse_drag_ended );
-      $( cid ).unbind("mousemove", self.mouse_dragged );
-    } catch(err) { }
-
-    try {
-      // These event bindings work if the canvas is on top.
-      let cid = '#' + id + '_canvas';
-      $( cid ).unbind("mousedown", self.mouse_drag_started );
-      $( cid ).unbind("mouseup",   self.mouse_drag_ended );
-      $( cid ).unbind("mousemove", self.mouse_dragged );
-    } catch(err) { }
-
-    $( '#' + id + '_canvas' ).unbind( 'fullscreenchange', self.onFullScreenChange )
-                             .unbind( 'webkitfullscreenchange', self.onFullScreenChange )
-                             .unbind( 'mozfullscreenchange', self.onFullScreenChange )
-                             .unbind( 'MSFullscreenChange', self.onFullScreenChange );
+    let cid = '#' + id + '_canvas';
+    $( cid ).unbind("mousedown", self.mouse_drag_started );
+    $( cid ).unbind("mouseup",   self.mouse_drag_ended );
+    $( cid ).unbind("mousemove", self.mouse_dragged );
   };
 
   //------------------------------------------------------------------------------
   // Constructor code for the class.
-  $('#' + id + '_bk_alpha').on("input change", self.changeAlpha);
-  $('#' + id + '_fullscreen').on("click", self.enterFullScreen);
+  $('#' + id + '_number').on("input change", self.numberParticles);
+  $('#' + id + '_animate').on("click", self.startAnimation);
+  $('#' + id + '_step').on("click", self.stepAnimation);
+  $('#' + id + '_reset').on("click", self.resetAnimation);
+  $('#' + id + '_min_add').on("input change", self.minAdd);
+  $('#' + id + '_max_add').on("input change", self.maxAdd);
+  $('#' + id + '_min_speed').on("input change", self.minSpeed);
+  $('#' + id + '_max_speed').on("input change", self.maxSpeed);
+  $('#' + id + '_min_lifetime').on("input change", self.minLifetime);
+  $('#' + id + '_max_lifetime').on("input change", self.maxLifetime);
+  $('#' + id + '_min_size').on("input change", self.minSize);
+  $('#' + id + '_max_size').on("input change", self.maxSize);
+  $('#' + id + '_sort').on("click", self.sortMode);
 
-  // IMPORTANT: Only one of these event bindings is needed. They
-  // are duplicated here so this event handler works for multiple examples.
-
-  // These event bindings work if the canvas is under other elements.
-  try {
-    let cid = '#graphics_under';
-    $( cid ).mousedown( self.mouse_drag_started );
-    $( cid ).mouseup( self.mouse_drag_ended );
-    $( cid ).mousemove( self.mouse_dragged );
-  } catch(err) { }
-
-  // These event bindings work if the canvas is on top.
-  try {
-    let cid = '#' + id + '_canvas';
-    $( cid ).mousedown( self.mouse_drag_started );
-    $( cid ).mouseup( self.mouse_drag_ended );
-    $( cid ).mousemove( self.mouse_dragged );
-  } catch(err) { }
-
-  // Fullscreen mode change
-  $( '#' + id + '_canvas' ).on( 'fullscreenchange', self.onFullScreenChange )
-                           .on( 'webkitfullscreenchange', self.onFullScreenChange )
-                           .on( 'mozfullscreenchange', self.onFullScreenChange )
-                           .on( 'MSFullscreenChange', self.onFullScreenChange );
+  let cid = '#' + id + '_canvas';
+  $( cid ).mousedown( self.mouse_drag_started );
+  $( cid ).mouseup( self.mouse_drag_ended );
+  $( cid ).mousemove( self.mouse_dragged );
 };
 
 

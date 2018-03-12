@@ -30,15 +30,16 @@
 
 /**------------------------------------------------------------------------
  * A particle system.
- * @param center Point3 The center location of the particle system.
- * @param model Create_particle_model GPU buffer objects for rendering
- * @param texture_map_file_name String
- * @param max_particles Number Maximum number of particles.
+ * @param max_particles {Number} Number Maximum number of particles.
+ * @param center {GlPoint3} The center location of the particle system.
+ * @param gl {WebGLRenderingContext} WebGL context
+ * @param program {object} compiled shader program
+ * @param texture_map_image {img}
+ * @param out {ConsoleMessages}
  * @constructor
  */
-window.ParticleSystem = function (center, model,
-                                  texture_map_file_name,
-                                  max_particles) {
+window.ParticleSystem = function (max_particles, center, gl, program,
+                                  texture_map_image, out) {
   let self = this;
 
   // Particles are defined by some data that is needed for rendering,
@@ -46,44 +47,193 @@ window.ParticleSystem = function (center, model,
   // The rendering data must be copied to GPU buffer objects before
   // each render.
 
-  // To eliminate if-statements in the shader programs, all
-  // particles in the list of particles are rendered. Particles
-  // that are not active have a position that is off-screen.
-
   // Rendering data for particles:
   let location            = new Float32Array(max_particles * 3);
   let size                = new Float32Array(max_particles);
   let texture_coordinates = new Float32Array(max_particles * 2);
+  let color_alpha         = new Float32Array(max_particles);
 
-  // Data needed to update and manage the particles:
+  // GPU buffers for the rendering data.
+  let location_buffer_id = null;
+  let size_buffer_id = null;
+  let texture_coordinates_buffer_id = null;
+  let my_texture_object = null;
+  let color_alpha_buffer_id = null;
+  let gpu_needs_updating = false;
+
+  // Data to update and manage the particles:
   let direction = new Array(max_particles);
   let speed     = new Array(max_particles);
-  let end_frame = new Array(max_particles);
-
-  const INITIAL_LOCATION    = 0;
-  const LOCATION            = 1;
-  const DIRECTION           = 2;
-  const SPEED               = 3;
-  const START_FRAME         = 4;
-  const LIFETIME            = 5;
-  const TEXTURE_COORDINATES = 6;
-  const SIZE                = 7;
-  const NUMBER_PROPERTIES   = 8;
+  let alive     = new Array(max_particles);
+  let lifetime  = new Array(max_particles);
 
   // Indexes for min and max ranges.
   const MIN  = 0;
   const MAX  = 1;
 
   // General data about the particle system
-  self.current_frame = 0;
-  self.maximum_number_particles = 1000;
-  self.number_particles = 0;
-  self.new_particles_range = [5, 10];
-  self.number_initial_particles = 10;
+  let number_particles = 0;
+  let number_initial_particles = Math.round(max_particles * 0.2);
 
-  // Particle system is an array of particles.
-  let particles = new Array(self.maximum_number_particles);
+  // Ranges for generating new properties of particles.
+  self.particle_limit = max_particles;
+  self.new_particles_range = [Math.round(max_particles * 0.05),
+                              Math.round(max_particles * 0.1)];
+  self.particle_speed_range = [0.01, 0.1];
+  self.particle_lifetime_range = [15, 30];
+  self.particle_size_range = [4, 4];
+  self.sort_before_rendering = true;
 
+  // Scratch variables for calculations.
+  let matrix = new GlMatrix4x4();
+  let P4 = new GlPoint4();
+  let V3 = new GlVector3();
+  let go_to = V3.create();
+  let v = P4.create();
+  let v2 = P4.create();
+
+  // For sorting particles:
+  let sort_indexes = null;
+  let sorted_location            = new Float32Array(max_particles * 3);
+  let sorted_size                = new Float32Array(max_particles);
+  let sorted_texture_coordinates = new Float32Array(max_particles * 2);
+  let sorted_color_alpha         = new Float32Array(max_particles);
+
+  /**----------------------------------------------------------------------
+   * Compare to elements of the sort_indexes for quicksort algorithm
+   * @param a {array} one element of the sort_indexes array, [index, distance]
+   * @param b {array} one element of the sort_indexes array, [index, distance]
+   * @returns {number} result of comparision of a and b
+   * @private
+   */
+  function _compare(a, b) {
+    if (a[1] < b[1]) {
+      return -1;
+    } else if (a[1] > b[1]) {
+      return 1;
+    }
+    return 0; // a must be equal to b
+  }
+
+  /**----------------------------------------------------------------------
+   * Initialize the sort_indexes array for sorting the particles.
+   * This array is re-sorted before each render.
+   * @private
+   */
+  function _initializeSorting() {
+    if (sort_indexes === null) {
+      sort_indexes = new Array(max_particles);
+    }
+    for (let j = 0; j < max_particles; j += 1) {
+      sort_indexes[j] = [j, 0.0];  // [index to point, distance from camera]
+    }
+  }
+
+  /**----------------------------------------------------------------------
+   * Update the distance of each particle from the camera.
+   * @param camera_space {Float32Array} The transformation to apply to the model vertices.
+   */
+  function _updateDistanceFromCamera (camera_space) {
+    let k;
+
+    for (let j = 0; j < number_particles; j += 1) {
+      k = j * 3;
+      v[0] = location[k];
+      v[1] = location[k + 1];
+      v[2] = location[k + 2];
+      matrix.multiplyP4(v2, camera_space, v);
+
+      // Remember this particle's distance from the camera
+      sort_indexes[j][1] = v2[2];
+    }
+  }
+
+  /**----------------------------------------------------------------------
+   * Update the GPU object buffer that holds the model's vertices
+   * @private
+   */
+  function _reorderData () {
+    let n, k, index;
+
+    for (let j = 0; j < number_particles; j += 1) {
+      index = sort_indexes[j][0];
+
+      n = j * 3;
+      k = index * 3;
+      sorted_location[n]   = location[k];
+      sorted_location[n+1] = location[k+1];
+      sorted_location[n+2] = location[k+2];
+
+      sorted_size[j] = size[index];
+
+      n = j * 2;
+      k = index * 2;
+      sorted_texture_coordinates[n]   = texture_coordinates[k];
+      sorted_texture_coordinates[n+1] = texture_coordinates[k+1];
+
+      sorted_color_alpha[j] = color_alpha[index];
+    }
+  }
+
+  /**----------------------------------------------------------------------
+   * Sort the points of a particle system, back to front, based on their distance
+   * from the camera.
+   * @param camera_space {Float32Array} The transformation to apply to the particles.
+   */
+  function _sortParticles (camera_space) {
+
+    _initializeSorting();
+
+    _updateDistanceFromCamera(camera_space);
+
+    sort_indexes.sort(_compare);  // JavaScript quicksort
+
+    _reorderData();
+
+    // Copy the new data to the GPU.
+    _updateBufferObject(location_buffer_id,            sorted_location);
+    _updateBufferObject(size_buffer_id,                sorted_size);
+    _updateBufferObject(texture_coordinates_buffer_id, sorted_texture_coordinates);
+    _updateBufferObject(color_alpha_buffer_id,         sorted_color_alpha);
+  }
+
+  /**----------------------------------------------------------------------
+   * Create a GPU buffer object and transfer data into the buffer.
+   * @param data {Float32Array} the array of data to be put into the buffer object.
+   * @private
+   */
+  function _createBufferObject(data) {
+    let buffer_id;
+
+    // Don't create a gpu buffer object if there is no data.
+    if (data === null) return null;
+
+    // Create a buffer object
+    buffer_id = gl.createBuffer();
+    if (!buffer_id) {
+      out.displayError('Failed to create a buffer object');
+      return null;
+    }
+
+    // Make the buffer object the active buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer_id);
+
+    // Upload the data for this buffer object to the GPU.
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+
+    return buffer_id;
+  }
+
+  /**----------------------------------------------------------------------
+   * Create a GPU buffer object and transfer data into the buffer.
+   * @param buffer_id {object}
+   * @param data {Float32Array} the array of data to be put into the buffer object.
+   * @private
+   */
+  function _updateBufferObject(buffer_id, data) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer_id);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+  }
 
   /**----------------------------------------------------------------------
    * Return a random float between min and max.
@@ -91,7 +241,7 @@ window.ParticleSystem = function (center, model,
    * @param max {number} the largest value in the random range
    * @returns {number} a random float
    */
-  function randomFloat(min, max) {
+  function _randomFloat(min, max) {
     return Math.random() * (max - min) + min;
   }
 
@@ -101,296 +251,265 @@ window.ParticleSystem = function (center, model,
    * @param max {number} the largest value in the random range
    * @returns {number} a random float
    */
-  function randomInt(min, max) {
+  function _randomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   /**----------------------------------------------------------------------*/
-  function _initializeParticle(particle) {
+  function _initializeParticle(index) {
 
-    particle[INITIAL_LOCATION] = location;
-    particle[LOCATION] = location.slice();
-    particle[DIRECTION] = [Math.random(), Math.random(), Math.random()];
-    particle[SPEED] = 0.1;
-    particle[START_FRAME] = self.current_frame;
-    particle[LIFETIME] = 30;
-    particle[TEXTURE_COORDINATES] = [Math.random(), Math.random()];
-    particle[SIZE] = 4;
-  }
+    // Particle data stored in GPU:
+    let j = index * 3;
+    location[j++] = center[0];
+    location[j++] = center[1];
+    location[j  ] = center[2];
 
-  /**----------------------------------------------------------------------*/
-  function _createParticle() {
-    let particle = new Array(NUMBER_PROPERTIES);
+    size[index] = _randomInt(self.particle_size_range[MIN],
+                             self.particle_size_range[MAX]);
 
-    particle[INITIAL_LOCATION] = [0, 0, 0];
-    particle[LOCATION] = [0, 0, 0];
-    particle[DIRECTION] = [0.0, 0.0, 0.0];
-    particle[SPEED] = 0.0;
-    particle[START_FRAME] = 0;
-    particle[LIFETIME] = 0;
-    particle[TEXTURE_COORDINATES] = [0, 0];
-    particle[SIZE] = 0;
+    j = index * 2;
+    texture_coordinates[j++] = Math.random();
+    texture_coordinates[j  ] = Math.random();
 
-    return particle;
-  }
+    color_alpha[index] = 1.0;
 
-  /**----------------------------------------------------------------------*/
-  function _updateParticle(particle) {
-    for (j = 0; j < self.number_particles; j += 1) {
-      particle = particles[j];
-
-      // Move the location of the particle based on its direction and speed.
-      vector3.scale(go_to, particle.direction, particle.speed);
-      point3.addVector(particle.location, particle.location, go_to);
-
-      // Move the location of the texture coordinates using the direction vector.
-      particle.texture_coordinates[0] += particle.direction[0] * particle.speed * 0.03;
-      particle.texture_coordinates[1] += particle.direction[1] * particle.speed * 0.03;
-
-      // remove particles
-      if (frame_counter > particle.start_frame + particle.lifetime) {
-        particle.initialize();
-      }
+    // Data used to update a particle:
+    if (typeof direction[index] === 'undefined') {
+      direction[index] = V3.create(_randomFloat(-1, 1),
+                                   _randomFloat(-1, 1),
+                                   _randomFloat(-1, 1));
+    } else {
+      direction[index][0] = _randomFloat(-1, 1);
+      direction[index][1] = _randomFloat(-1, 1);
+      direction[index][2] = _randomFloat(-1, 1);
     }
+    V3.normalize(direction[index]);
+    speed[index] = _randomFloat(self.particle_speed_range[MIN],
+                                self.particle_speed_range[MAX]);
+    lifetime[index] = _randomInt(self.particle_lifetime_range[MIN],
+                                 self.particle_lifetime_range[MAX]);
+    alive[index] = 0;
+  }
+
+  /**----------------------------------------------------------------------*/
+  function _deleteParticle(delete_index) {
+    let last = number_particles-1;
+
+    // Copy the last particle in the system to the delete_index position.
+    let k = delete_index * 3;
+    let m = last * 3;
+    location[k++] = location[m++];
+    location[k++] = location[m++];
+    location[k]   = location[m];
+
+    size[delete_index] = size[last];
+
+    k = delete_index * 2;
+    m = last * 2;
+    texture_coordinates[k++] = texture_coordinates[m++];
+    texture_coordinates[k]   = texture_coordinates[m];
+
+    color_alpha[delete_index] = color_alpha[last];
+
+    direction[delete_index][0] = direction[last][0];
+    direction[delete_index][1] = direction[last][1];
+    direction[delete_index][2] = direction[last][2];
+    speed[delete_index]     = speed[last];
+    alive[delete_index]     = alive[last];
+    lifetime[delete_index]  = lifetime[last];
+
+    number_particles--;
+  }
+
+  /**----------------------------------------------------------------------*/
+  function _updateParticle(index) {
+    let k;
+
+    // Move the location of the particle based on its direction and speed.
+    V3.scale(go_to, direction[index], speed[index]);
+    k = index * 3;
+    location[k++] += go_to[0];
+    location[k++] += go_to[1];
+    location[k  ] += go_to[2];
+
+    // Move the location of the texture coordinates using the direction vector.
+    k = index * 2;
+    texture_coordinates[k++] += direction[index][0] * speed[index] * 0.03;
+    texture_coordinates[k]   += direction[index][1] * speed[index] * 0.03;
+
+    // One less frame to be alive.
+    alive[index] += 1;
+
+    // The alpha value decreases to 0.0 as the particle dies.
+    let percent_alive;
+    if (lifetime[index] > 0) {
+      percent_alive = alive[index] / lifetime[index];
+    } else {
+      percent_alive = 1.0;
+    }
+    color_alpha[index] = Math.cos(percent_alive * Math.PI*0.5);
   }
 
   /**----------------------------------------------------------------------*/
   function _create() {
-    particles = new Array(self.maximum_number_particles);
 
-    // Create all of the particles. (Minimize garbage collection!)
-    for (let j=0; j<self.maximum_number_particles; j++) {
-      particles[j] = _createParticle();
-    }
+    self.reset();
 
-    // Initialize the starting particles.
-    for (let j=0; j<self.number_initial_particles; j++) {
-      _initializeParticle(particles[j]);
+    // Create the rendering buffers.
+    location_buffer_id            = _createBufferObject(location);
+    size_buffer_id                = _createBufferObject(size);
+    texture_coordinates_buffer_id = _createBufferObject(texture_coordinates);
+    color_alpha_buffer_id         = _createBufferObject(color_alpha);
+  }
+
+  /**----------------------------------------------------------------------*/
+  self.reset = function() {
+    number_particles = number_initial_particles;
+    for (let j=0; j<number_particles; j++) {
+      _initializeParticle(j);
     }
-    self.number_particles = self.number_initial_particles;
+    _updateGPU();
+  };
+
+  /**----------------------------------------------------------------------*/
+  function _updateGPU () {
+    if (gpu_needs_updating) {
+      // Copy the new data to the GPU.
+      _updateBufferObject(location_buffer_id, location);
+      _updateBufferObject(size_buffer_id, size);
+      _updateBufferObject(texture_coordinates_buffer_id, texture_coordinates);
+      _updateBufferObject(color_alpha_buffer_id, color_alpha);
+      gpu_needs_updating = false;
+    }
   }
 
   /**----------------------------------------------------------------------*/
   self.update = function () {
-    let temp;
 
     // Update the existing particles.
-    for (let j=0; j<self.number_particles; j++) {
-      _updateParticle(particles[j]);
+    for (let j=0; j<number_particles; j++) {
+      _updateParticle(j);
     }
 
     // Remove any particles whose lifetime has expired.
-    for (let j=0; j<self.number_particles; j++) {
-      if (particles[j][LIFETIME] <= 0) {
-        temp = particles[j];
-        particles[j] = particles[self.number_particles-1];
-        particles[self.number_particles-1] = temp;
-        self.number_particles -= 1;
+    let k = 0;
+    while (k < number_particles) {
+      if (alive[k] >= lifetime[k]) {
+        _deleteParticle(k);
+      } else {
+        k += 1;
       }
     }
 
     // Add new particles.
-    let n = randomInt(self.new_particles_range[MIN], self.new_particles_range[MAX]);
-    if (self.number_particles + n > self.maximum_number_particles ) {
-      n = self.maximum_number_particles - self.number_particles;
+    let n = _randomInt(self.new_particles_range[MIN], self.new_particles_range[MAX]);
+    if (number_particles + n > self.particle_limit ) {
+      n = self.particle_limit - number_particles;
     }
     for (let j=0; j<n; j++) {
-      _initializeParticle(particles[self.number_particles + j]);
+      _initializeParticle(number_particles + j);
     }
-    self.number_particles += n;
+    number_particles += n;
+
+    gpu_needs_updating = true;
   };
-
-  /**----------------------------------------------------------------------*/
-  self.render = function () {
-
-  };
-
-  particle.initial_location = point3.create(x, y, z);
-  particle.location = point3.create(x, y, z);
-  particle.direction = vector3.create();
-  particle.speed = 0;
-  particle.start_frame = 0;
-  particle.lifetime = 0;
-
-  particle.texture_coordinates = [0, 0];
-  particle.size = 1.0;
-
-  // Arrays to store the rendering properties of the particles.
-  var vertices = new Float32Array(max_particles * 3); // 3 floats per point
-  var texture_coordinates = new Float32Array(max_particles * 2);
-  var sizes = new Float32Array(max_particles);
-
-  // Track the rendered frames so that the lifetime of particles can be determined.
-  var frame_counter = 0;
-
-  // The number of particles in the system to be rendered.
-  self.number_particles = max_particles;
-
-  // Parameters to control the speed of the particles
-  self.average_speed = 0.03;
-  self.speed_variation = 0.3;
-
-  // Parameters to control the lifetime of the particles
-  self.average_lifetime = 150;
-  self.lifetime_variation = 30;
-
-  // Parameters to control control each particle's size
-  self.average_size = 50;
-  self.size_variation = 10;
-
-  // Is each particle rendered as a square or a circle? Other shapes are possible.
-  self.circular_points = false;
-
-  // Scratch variables for calculations.
-  var point3 = new window.Learn_webgl_point3();
-  var vector3 = new window.Learn_webgl_vector3();
-  var go_to = vector3.create();
 
   /**----------------------------------------------------------------------
-   * Create a renadom number with a specified range.
-   * @param min Number Minimum value of random number.
-   * @param max Number Maximum value of random number.
-   * @returns Number Random number in the range [min, max]
+   * Create and initialize a texture object
+   * @param my_image {img} A JavaScript Image object that contains the
+   *                         texture map image.
    * @private
    */
-  function _random(min, max) {
-    return (Math.random() * (max - min) + min);
+  function _createTextureMap(my_image) {
+
+    // Create a new "texture object".
+    let texture_object = gl.createTexture();
+
+    // Make the "texture object" be the active texture object.
+    gl.bindTexture(gl.TEXTURE_2D, texture_object);
+
+    // Set parameters of the texture object.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+
+    // Tell gl to flip the orientation of the image on the Y axis.
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+
+    // Store in the image in the GPU's texture object.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
+      my_image);
+
+    return texture_object;
   }
-
-  /**----------------------------------------------------------------------
-   *
-   * @private
-   */
-  function _loadTextureMap() {
-    var texture_map_image = new Image();
-    texture_map_image.src = texture_map_file_name;
-    texture_map_image.onload =
-      function () {
-        model.createTextureMap(texture_map_image);
-      };
-  }
-
-  /**----------------------------------------------------------------------
-   * Reset all of the properties of all the particles.
-   */
-  self.reset = function () {
-    var j, k;
-
-    frame_counter = 0;
-
-    for (j = 0; j < max_particles; j += 1) {
-      particles[j].initialize();
-    }
-
-    // Send the texture_coordinates to the GPU
-    for (j = 0, k = 0; j < self.number_particles; j += 1, k += 2) {
-      texture_coordinates[k]     = particles[j].texture_coordinates[0];
-      texture_coordinates[k + 1] = particles[j].texture_coordinates[1];
-    }
-
-    model.updateBufferObject('texture_coordinates', texture_coordinates);
-
-    // Send the sizes to the GPU
-    for (j = 0; j < self.number_particles; j += 1) {
-      sizes[j] = particles[j].size;
-    }
-
-    model.updateBufferObject('sizes', sizes);
-  };
-
-  /**----------------------------------------------------------------------
-   * Update the properties of all the particles.
-   */
-  self.update = function () {
-    var j, particle;
-
-    for (j = 0; j < self.number_particles; j += 1) {
-      particle = particles[j];
-
-      // Move the location of the particle based on its direction and speed.
-      vector3.scale(go_to, particle.direction, particle.speed);
-      point3.addVector(particle.location, particle.location, go_to);
-
-      // Move the location of the texture coordinates using the direction vector.
-      particle.texture_coordinates[0] += particle.direction[0] * particle.speed * 0.03;
-      particle.texture_coordinates[1] += particle.direction[1] * particle.speed * 0.03;
-
-      // remove particles
-      if (frame_counter > particle.start_frame + particle.lifetime) {
-        particle.initialize();
-      }
-    }
-  };
 
   /**----------------------------------------------------------------------
    * Render a particle system
-   * @param transform Float32Array A 4x4 transformation matrix for rendering.
+   * @param transform {Float32Array} A 4x4 transformation matrix for rendering.
+   * @param camera_space {Float32Array} A 4x4 transformation matrix to camera space.
    */
-  self.render = function (transform, animation_active) {
-    var j, k, temp;
+  self.render = function (transform, camera_space) {
 
-    // Perform an insertion sort on the particles, sorting them on their
-    // location z values.
-    for (j = 0; j < self.number_particles; j += 1) {
-      temp = particles[j];
-      k = j - 1;
-      while (k >= 0 && particles[k].location[2] > temp.location[2]) {
-        particles[k + 1] = particles[k];
-        k -= 1;
+    if (number_particles > 0) {
+      if (self.sort_before_rendering) {
+        _sortParticles(camera_space);
+      } else {
+        _updateGPU ();
       }
-      particles[k + 1] = temp;
-    }
 
-    // Transfer the locations of the particles into an array of floats.
-    for (j = 0, k = 0; j < self.number_particles; j += 1, k += 3) {
-      vertices[k]     = particles[j].location[0];
-      vertices[k + 1] = particles[j].location[1];
-      vertices[k + 2] = particles[j].location[2];
-    }
+      gl.uniformMatrix4fv(program.u_Transform, false, transform);
 
-    // Copy the array of floats into the particle system's GPU object buffer
-    model.updateBufferObject('points', vertices);
+      // Bind the buffers to the shader variables
+      gl.bindBuffer(gl.ARRAY_BUFFER, location_buffer_id);
+      gl.vertexAttribPointer(program.a_Vertex, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Vertex);
 
-    // Send the texture_coordinates to the GPU
-    for (j = 0, k = 0; j < self.number_particles; j += 1, k += 2) {
-      texture_coordinates[k]     = particles[j].texture_coordinates[0];
-      texture_coordinates[k + 1] = particles[j].texture_coordinates[1];
-    }
+      gl.bindBuffer(gl.ARRAY_BUFFER, size_buffer_id);
+      gl.vertexAttribPointer(program.a_Size, 1, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Size);
 
-    model.updateBufferObject('texture_coordinates', texture_coordinates);
+      gl.bindBuffer(gl.ARRAY_BUFFER, color_alpha_buffer_id);
+      gl.vertexAttribPointer(program.a_Alpha, 1, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Alpha);
 
-    // Send the sizes to the GPU
-    for (j = 0; j < self.number_particles; j += 1) {
-      sizes[j] = particles[j].size;
-    }
+      gl.bindBuffer(gl.ARRAY_BUFFER, texture_coordinates_buffer_id);
+      gl.vertexAttribPointer(program.a_Texture_coordinate, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(program.a_Texture_coordinate);
 
-    model.updateBufferObject('sizes', sizes);
+      // Make the "texture unit" 0 be the active texture unit.
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, my_texture_object);
+      gl.uniform1i(program.u_Texture_unit, 0);
 
-    // Render the GPU buffer object as "points"
-    model.render(transform, self.number_particles);
-
-    if (animation_active) {
-      frame_counter += 1;
+      // Draw all of the particles
+      gl.drawArrays(gl.POINTS, 0, number_particles);
     }
   };
 
   //-----------------------------------------------------------------------
   // Constructor:
-  // Create the particles in the system and set the individual properties
-  // of all the particles.
-  var j;
+  // Create and initialize the particles in the system.
+  _create();
 
-  // Create the particles.
-  for (j = 0; j < self.number_particles; j += 1) {
-    particles[j] = new _Particle(center[0], center[1], center[2]);
-  }
+  // Get the location of the shader program's uniforms and attributes
+  program.u_Transform     = gl.getUniformLocation(program, "u_Transform");
+  program.u_Texture_unit  = gl.getUniformLocation(program, "u_Texture_unit");
+  program.u_Texture_delta = gl.getUniformLocation(program, "u_Texture_delta");
 
-  // Set the initial properties of each particle.
-  self.reset();
+  program.a_Vertex             = gl.getAttribLocation(program, 'a_Vertex');
+  program.a_Texture_coordinate = gl.getAttribLocation(program, 'a_Texture_coordinate');
+  program.a_Size               = gl.getAttribLocation(program, 'a_Size');
+  program.a_Alpha              = gl.getAttribLocation(program, 'a_Alpha');
 
-  // Load the image to be used to render the particles.
-  _loadTextureMap();
+  // Create a texture map object for rendering the particles.
+  my_texture_object = _createTextureMap(texture_map_image);
+  let texture_delta = [ (1.0 / (texture_map_image.width - 1.0)),
+                        (1.0 / (texture_map_image.height - 1.0))];
+  gl.uniform2fv(program.u_Texture_delta, texture_delta);
+
 };
 

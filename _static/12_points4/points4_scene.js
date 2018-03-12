@@ -74,7 +74,7 @@ window.Points4Scene = function (id, download, vshaders_dictionary,
     matrix.multiplySeries(transform, projection, camera, rotate_x_matrix, rotate_y_matrix);
 
     // Clear the entire canvas window background with the clear color.
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // Set the size of all the points.
     gl.uniform1f(program.u_Size, self.point_size);
@@ -121,6 +121,8 @@ window.Points4Scene = function (id, download, vshaders_dictionary,
   gl.useProgram(program);
 
   gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.DST_ALPHA);
 
   gl.clearColor(0.98, 0.98, 0.98, 1.0);
 

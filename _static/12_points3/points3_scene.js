@@ -57,11 +57,13 @@ window.Points3Scene = function (id, download, vshaders_dictionary,
   let camera = matrix.create();
   let rotate_x_matrix = matrix.create();
   let rotate_y_matrix = matrix.create();
+  let translate_matrix = matrix.create();
 
   // Public variables that will possibly be used or changed by event handlers.
   self.canvas = null;
   self.angle_x = 0.0;
   self.angle_y = 0.0;
+  self.translate_x = 0.0;
   self.animate_active = true;
   self.point_size = 30.0;
 
@@ -71,7 +73,9 @@ window.Points3Scene = function (id, download, vshaders_dictionary,
     // Set up common transformations for the entire scene.
     matrix.rotate(rotate_x_matrix, self.angle_x, 1.0, 0.0, 0.0);
     matrix.rotate(rotate_y_matrix, self.angle_y, 0.0, 1.0, 0.0);
-    matrix.multiplySeries(transform, projection, camera, rotate_x_matrix, rotate_y_matrix);
+    matrix.translate(translate_matrix, self.translate_x, 0.0, 0.0);
+    matrix.multiplySeries(transform, projection, camera, translate_matrix,
+                          rotate_x_matrix, rotate_y_matrix);
 
     // Clear the entire canvas window background with the clear color.
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

@@ -249,6 +249,14 @@ component like this:
 Modify the *fragment shader* above to verify that this flips the
 *texture map* image to its original orientation.
 
+Notice that translating the scene left or right moves some
+of the points outside the viewing volume causing them to be
+clipped from the scene. Clipping is based on the single :code:`(x,y,z)`
+location of the point. This can cause the rendering of a point
+to "pop-in" and "pop-out" of a scene. If a *billboard* or *sprite*
+needs to be partially clipped against a viewing volume, it
+must be rendered using triangles.
+
 2) Map Adjacent Pixels to a "Point"
 ...................................
 
