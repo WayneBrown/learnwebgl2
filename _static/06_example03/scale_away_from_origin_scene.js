@@ -90,7 +90,7 @@ window.ScaleAwayFromOriginScene = function (id, download, vshaders_dictionary,
     cubey.render(transform);
     cubez.render(transform);
     cube_center.render(transform);
-  };
+  }
 
   //-----------------------------------------------------------------------
   self.render = function () {

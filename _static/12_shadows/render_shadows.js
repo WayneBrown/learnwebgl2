@@ -66,8 +66,7 @@ window.RenderShadows = function (gl, program, model_buffers, out, number_lights)
     program.lights[j].texture_unit = gl.getUniformLocation(program,"u_Lights[" + j + "].texture_unit");
   }
 
-
-  program.u_Tolerance_constant = gl.getUniformLocation(program, "u_Tolerance_constant");
+  program.u_Z_tolerance = gl.getUniformLocation(program, "u_Z_tolerance");
 
   program.u_Ambient_intensities = gl.getUniformLocation(program, "u_Ambient_intensities");
   program.u_c1                  = gl.getUniformLocation(program, "u_c1");

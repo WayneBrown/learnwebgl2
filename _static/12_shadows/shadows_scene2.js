@@ -45,6 +45,7 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
   // Private variables
   let self = this;
 
+  let canvas;
   let gl = null;
   let shadow_program;
   let uniform_program = null;
@@ -52,6 +53,8 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
   let render_map;
   let render_models = {};
   let shadow_models = {};
+  let three_planes;
+  let three_planes_shadows;
   let model_gpu;
   let matrix = new GlMatrix4x4();
   let model_rotate_x = matrix.create();
@@ -61,6 +64,8 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
 
   // A transformation for each light source
   let shadow_map_transforms = [matrix.create(), matrix.create()];
+  self.shadow_map_resolution = 512;
+  self.z_tolerance = 0.00001;
 
   let cube_model_names = ["cubex", "textx", "cubey", "texty", "cubez", "textz", "cube_center"];
 
@@ -81,7 +86,7 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
     color_buffer = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, color_buffer);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0,
-      gl.RGBA, gl.UNSIGNED_BYTE, null);
+                  gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -93,7 +98,7 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
     depth_buffer = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, depth_buffer);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, width, height, 0,
-      gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
+                  gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -138,21 +143,34 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
   }
 
   /**----------------------------------------------------------------------
+   * Update the shader program tolerance value for z depth comparisons.
+   */
+  self.updateTolerance = function() {
+    gl.useProgram(shadow_program);
+    gl.uniform1f(shadow_program.u_Z_tolerance, self.z_tolerance);
+  };
+
+  /**----------------------------------------------------------------------
    * Create the frame buffers needed to render the shadow maps.
    * @private
    */
-  function _initializeShadowMaps() {
+  self.initializeShadowMaps = function() {
     let frame_buffer;
     for (let j = 0; j < scene.lights.number; j += 1) {
-      scene.lights[j].size.width  = scene.shadow_map_size.width;
-      scene.lights[j].size.height = scene.shadow_map_size.height;
+      // Since the resolution of the shadow maps can change for this demo,
+      // delete any previously created framebuffer.
+      if (scene.lights[j].framebuffer !== null) {
+        gl.deleteTexture(scene.lights[j].framebuffer.color_buffer);
+        gl.deleteTexture(scene.lights[j].framebuffer.depth_buffer);
+        gl.deleteFramebuffer(scene.lights[j].framebuffer);
+      }
 
-      frame_buffer = _createFrameBufferObject(gl, scene.lights[j].size.width,
-                                                  scene.lights[j].size.height);
+      frame_buffer = _createFrameBufferObject(gl, self.shadow_map_resolution,
+                                                  self.shadow_map_resolution);
       scene.lights[j].framebuffer = frame_buffer;
       scene.lights[j].shadow_map = frame_buffer.depth_buffer;
     }
-  }
+  };
 
   /**----------------------------------------------------------------------
    * Set the camera and projection transforms for a light source rendering.
@@ -179,13 +197,30 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
   }
 
   /**----------------------------------------------------------------------
-   * Render the scene
-   * @param transform {Float32Array} 4x4 projection transformation matrix.
+   * Render the models in the scene.
+   * @param to_clipping_space {Float32Array} 4x4 projection transformation matrix.
    * @private
    */
-  function _render_to_shadow_map (transform) {
+  function _render_shadow_models (to_clipping_space) {
+    if (scene.which_models === scene.PLANE_MODELS) {
+      three_planes_shadows.render(to_clipping_space);
 
-    gl.viewport(0.0, 0.0, scene.shadow_map_size.width, scene.shadow_map_size.height);
+    } else if (scene.which_models === scene.CUBES_MODELS) {
+      for (let j = 0; j < render_models.length; j += 1) {
+        shadow_models[j].render(to_clipping_space);
+      }
+    }
+  }
+
+  /**----------------------------------------------------------------------
+   * Render the scene to a shadow map.
+   * @param framebuffer {WebGLFramebuffer} target framebuffer
+   * @param transform {Float32Array} 4x4 projection and camera transformation matrix.
+   * @private
+   */
+  function _render_to_shadow_map (framebuffer, transform) {
+
+    gl.viewport(0.0, 0.0, framebuffer.width, framebuffer.height);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -195,18 +230,32 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
     matrix.rotate(model_rotate_y, scene.model_angle_y, 0, 1, 0);
 
     matrix.multiplySeries(to_clipping_space, transform, model_rotate_y, model_rotate_x);
-    for (let j = 0; j < render_models.length; j += 1) {
-      shadow_models[j].render(to_clipping_space);
-    }
+    _render_shadow_models(to_clipping_space);
 
     // Draw a second copy further back
     matrix.multiplySeries(to_clipping_space, transform, scene.translate2, model_rotate_y, model_rotate_x);
-    for (let j = 0; j < render_models.length; j += 1) {
-      shadow_models[j].render(to_clipping_space);
-    }
+    _render_shadow_models(to_clipping_space);
   }
 
   /**----------------------------------------------------------------------
+   * Render the models in the scene.
+   * @param to_clipping_space {Float32Array} 4x4 projection transformation matrix.
+   * @param to_camera_space {Float32Array} 4x4 camera transformation matrix.
+   * @param shadow_map_transforms {Array} of transformation matrices.
+   * @private
+   */
+  function _render_models (to_clipping_space, to_camera_space, shadow_map_transforms) {
+    if (scene.which_models === scene.PLANE_MODELS) {
+      three_planes.render(to_clipping_space, to_camera_space, shadow_map_transforms);
+
+    } else if (scene.which_models === scene.CUBES_MODELS) {
+      for (let j = 0; j < render_models.length; j += 1) {
+        render_models[j].render(to_clipping_space, to_camera_space, shadow_map_transforms);
+      }
+    }
+  }
+
+    /**----------------------------------------------------------------------
    * Render the scene
    * @param projection {Float32Array} 4x4 projection transformation matrix.
    * @param camera {Float32Array} 4x4 camera transformation matrix.
@@ -214,7 +263,7 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
    */
   function _render_scene (projection, camera) {
 
-    gl.viewport(0.0, 0.0, scene.canvas_size.width, scene.canvas_size.height);
+    gl.viewport(0.0, 0.0, canvas.width, canvas.height);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -233,9 +282,7 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
       gl.uniformMatrix4fv(shadow_program.lights[k].transform, false, shadow_map_transforms[k]);
     }
 
-    for (let j = 0; j < render_models.length; j += 1) {
-      render_models[j].render(to_clipping_space, to_camera_space, shadow_map_transforms);
-    }
+    _render_models(to_clipping_space, to_camera_space, shadow_map_transforms);
 
     // Copy the transforms to the shaders here because they are the same for
     // all of the models.
@@ -247,9 +294,8 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
     // Draw a second copy further back
     matrix.multiplySeries(to_camera_space, camera, scene.translate2, model_rotate_y, model_rotate_x);
     matrix.multiply(to_clipping_space, projection, to_camera_space);
-    for (let j = 0; j < render_models.length; j += 1) {
-      render_models[j].render(to_clipping_space, to_camera_space, shadow_map_transforms);
-    }
+
+    _render_models(to_clipping_space, to_camera_space, shadow_map_transforms);
   }
 
   //-----------------------------------------------------------------------
@@ -305,7 +351,7 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
       matrix.multiply(light.transform, light.projection, light.camera);
 
       // Render the scene
-      _render_to_shadow_map(light.transform);
+      _render_to_shadow_map(light.framebuffer, light.transform);
     }
 
     _updateLights();
@@ -315,12 +361,14 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
 
     // Special case for debugging - render a shadow map texture
     if (scene.render_shadow_map) {
-      render_map.render(scene.lights[scene.render_shadow_map_num].shadow_map);
+      let k = scene.render_shadow_map_num;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      render_map.render(scene.lights[k].shadow_map);
       return;
     }
 
     // Render the scene with shadows (using the shadow maps).
-    _render_scene(scene.projection, scene.camera, render_models, scene.canvas_size);
+    _render_scene(scene.projection, scene.camera, render_models);
   };
 
   //-----------------------------------------------------------------------
@@ -348,20 +396,18 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
   };
 
   //-----------------------------------------------------------------------
-  self.setModelShininess = function (which_model, shininess) {
-    render_models[which_model].shininess = shininess;
-  };
-
-  //-----------------------------------------------------------------------
-  self.getModelShininess = function (which_model) {
-    return render_models[which_model].shininess;
+  self.setModelShininess = function (shininess) {
+    three_planes.shininess = shininess;
+    for (let j = 0; j < render_models.length; j += 1) {
+      render_models[j].shininess = shininess;
+    }
   };
 
   //-----------------------------------------------------------------------
   // Constructor initialization
-  self.canvas = download.getCanvas(id + "_canvas_b");
-  if (self.canvas) {
-    gl = download.getWebglContext(self.canvas);
+  canvas = download.getCanvas(id + "_canvas_b");
+  if (canvas) {
+    gl = download.getWebglContext(canvas);
   }
   if (!gl) {
     return;
@@ -393,9 +439,16 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
                              download.out, [1.0, 0.0, 0.0, 1.0]);
   }
 
-  _initializeShadowMaps();
+  model_gpu = new ModelArraysGPU(gl, models["three_planes"], download.out);
+  three_planes = new RenderShadows(gl, shadow_program, model_gpu, download.out, scene.lights.number);
+  three_planes_shadows = new RenderConstUniformColor(gl, uniform_program, model_gpu,
+                                 download.out, [1.0, 0.0, 0.0, 1.0]);
+
+  self.initializeShadowMaps();
   render_map = new RenderShadowMap(gl, map_program, download.out);
 
-  let events = new ShadowsEvents2(id, scene);
+  let events = new ShadowsEvents2(id, scene, self);
+
+  self.updateTolerance();
 };
 

@@ -1,0 +1,11 @@
+# Blender v2.79 (sub 0) OBJ File: ''
+# www.blender.org
+mtllib plane.mtl
+o plane
+v -2.000000 -0.500000 2.000000
+v 2.000000 -0.500000 2.000000
+v -2.000000 -0.500000 -2.000000
+v 2.000000 -0.500000 -2.000000
+usemtl black
+s off
+f 1 2 4 3

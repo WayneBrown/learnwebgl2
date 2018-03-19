@@ -29,10 +29,10 @@
 "use strict";
 
 /** -----------------------------------------------------------------------
- * Create data to define a projection, either perspective or orthogonal.
+ * Data to define a projection, either perspective or orthogonal.
  * @constructor
  */
-window.ProjectionData = function () {
+window.ProjectionData = function (color) {
 
   // Private variables
   let self = this;
@@ -40,17 +40,19 @@ window.ProjectionData = function () {
   self.PERSPECTIVE_PROJECTION = 0;
   self.ORTHOGRAPHIC_PROJECTION = 1;
 
-  self.type = self.PERSPECTIVE_PROJECTION;
+  self.type = self.ORTHOGRAPHIC_PROJECTION;
 
   self.fovy = 45.0;
   self.aspect_ratio = 1.0;
   self.near = 1.0;
-  self.far = 10.0;
+  self.far = 20.0;
 
   self.left = -2.0;
   self.right = 2.0;
   self.bottom = -2.0;
   self.top = 2.0;
+
+  self.color = color;
 
   let matrix = new GlMatrix4x4();
 

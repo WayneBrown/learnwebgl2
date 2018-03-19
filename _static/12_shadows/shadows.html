@@ -29,6 +29,9 @@
   <br>
 
   <div id="my_tabbed_controls" data-component="tabbedStuff">
+    <!---------------------------------------------------------------------
+      CAMERA settings:
+      --------------------------------------------------------------------- -->
     <div data-component="tab" data-tabname="Camera">
       <table>
         <tr>
@@ -124,11 +127,14 @@
 
     </div>
 
+    <!---------------------------------------------------------------------
+      Light 0 settings:
+      --------------------------------------------------------------------- -->
     <div data-component="tab" data-tabname="Light 0" data-active>
       <table>
         <tr>
           <td colspan="3" style="text-align: center;">
-            <input type="checkbox" id="my_light_on0" checked> Light is on?
+            <input type="checkbox" id="my_light_on0" checked> Light is on? (Rendered in red)
           </td>
         </tr>
         <tr>
@@ -153,10 +159,10 @@
       </table>
 
       <br>
-      <input type="radio" id="my_cam_orthographic0" name="my_cam_proj0" value="0" />Use orthographic projection<br>
-      <input type="radio" id="my_cam_perspective0"  name="my_cam_proj0" value="1" checked/>Use perspective projection
+      <input type="radio" id="my_light_orthographic0" name="my_light_proj0" value="0" checked/>Use orthographic projection<br>
+      <input type="radio" id="my_light_perspective0"  name="my_light_proj0" value="1"/>Use perspective projection
 
-      <table id="my_perspective_table0">
+      <table id="my_perspective_table0" style="display: none;">
         <tr>
           <td colspan="4">
             <span style="font-family:Courier New, courier, monospace; font-size:10pt; text-align: center">
@@ -165,9 +171,9 @@
         </tr>
         <tr>
           <td style="text-align: right; padding-right: 5px">fovy:</td>
-          <td><span id="my_cam_fov_text0">45</span></td>
+          <td><span id="my_light_fov_text0">45</span></td>
           <td style="font-family:Courier New, courier, monospace; font-size:10pt">
-            5.0 <input type="range" id="my_cam_fov0" min="5.0" max="179.0" value="45.0" step="1" style="width:150px"> 179.0
+            5.0 <input type="range" id="my_light_fov0" min="5.0" max="179.0" value="45.0" step="1" style="width:150px"> 179.0
           </td>
         </tr>
         <tr>
@@ -175,61 +181,64 @@
             aspect:
           </td>
           <td style="vertical-align: text-top;">
-            <span id="my_cam_asp_text0">1.0</span>
+            <span id="my_light_asp_text0">1.0</span>
           </td>
           <td style="font-family:Courier New, courier, monospace; font-size:10pt">
-            0.1 <input type="range" id="my_cam_asp0" min="0.1" max="5.0" value="1.0" step="0.1" style="width:150px"> 5.0
+            0.1 <input type="range" id="my_light_asp0" min="0.1" max="5.0" value="1.0" step="0.1" style="width:150px"> 5.0
           </td>
         <tr>
           <td style="text-align: right; padding-right: 5px"> near :</td>
-          <td> <span id="my_cam_nea_text0">1.0</span></td>
+          <td> <span id="my_light_nea_text0">1.0</span></td>
           <td style="font-family:Courier New, courier, monospace; font-size:10pt">
-            0.1 <input type="range" id="my_cam_nea0" min="0.1" max="10.0" value="1.0" step="0.1" style="width:150px"> 10.0
+            0.1 <input type="range" id="my_light_nea0" min="0.1" max="10.0" value="1.0" step="0.1" style="width:150px"> 10.0
           </td>
         </tr>
         <tr>
           <td style="text-align: right; padding-right: 5px"> far : </td>
-          <td style="width: 30px;"> <span id="my_cam_far_text0">10.0</span></td>
+          <td style="width: 30px;"> <span id="my_light_far_text0">10.0</span></td>
           <td style="font-family:Courier New, courier, monospace; font-size:10pt">
-            2.0 <input type="range" id="my_cam_far0" min="2" max="20" value="10.0" step="0.1" style="width:150px"> 20.0
+            2.0 <input type="range" id="my_light_far0" min="2" max="20" value="10.0" step="0.1" style="width:150px"> 20.0
           </td>
         </tr>
       </table>
 
-      <table id="my_orthographic_table0" style="display: none;">
+      <table id="my_orthographic_table0">
         <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
           <td><strong>left:</strong>  </td>
           <td>-2.0</td>
-          <td>-5.0 <input type="range" id="my_cam_left0"   min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:100px"> 5.0 </td>
+          <td>-5.0 <input type="range" id="my_light_left0"   min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:100px"> 5.0 </td>
           <td style='padding-left:10px'><strong>right:</strong> </td>
           <td>2.0</td>
-          <td>-5.0 <input type="range" id="my_cam_right0" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:100px"> 5.0 </td>
+          <td>-5.0 <input type="range" id="my_light_right0" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:100px"> 5.0 </td>
         </tr>
         <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
           <td><strong>bottom:</strong></td>
           <td>-2.0</td>
-          <td>-5.0 <input type="range" id="my_cam_bottom0" min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:100px"> 5.0</td>
+          <td>-5.0 <input type="range" id="my_light_bottom0" min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:100px"> 5.0</td>
           <td style='padding-left:10px'><strong>top:</strong></td>
           <td>2.0</td>
-          <td> -5.0 <input type="range" id="my_cam_top0" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:100px"> 5.0</td>
+          <td> -5.0 <input type="range" id="my_light_top0" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:100px"> 5.0</td>
         </tr>
         <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
           <td><strong>near:</strong></td>
           <td style="display:inline-block; width:30px;">1.0</td>
-          <td>-5.0 <input type="range" id="my_cam_near0"   min="-5.0" max="15.0" value="1.0" step="0.1" style="width:100px"> 15.0</td>
+          <td>-5.0 <input type="range" id="my_light_near0"   min="-5.0" max="15.0" value="1.0" step="0.1" style="width:100px"> 15.0</td>
           <td style='padding-left:10px'><strong>far:</strong></td>
           <td style="display:inline-block; width:30px;">10.0</td>
-          <td>-5.0 <input type="range" id="my_cam_farr0" min="-5.0" max="15.0" value="10.0" step="0.1" style="width:100px"> 15.0</td>
+          <td>-5.0 <input type="range" id="my_light_farr0" min="-5.0" max="15.0" value="10.0" step="0.1" style="width:100px"> 15.0</td>
         </tr>
       </table>
 
     </div>
 
+    <!---------------------------------------------------------------------
+      Light 1 settings:
+      --------------------------------------------------------------------- -->
     <div data-component="tab" data-tabname="Light 1">
       <table>
         <tr>
           <td colspan="3" style="text-align: center;">
-            <input type="checkbox" id="my_light_on1"> Light is on?
+            <input type="checkbox" id="my_light_on1"> Light is on? (Rendered in green)
           </td>
         </tr>
         <tr>
@@ -252,9 +261,83 @@
           <td>0.0 <input type="range" id="my_blue1"  min="0.0" max="1.0" value="1.0" step="0.01" style="width:150px"> 1.0</td>
         </tr>
       </table>
+      <br>
+      <input type="radio" id="my_light_orthographic1" name="my_light_proj1" value="0" checked/>Use orthographic projection<br>
+      <input type="radio" id="my_light_perspective1"  name="my_light_proj1" value="1"/>Use perspective projection
+
+      <table id="my_perspective_table1" style="display: none;">
+        <tr>
+          <td colspan="4">
+            <span style="font-family:Courier New, courier, monospace; font-size:10pt; text-align: center">
+              <strong>perspective(fovy, aspect, near, far)</strong></span>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right; padding-right: 5px">fovy:</td>
+          <td><span id="my_light_fov_text1">45</span></td>
+          <td style="font-family:Courier New, courier, monospace; font-size:10pt">
+            5.0 <input type="range" id="my_light_fov1" min="5.0" max="179.0" value="45.0" step="1" style="width:150px"> 179.0
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right; vertical-align: text-top; padding-right: 5px">
+            aspect:
+          </td>
+          <td style="vertical-align: text-top;">
+            <span id="my_light_asp_text1">1.0</span>
+          </td>
+          <td style="font-family:Courier New, courier, monospace; font-size:10pt">
+            0.1 <input type="range" id="my_light_asp1" min="0.1" max="5.0" value="1.0" step="0.1" style="width:150px"> 5.0
+          </td>
+        <tr>
+          <td style="text-align: right; padding-right: 5px"> near :</td>
+          <td> <span id="my_light_nea_text1">1.0</span></td>
+          <td style="font-family:Courier New, courier, monospace; font-size:10pt">
+            0.1 <input type="range" id="my_light_nea1" min="0.1" max="10.0" value="1.0" step="0.1" style="width:150px"> 10.0
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right; padding-right: 5px"> far : </td>
+          <td style="width: 30px;"> <span id="my_light_far_text1">10.0</span></td>
+          <td style="font-family:Courier New, courier, monospace; font-size:10pt">
+            2.0 <input type="range" id="my_light_far1" min="2" max="20" value="10.0" step="0.1" style="width:150px"> 20.0
+          </td>
+        </tr>
+      </table>
+
+      <table id="my_orthographic_table1">
+        <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
+          <td><strong>left:</strong>  </td>
+          <td>-2.0</td>
+          <td>-5.0 <input type="range" id="my_light_left1"   min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:100px"> 5.0 </td>
+          <td style='padding-left:10px'><strong>right:</strong> </td>
+          <td>2.0</td>
+          <td>-5.0 <input type="range" id="my_light_right1" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:100px"> 5.0 </td>
+        </tr>
+        <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
+          <td><strong>bottom:</strong></td>
+          <td>-2.0</td>
+          <td>-5.0 <input type="range" id="my_light_bottom1" min="-5.0" max="5.0" value="-2.0" step="0.1" style="width:100px"> 5.0</td>
+          <td style='padding-left:10px'><strong>top:</strong></td>
+          <td>2.0</td>
+          <td> -5.0 <input type="range" id="my_light_top1" min="-5.0" max="5.0" value="2.0" step="0.1" style="width:100px"> 5.0</td>
+        </tr>
+        <tr style="font-family:Courier New, courier, monospace; font-size:9pt">
+          <td><strong>near:</strong></td>
+          <td style="display:inline-block; width:30px;">1.0</td>
+          <td>-5.0 <input type="range" id="my_light_near1"   min="-5.0" max="15.0" value="1.0" step="0.1" style="width:100px"> 15.0</td>
+          <td style='padding-left:10px'><strong>far:</strong></td>
+          <td style="display:inline-block; width:30px;">10.0</td>
+          <td>-5.0 <input type="range" id="my_light_farr1" min="-5.0" max="15.0" value="10.0" step="0.1" style="width:100px"> 15.0</td>
+        </tr>
+      </table>
+
     </div>
 
-    <div data-component="tab" data-tabname="Light Environment">
+    <!---------------------------------------------------------------------
+      Light Environment settings:
+      --------------------------------------------------------------------- -->
+    <div data-component="tab" data-tabname="Light Env.">
       <table>
         <tr>
           <td colspan="2" style="text-align:center"><span id="my_ambient_text"><strong>ambient intensities<br>(0.30, 0.30, 0.30)</strong></span></td>
@@ -284,53 +367,67 @@
       </table>
     </div>
 
-    <div data-component="tab" data-tabname="Model Properties">
+    <!---------------------------------------------------------------------
+      Model settings:
+      --------------------------------------------------------------------- -->
+    <div data-component="tab" data-tabname="Model">
       <table>
+        <tr style="border-bottom: 1px solid black;">
+          <td>Render which model?</td>
+          <td>
+            <input type="radio" id="my_model0" name="my_which_model" value="0" checked/>Three planes.<br>
+            <input type="radio" id="my_model1" name="my_which_model" value="1"/>Cubes along axes.<br>
+          </td>
+        </tr>
         <tr>
           <td colspan="4" style="text-align:center"><span id="my_shininess_text"><strong>shininess = 30.0</strong></span></td>
         </tr>
         <tr style="text-align:center;">
           <td colspan="4" >0.1 <input type="range" id="my_shininess"   min="0.1" max="128.0" value="30.0" step="0.1" style="width:200px"> 128.0</td>
         </tr>
-        <tr>
-          <td>
-            <input type="radio" id="my_shininess0" name="my_model" value="0" checked/>Red Cube<br>
-            <input type="radio" id="my_shininess1" name="my_model" value="1" />Red X<br>
-          </td>
-          <td style="padding-left:10px">
-            <input type="radio" id="my_shininess2" name="my_model" value="2" />Green Cube<br>
-            <input type="radio" id="my_shininess3" name="my_model" value="3" />Green Y<br>
-          </td>
-          <td style="padding-left:10px">
-            <input type="radio" id="my_shininess4" name="my_model" value="4" />Blue Cube<br>
-            <input type="radio" id="my_shininess5" name="my_model" value="5" />Blue Z<br>
-          </td>
-          <td style="padding-left:10px">
-            <input type="radio" id="my_shininess6" name="my_model" value="6" />White Cube
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <input type="checkbox" id="my_all_models"> Change the shininess of all models.
-          </td>
-        </tr>
       </table>
     </div>
 
-    <div data-component="tab" data-tabname="Maps">
+    <!---------------------------------------------------------------------
+      Shadow map settings:
+      --------------------------------------------------------------------- -->
+    <div data-component="tab" data-tabname="Shadow Maps">
 
-      <input type="checkbox" id="my_render_maps"> Render a shadow map. (The darker the intensity, the closer the surface.)<br>
-      <br>
-
-      <input type="radio" id="my_map0" name="my_which_map" value="0" checked/>Shadow map for light 0<br>
-      <input type="radio" id="my_map1" name="my_which_map" value="1" />Shadow map for light 1<br>
+      <table>
+        <tr style="border-bottom: 1px solid black;">
+          <td>
+            <input type="checkbox" id="my_render_maps"> Display the shadow maps.<br>
+            (The darker the intensity, the closer the surface.)
+          </td>
+          <td>
+            <input type="radio" id="my_map0" name="my_which_map" value="0" checked/>Shadow map for light 0<br>
+            <input type="radio" id="my_map1" name="my_which_map" value="1" />Shadow map for light 1<br>
+          </td>
+        </tr>
+        <tr style="border-bottom: 1px solid black;">
+          <td>
+            Select the resolution of the shadow maps:
+          </td>
+          <td>
+            <input type="radio" id="my_resolution0" name="my_resolution" value="64"/>64x64<br>
+            <input type="radio" id="my_resolution1" name="my_resolution" value="128" />128x128<br>
+            <input type="radio" id="my_resolution2" name="my_resolution" value="256" />256x256<br>
+            <input type="radio" id="my_resolution3" name="my_resolution" value="512" checked />512x512<br>
+            <input type="radio" id="my_resolution4" name="my_resolution" value="1024" />1024x1024<br>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tolerance for z depth comparisons +/-: <span id="my_tolerance_text">0.0000100</span>
+          </td>
+          <td>0.0 <input type="range" id="my_tolerance" min="0.0" max="0.00001" value="0.00001" step="0.0000001" style="width:150px"> 0.0000100</td>
+        </tr>
+      </table>
 
     </div>
 
   </div>
   <!-- end of tabbed content -->
-
-  <button id="my_reset">Reset scene</button><br>
 
   <!-- Load the JavaScript libraries and data files for the WebGL rendering -->
   <script src="../learn_webgl/scene_download.js"></script>
@@ -344,6 +441,7 @@
   <script src="../learn_webgl/obj_to_arrays.js"></script>
   <script src="../learn_webgl/render_color_per_vertex.js"></script>
   <script src="../learn_webgl/render_const_uniform_color.js"></script>
+  <script src="../learn_webgl/render_uniform_color.js"></script>
   <script src="./render_shadow_map.js"></script>
   <script src="./render_shadows.js"></script>
   <script src="./render_projection.js"></script>
@@ -369,7 +467,8 @@
     let my_models = ["../models/xyz_blocks.obj",
                      "../models/camera.obj",
                      "../models/axes_2units.obj",
-                     "../models/sphere.obj"];
+                     "../models/sphere.obj",
+                     "../models/three_planes.obj"];
     window.my_program = new SceneDownload("my", "my_canvas", "ShadowsScene", my_models, my_shaders);
   </script>
 

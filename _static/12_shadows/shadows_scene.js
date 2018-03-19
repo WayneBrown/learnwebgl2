@@ -44,8 +44,6 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
   // Private variables
   let self = this;
   let my_canvas;
-  self.canvas_size = { 'width' : 300, 'height' : 300};
-  self.shadow_map_size = { 'width' : 256, 'height' : 256}; // power of 2
 
   let P3 = new GlPoint3();
   let V = new GlVector3();
@@ -53,7 +51,6 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
   let gl = null;
   let program;
   let uniform_program;
-  let ray_program;
   let render_models = {};
   let camera_projection;
 
@@ -89,11 +86,16 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
   let model_rotate_y = matrix.create();
   let model_transform = matrix.create();
 
+  let black = [0,0,0,1];
+  let red   = [1,0,0,1];
+  let green = [0,1,0,1];
+
   // Camera and projection for the right canvas
   self.camera_data = { 'eye'    : P3.create(0,0,5),
                        'center' : P3.create(0,0,0),
                        'up'     : V.create(0,1,0) };
-  self.projection_data = new ProjectionData();
+  self.projection_data = new ProjectionData(black);
+  self.projection_data.setPerspective();
 
   self.camera = matrix.create();
   self.projection = matrix.create();
@@ -102,8 +104,6 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
   let cube_model_names = ["textz", "texty", "textx", "cubey", "cubex", "cubez", "cube_center"];
   let camera_model_names = ["Camera_lens", "Camera", "Camera_body", "u_axis", "v_axis", "n_axis"];
   let axes_model_names = ["xaxis", "yaxis", "zaxis"];
-
-  let black = [0,0,0,1];
 
   let P4 = new GlPoint4();
 
@@ -118,10 +118,9 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
     'shadow_map' : null,  // {texture object}
     'camera'     : matrix.create(),
     'projection' : matrix.create(),
-    'projection_data' : new ProjectionData(),
+    'projection_data' : new ProjectionData(red),
     'transform'  : matrix.create(),
     'render'     : null,
-    'size'       : { 'width' : 300, 'height' : 300}
   };
   let light1 = {
     'position' : P4.create(-3, 0, 5, 1),
@@ -133,10 +132,9 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
     'camera_data': { 'eye': P3.create(0,0,0), 'center': P3.create(0,0,0), 'up': V.create(0,0,0) },
     'camera'     : matrix.create(),
     'projection' : matrix.create(),
-    'projection_data' : new ProjectionData(),
+    'projection_data' : new ProjectionData(green),
     'transform'  : matrix.create(),
     'render'     : null,
-    'size'       : { 'width' : 300, 'height' : 300}
   };
 
   // Light model
@@ -161,6 +159,10 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
   // To render the shadow map textures -- for debugging
   self.render_shadow_map = false;
   self.render_shadow_map_num = 0;
+
+  self.PLANE_MODELS = 0;
+  self.CUBES_MODELS = 1;
+  self.which_models = self.PLANE_MODELS;
 
   //-----------------------------------------------------------------------
   self.render = function () {
@@ -199,13 +201,23 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
     matrix.rotate(model_rotate_y, self.model_angle_y, 0, 1, 0);
     matrix.multiplySeries(model_transform, base, model_rotate_y, model_rotate_x);
 
-    for (let j = 0; j < cube_model_names.length; j += 1) {
-      render_models[cube_model_names[j]].render(model_transform);
+    if (self.which_models === self.PLANE_MODELS) {
+      render_models["three_planes"].render(model_transform);
+
+    } else if (self.which_models === self.CUBES_MODELS) {
+      for (let j = 0; j < cube_model_names.length; j += 1) {
+        render_models[cube_model_names[j]].render(model_transform);
+      }
     }
 
     matrix.multiplySeries(model_transform, base, self.translate2, model_rotate_y, model_rotate_x);
-    for (let j = 0; j < cube_model_names.length; j += 1) {
-      render_models[cube_model_names[j]].render(model_transform);
+    if (self.which_models === self.PLANE_MODELS) {
+      render_models["three_planes"].render(model_transform);
+
+    } else if (self.which_models === self.CUBES_MODELS) {
+      for (let j = 0; j < cube_model_names.length; j += 1) {
+        render_models[cube_model_names[j]].render(model_transform);
+      }
     }
 
     //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,7 +226,7 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
                                              self.camera_data.center[1],
                                              self.camera_data.center[2]);
     matrix.multiplySeries(transform, base, center_point_translate, center_point_scale);
-    render_models['Sphere'].render(transform);
+    render_models['Sphere'].render(transform, black);
 
     //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Render virtual camera
@@ -258,7 +270,7 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
                                                  self.lights[j].position[1],
                                                  self.lights[j].position[2]);
       matrix.multiplySeries(transform, base, light_position_translate, light_position_scale);
-      render_models['Sphere'].render(transform);
+      render_models['Sphere'].render(transform, self.lights[j].projection_data.color);
 
       P3.copy(self.lights[j].camera_data.eye, self.lights[j].position);
       P3.copy(self.lights[j].camera_data.center, self.camera_data.center);
@@ -266,7 +278,7 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
 
       if (self.lights[j].is_on) {
         self.lights[j].render.updateVertices(self.lights[j].camera_data, self.lights[j].projection_data);
-        self.lights[j].render.render(base, black);
+        self.lights[j].render.render(base, self.lights[j].projection_data.color);
       }
     }
 
@@ -306,8 +318,6 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
   my_canvas = download.getCanvas(id + "_canvas");  // by convention
   if (my_canvas) {
     gl = download.getWebglContext(my_canvas);
-    self.canvas_size.width = my_canvas.width;
-    self.canvas_size.height = my_canvas.height;
   }
   if (!gl) {
     return;
@@ -328,7 +338,11 @@ window.ShadowsScene = function (id, download, vshaders_dictionary,
   for (let j = 0; j < models.number_models; j += 1) {
     name = models[j].name;
     gpu_buffers = new ModelArraysGPU(gl, models[name], download.out);
-    render_models[name] = new RenderColorPerVertex(gl, program, gpu_buffers, download.out);
+    if (name === 'Sphere') {
+      render_models[name] = new RenderUniformColor(gl, uniform_program, gpu_buffers, download.out);
+    } else {
+      render_models[name] = new RenderColorPerVertex(gl, program, gpu_buffers, download.out);
+    }
   }
 
   camera_projection = new RenderProjection(gl, uniform_program, download.out);

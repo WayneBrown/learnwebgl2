@@ -26,8 +26,8 @@ uniform float u_c1, u_c2;
 // Model surfaces' shininess
 uniform float u_Shininess;
 
-// u_Tolerance_constant
-uniform float u_Tolerance_constant;
+// A tolerance value when comparing z values for in (or out) of shadow.
+uniform float u_Z_tolerance;
 
 // Data coming from the vertex shader
 varying vec3 v_Vertex;
@@ -56,7 +56,7 @@ bool in_shadow(vec4 vertex_relative_to_light, sampler2D shadow_map) {
   // Is the z component of the vertex_relative_to_light greater than
   // the distance retrieved from the shadow map?
   // (Compensate for roundoff errors and lost precision.)
-  return percentages.z > shadow_map_distance + u_Tolerance_constant;
+  return percentages.z > shadow_map_distance + u_Z_tolerance;
 }
 
 //-------------------------------------------------------------------------
@@ -79,6 +79,9 @@ vec3 light_calculations(vec3        fragment_normal,
   if (in_shadow(vertex_shadow_map, light.texture_unit)) {
     return black; // no light reflection
   }
+
+  if (!gl_FrontFacing) return black;
+
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // General calculations needed for both specular and diffuse lighting
 
@@ -93,7 +96,7 @@ vec3 light_calculations(vec3        fragment_normal,
   // Calculate the cosine of the angle between the vertex's normal
   // vector and the vector going to the light.
   cos_angle = dot(fragment_normal, to_light);
-  cos_angle = clamp(cos_angle, 0.0, 1.0);
+  if (cos_angle < 0.0) return black;
 
   // Scale the color of this fragment based on its angle to the light.
   diffuse_color = vec3(v_Color) * light.color * cos_angle;
@@ -154,7 +157,6 @@ void main() {
     }
   }
 
-  // Combine the colors
   color = clamp(color, 0.0, 1.0);
 
   gl_FragColor = vec4(color, v_Color.a);

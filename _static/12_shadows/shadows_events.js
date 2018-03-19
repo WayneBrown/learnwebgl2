@@ -40,28 +40,16 @@
  */
 window.ShadowsEvents = function (id, scene, scene2) {
 
+  //------------------------------------------------------------------------------
+  // Constructor code for the class.
+
   let self = this;
 
   let group_colors = false;
   let active_light = 0;
-  let active_model = 0;
-  let all_models = false;
-
-  //------------------------------------------------------------------------------
-  // Constructor code for the class.
-
-  // Private letiables
-  let out = scene.out;    // Debugging and output goes here.
-  let canvas = scene.canvas;
 
   // Remember the current state of events
   let start_of_mouse_drag = null;
-  let previous_time = Date.now();
-  let animate_is_on = scene.animate_active;
-
-  // Control the rate at which animations refresh
-  let frame_rate = 30; // 33 milliseconds = 1/30 sec
-  //let frame_rate = 0; // gives screen refresh rate (60 fps)
 
   //-----------------------------------------------------------------------
   self.mouse_drag_started = function (event) {
@@ -70,9 +58,6 @@ window.ShadowsEvents = function (id, scene, scene2) {
     start_of_mouse_drag = event;
     event.preventDefault();
 
-    if (animate_is_on) {
-      scene.animate_active = false;
-    }
   };
 
   //-----------------------------------------------------------------------
@@ -82,11 +67,6 @@ window.ShadowsEvents = function (id, scene, scene2) {
     start_of_mouse_drag = null;
 
     event.preventDefault();
-
-    if (animate_is_on) {
-      scene.animate_active = true;
-      self.animate();
-    }
   };
 
   //-----------------------------------------------------------------------
@@ -159,62 +139,6 @@ window.ShadowsEvents = function (id, scene, scene2) {
     $('#' + id + "_green1").val(scene.lights[1].color[1]);
     $('#' + id + "_blue1").val( scene.lights[1].color[2]);
   }
-
-  //------------------------------------------------------------------------------
-  self.reset = function (event) {
-    let control = $(event.target);
-    // Change the render values
-    let zero = 0;
-    let one = 1;
-    let five = 5;
-    scene.camera_data.eye[0] = zero;
-    scene.camera_data.eye[1] = zero;
-    scene.camera_data.eye[2] = five;
-    scene.camera_data.center[0] = zero;
-    scene.camera_data.center[1] = zero;
-    scene.camera_data.center[2] = zero;
-
-    scene.lights[0].position[0] = 3;
-    scene.lights[0].position[1] = 0;
-    scene.lights[0].position[2] = 5;
-    scene.lights[0].color[0] = 1;
-    scene.lights[0].color[1] = 1;
-    scene.lights[0].color[2] = 1;
-
-    scene.lights[1].position[0] = -3;
-    scene.lights[1].position[1] = 0;
-    scene.lights[1].position[2] = 5;
-    scene.lights[1].color[0] = 1;
-    scene.lights[1].color[1] = 1;
-    scene.lights[1].color[2] = 1;
-
-    scene.lights.c1 = 0.1;
-    scene.lights.c2 = 0.0;
-
-    // Change the sliders
-    $('#' + id + "_eyeX").val(zero);
-    $('#' + id + "_eyeY").val(zero);
-    $('#' + id + "_eyeZ").val(five);
-
-    $('#' + id + "_cX").val(zero);
-    $('#' + id + "_cY").val(zero);
-    $('#' + id + "_cZ").val(zero);
-
-    _updateLightSliders();
-
-    $('#' + id + "_shininess").val(30);
-
-    $('#' + id + "_ambient_red").val(0.3);
-    $('#' + id + "_ambient_green").val(0.3);
-    $('#' + id + "_ambient_blue").val(0.3);
-
-    $('#' + id + "_c1").val(0.1);
-    $('#' + id + "_c2").val(0.0);
-
-    // Changed displayed text
-    _updateValuesDisplay();
-    scene.render();
-  };
 
   //------------------------------------------------------------------------------
   self.eyeX = function (event) {
@@ -380,28 +304,9 @@ window.ShadowsEvents = function (id, scene, scene2) {
   //------------------------------------------------------------------------------
   self.shininess = function (event) {
     let shininess = Number($('#' + id + "_shininess").val());
-    scene2.setModelShininess(active_model, shininess);
-    if (all_models) {
-      for (let j=0; j<7; j++) {
-        scene2.setModelShininess(j, shininess);
-      }
-    }
+    scene2.setModelShininess(shininess);
     scene.render();
     _updateValuesDisplay();
-  };
-
-  //------------------------------------------------------------------------------
-  self.shininessModel = function (event) {
-    let control = $(event.target);
-    active_model = Number(control.val());
-    let shininess = scene2.getModelShininess(active_model);
-    $('#' + id + "_shininess").val(shininess);
-    _updateValuesDisplay();
-  };
-
-  //------------------------------------------------------------------------------
-  self.allModels = function (event) {
-    all_models = $(event.target).is(":checked");
   };
 
   //------------------------------------------------------------------------------
@@ -469,42 +374,46 @@ window.ShadowsEvents = function (id, scene, scene2) {
   };
 
   //------------------------------------------------------------------------------
-  self.camProjection0 = function (event) {
+  self.lightProjection = function (event) {
     let control = $(event.target);
     let value = Number(control.val());
     let name = control[0].id;
-    let which = name.substr(7);
+    let which = name.substr(9);
+    let light = Number( which[which.length-1] );
     let update = control.closest('td').prev('td');
 
+    // Remove the light number from the end of "which"
+    which = which.substr(0, which.length-1);
+
     switch (which) {
-      case "fov0": scene.lights[0].projection_data.fovy = value;
-        $('#' + id + "_cam_fov_text0").text(value.toFixed(0));
+      case "fov": scene.lights[light].projection_data.fovy = value;
+        $('#' + id + "_cam_fov_text" + light).text(value.toFixed(0));
         break;
-      case "asp0": scene.lights[0].projection_data.aspect_ratio = value;
-        $('#' + id + "_cam_asp_text0").text(value.toFixed(1));
+      case "asp": scene.lights[light].projection_data.aspect_ratio = value;
+        $('#' + id + "_cam_asp_text" + light).text(value.toFixed(1));
         break;
-      case "nea0": scene.lights[0].projection_data.near = value;
-        $('#' + id + "_cam_nea_text0").text(value.toFixed(1));
+      case "nea": scene.lights[light].projection_data.near = value;
+        $('#' + id + "_cam_nea_text" + light).text(value.toFixed(1));
         break;
-      case "far0": scene.lights[0].projection_data.far = value;
-        $('#' + id + "_cam_far_text0").text(value.toFixed(1));
+      case "far": scene.lights[light].projection_data.far = value;
+        $('#' + id + "_cam_far_text" + light).text(value.toFixed(1));
         break;
-      case "left0": scene.lights[0].projection_data.left = value;
+      case "left": scene.lights[light].projection_data.left = value;
         update.text(value.toFixed(1));
         break;
-      case "right0": scene.lights[0].projection_data.right = value;
+      case "right": scene.lights[light].projection_data.right = value;
         update.text(value.toFixed(1));
         break;
-      case "bottom0": scene.lights[0].projection_data.bottom = value;
+      case "bottom": scene.lights[light].projection_data.bottom = value;
         update.text(value.toFixed(1));
         break;
-      case "top0": scene.lights[0].projection_data.top = value;
+      case "top": scene.lights[light].projection_data.top = value;
         update.text(value.toFixed(1));
         break;
-      case "near0": scene.lights[0].projection_data.near = value;
+      case "near": scene.lights[light].projection_data.near = value;
         update.text(value.toFixed(1));
         break;
-      case "farr0": scene.lights[0].projection_data.far = value;
+      case "farr": scene.lights[light].projection_data.far = value;
         update.text(value.toFixed(1));
         break;
     }
@@ -512,23 +421,32 @@ window.ShadowsEvents = function (id, scene, scene2) {
   };
 
   //------------------------------------------------------------------------------
-  self.camProjType0 = function (event) {
+  self.lightProjType = function (event) {
     let control = $(event.target);
     let value = Number(control.val());
+    let control_id = control[0].id;
+    let light = Number( control_id[control_id.length-1] );
 
-    let tab0 = $('#' + id + '_orthographic_table0');
-    let tab1 = $('#' + id + '_perspective_table0');
+    let tab0 = $('#' + id + '_orthographic_table' + light);
+    let tab1 = $('#' + id + '_perspective_table' + light);
 
     switch (value) {
-      case 0: scene.lights[0].projection_data.setOrthographic();
-        tab0.show();
-        tab1.hide();
+      case 0: scene.lights[light].projection_data.setOrthographic();
+        $(tab0).show();
+        $(tab1).hide();
         break;
-      case 1: scene.lights[0].projection_data.setPerspective();
-        tab0.hide();
-        tab1.show();
+      case 1: scene.lights[light].projection_data.setPerspective();
+        $(tab0).hide();
+        $(tab1).show();
         break;
     }
+    scene.render();
+  };
+
+  //------------------------------------------------------------------------------
+  self.whichModel = function (event) {
+    let control = $(event.target);
+    scene.which_models = Number(control.val());
     scene.render();
   };
 
@@ -547,7 +465,6 @@ window.ShadowsEvents = function (id, scene, scene2) {
 
   //------------------------------------------------------------------------------
   self.removeAllEventHandlers = function () {
-    $('#' + id + '_reset').unbind('click', self.reset);
     $('#' + id + '_eyeX').unbind("input change", self.eyeX);
     $('#' + id + '_eyeY').unbind("input change", self.eyeY);
     $('#' + id + '_eyeZ').unbind("input change", self.eyeZ);
@@ -578,20 +495,20 @@ window.ShadowsEvents = function (id, scene, scene2) {
     $('#' + id + '_green0').unbind("input change", self.green);
     $('#' + id + '_blue0').unbind("input change", self.blue);
 
-    $('#' + id + '_cam_fov0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_asp0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_nea0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_far0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_fov0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_asp0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_nea0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_far0').unbind("input change", self.camProjection0);
 
-    $('#' + id + '_cam_left0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_right0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_bottom0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_top0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_near0').unbind("input change", self.camProjection0);
-    $('#' + id + '_cam_farr0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_left0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_right0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_bottom0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_top0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_near0').unbind("input change", self.camProjection0);
+    $('#' + id + '_light_farr0').unbind("input change", self.camProjection0);
 
-    $('#' + id + '_cam_orthographic0').unbind("click", self.camProjType0);
-    $('#' + id + '_cam_perspective0').unbind("click", self.camProjType0);
+    $('#' + id + '_light_orthographic0').unbind("click", self.camProjType0);
+    $('#' + id + '_light_perspective0').unbind("click", self.camProjType0);
 
     $('#' + id + '_light_on1').unbind('click', self.lightOn);
     $('#' + id + '_lightX1').unbind("input change", self.lightX);
@@ -601,6 +518,21 @@ window.ShadowsEvents = function (id, scene, scene2) {
     $('#' + id + '_green1').unbind("input change", self.green);
     $('#' + id + '_blue1').unbind("input change", self.blue);
 
+    $('#' + id + '_light_fov1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_asp1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_nea1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_far1').unbind("input change", self.lightProjection);
+
+    $('#' + id + '_light_left1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_right1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_bottom1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_top1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_near1').unbind("input change", self.lightProjection);
+    $('#' + id + '_light_farr1').unbind("input change", self.lightProjection);
+
+    $('#' + id + '_light_orthographic1').unbind("click", self.lightProjType);
+    $('#' + id + '_light_perspective1').unbind("click", self.lightProjType);
+
     $('#' + id + '_shininess').unbind("input change", self.shininess);
     $('#' + id + '_ambient_red').unbind("input change", self.ambientRed);
     $('#' + id + '_ambient_green').unbind("input change", self.ambientGreen);
@@ -609,14 +541,8 @@ window.ShadowsEvents = function (id, scene, scene2) {
     $('#' + id + '_c1').unbind("input change", self.c1);
     $('#' + id + '_c2').unbind("input change", self.c2);
 
-    $('#' + id + '_shininess0').unbind('click', self.shininessModel);
-    $('#' + id + '_shininess1').unbind('click', self.shininessModel);
-    $('#' + id + '_shininess2').unbind('click', self.shininessModel);
-    $('#' + id + '_shininess3').unbind('click', self.shininessModel);
-    $('#' + id + '_shininess4').unbind('click', self.shininessModel);
-    $('#' + id + '_shininess5').unbind('click', self.shininessModel);
-    $('#' + id + '_shininess6').unbind('click', self.shininessModel);
-    $('#' + id + '_all_models').unbind('click', self.allModels);
+    $('#' + id + '_model0').unbind('click', self.whichModel);
+    $('#' + id + '_model1').unbind('click', self.whichModel);
 
     $('#' + id + '_render_maps').unbind('click', self.renderMaps);
     $('#' + id + '_map0').unbind('click', self.renderWhichMap);
@@ -630,8 +556,6 @@ window.ShadowsEvents = function (id, scene, scene2) {
 
   //------------------------------------------------------------------------------
   // Constructor code for the class.
-
-  $('#' + id + '_reset').on('click', self.reset);
 
   $('#' + id + '_eyeX').on("input change", self.eyeX);
   $('#' + id + '_eyeY').on("input change", self.eyeY);
@@ -663,20 +587,20 @@ window.ShadowsEvents = function (id, scene, scene2) {
   $('#' + id + '_green0').on("input change", self.green);
   $('#' + id + '_blue0').on("input change", self.blue);
 
-  $('#' + id + '_cam_fov0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_asp0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_nea0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_far0').on("input change", self.camProjection0);
+  $('#' + id + '_light_fov0').on("input change", self.lightProjection);
+  $('#' + id + '_light_asp0').on("input change", self.lightProjection);
+  $('#' + id + '_light_nea0').on("input change", self.lightProjection);
+  $('#' + id + '_light_far0').on("input change", self.lightProjection);
 
-  $('#' + id + '_cam_left0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_right0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_bottom0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_top0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_near0').on("input change", self.camProjection0);
-  $('#' + id + '_cam_farr0').on("input change", self.camProjection0);
+  $('#' + id + '_light_left0').on("input change", self.lightProjection);
+  $('#' + id + '_light_right0').on("input change", self.lightProjection);
+  $('#' + id + '_light_bottom0').on("input change", self.lightProjection);
+  $('#' + id + '_light_top0').on("input change", self.lightProjection);
+  $('#' + id + '_light_near0').on("input change", self.lightProjection);
+  $('#' + id + '_light_farr0').on("input change", self.lightProjection);
 
-  $('#' + id + '_cam_orthographic0').on("click", self.camProjType0);
-  $('#' + id + '_cam_perspective0').on("click", self.camProjType0);
+  $('#' + id + '_light_orthographic0').on("click", self.lightProjType);
+  $('#' + id + '_light_perspective0').on("click", self.lightProjType);
 
   $('#' + id + '_light_on1').on('click', self.lightOn);
   $('#' + id + '_lightX1').on("input change", self.lightX);
@@ -686,6 +610,21 @@ window.ShadowsEvents = function (id, scene, scene2) {
   $('#' + id + '_green1').on("input change", self.green);
   $('#' + id + '_blue1').on("input change", self.blue);
 
+  $('#' + id + '_light_fov1').on("input change", self.lightProjection);
+  $('#' + id + '_light_asp1').on("input change", self.lightProjection);
+  $('#' + id + '_light_nea1').on("input change", self.lightProjection);
+  $('#' + id + '_light_far1').on("input change", self.lightProjection);
+
+  $('#' + id + '_light_left1').on("input change", self.lightProjection);
+  $('#' + id + '_light_right1').on("input change", self.lightProjection);
+  $('#' + id + '_light_bottom1').on("input change", self.lightProjection);
+  $('#' + id + '_light_top1').on("input change", self.lightProjection);
+  $('#' + id + '_light_near1').on("input change", self.lightProjection);
+  $('#' + id + '_light_farr1').on("input change", self.lightProjection);
+
+  $('#' + id + '_light_orthographic1').on("click", self.lightProjType);
+  $('#' + id + '_light_perspective1').on("click", self.lightProjType);
+
   $('#' + id + '_shininess').on("input change", self.shininess);
   $('#' + id + '_ambient_red').on("input change", self.ambientRed);
   $('#' + id + '_ambient_green').on("input change", self.ambientGreen);
@@ -694,14 +633,8 @@ window.ShadowsEvents = function (id, scene, scene2) {
   $('#' + id + '_c1').on("input change", self.c1);
   $('#' + id + '_c2').on("input change", self.c2);
 
-  $('#' + id + '_shininess0').on('click', self.shininessModel);
-  $('#' + id + '_shininess1').on('click', self.shininessModel);
-  $('#' + id + '_shininess2').on('click', self.shininessModel);
-  $('#' + id + '_shininess3').on('click', self.shininessModel);
-  $('#' + id + '_shininess4').on('click', self.shininessModel);
-  $('#' + id + '_shininess5').on('click', self.shininessModel);
-  $('#' + id + '_shininess6').on('click', self.shininessModel);
-  $('#' + id + '_all_models').on('click', self.allModels);
+  $('#' + id + '_model0').on('click', self.whichModel);
+  $('#' + id + '_model1').on('click', self.whichModel);
 
   $('#' + id + '_render_maps').on('click', self.renderMaps);
   $('#' + id + '_map0').on('click', self.renderWhichMap);

@@ -42,6 +42,21 @@ This chapter discusses the following, more advanced, rendering topics:
   such as clouds, smoke, fire, water, and dust, render these phenomena using
   many small "particles."
 
+* **Stencils**
+
+  Produce special effects by limiting the areas of an image that can
+  be modified.
+
+* **3D Text**
+
+  Render models that represent text (letters, digits, special characters) in
+  a 3D scene.
+
+* **Overlays**
+
+  Render 3D graphics into a web page that is under or over other web page elements.
+  (And render 3D graphics in full-screen mode.)
+
 All of these advanced rendering techniques can be implemented using WebGL 1.0, but, in
 some cases, they are easier to implement if WebGL "extensions" are used.
 

@@ -30,11 +30,12 @@
 
 /**------------------------------------------------------------------------
  * Event handlers for a scene.
- * @param id - the webgldemo ID used to give HTML tags unique names
- * @param scene {BumpMapScene} an instance of the rendering object
+ * @param id - {string} the webgldemo ID used to give HTML tags unique names
+ * @param scene {ShadowsScene} an instance of the rendering object
+ * @param scene2 {ShadowsScene2} an instance of the rendering object
  * @constructor
  */
-window.ShadowsEvents2 = function (id, scene) {
+window.ShadowsEvents2 = function (id, scene, scene2) {
 
   let self = this;
 
@@ -78,8 +79,32 @@ window.ShadowsEvents2 = function (id, scene) {
     }
   };
 
+  //-----------------------------------------------------------------------
+  self.resolution = function (event) {
+    scene2.shadow_map_resolution = Number( $(event.target).val() );
+    scene2.initializeShadowMaps();
+
+    scene2.render();
+  };
+
+  //-----------------------------------------------------------------------
+  self.tolerance = function (event) {
+    scene2.z_tolerance = Number( $(event.target).val() );
+    scene2.updateTolerance();
+    $("#" + id + "_tolerance_text").text(scene2.z_tolerance.toFixed(7));
+
+    scene2.render();
+  };
+
   //------------------------------------------------------------------------------
   self.removeAllEventHandlers = function () {
+    $("#" + id + "_resolution0").unbind("click", self.resolution);
+    $("#" + id + "_resolution1").unbind("click", self.resolution);
+    $("#" + id + "_resolution2").unbind("click", self.resolution);
+    $("#" + id + "_resolution3").unbind("click", self.resolution);
+    $("#" + id + "_resolution4").unbind("click", self.resolution);
+    $("#" + id + "_tolerance").unbind("input change", self.tolerance);
+
     let cid = '#' + id + "_canvas_b";
     $( cid ).unbind("mousedown", self.mouse_drag_started );
     $( cid ).unbind("mouseup",   self.mouse_drag_ended );
@@ -88,6 +113,12 @@ window.ShadowsEvents2 = function (id, scene) {
 
   //------------------------------------------------------------------------------
   // Constructor code for the class.
+  $("#" + id + "_resolution0").on("click", self.resolution);
+  $("#" + id + "_resolution1").on("click", self.resolution);
+  $("#" + id + "_resolution2").on("click", self.resolution);
+  $("#" + id + "_resolution3").on("click", self.resolution);
+  $("#" + id + "_resolution4").on("click", self.resolution);
+  $("#" + id + "_tolerance").on("input change", self.tolerance);
 
   // Add standard mouse events to the canvas
   let cid = '#' + id + "_canvas_b";

@@ -180,7 +180,7 @@ Fine Grain Control of a Depth Buffer
 ....................................
 
 WebGL provides tools for fine grain control its z-buffer (*depth buffer*) for special
-rendering problems. You may never need the following commands, but you should know they exist.
+rendering problems.
 
 * :code:`gl.depthMask(bool flag)` : Enables or disables writing to the *depth buffer*.
   When the *depth buffer* is disabled, this renders a model to the *color buffer* but does not update
@@ -196,14 +196,31 @@ rendering problems. You may never need the following commands, but you should kn
   The default value is :code:`gl.LESS`.
 
 Given the ability to set these extra values for the *z-buffer algorithm*, we
-can describe the algorithm in more detail using the following pseudocode:
+can describe the algorithm in more detail using the following pseudocode. This
+is a description of the logic that is hard-coded into the graphics pipeline.
 
 .. Code-Block:: JavaScript
 
-  void clearBuffers() {
+  int     depth_test_func = LESS;  // DEFAULT
+  boolean write_depth     = true;  // DEFAULT
+  float   maximum_z_value = 1.0;   // DEFAULT
+
+  void gl.depthMask(bool flag) {
+    write_depth = flag;
+  }
+
+  void gl.clearDepth(float depth) {
+    maximum_z_value = depth;
+  }
+
+  void gl.depthFunc(enum func) {
+    depth_test_func = func;
+  }
+
+  void gl.clear() {
     for (x = 0; x < image_width; x++) {
       for (y = 0; y < image_height; y++) {
-        depth_buffer[x][y] = maximum_z_value * depthPercentage;
+        depth_buffer[x][y] = maximum_z_value;
         color_buffer[x][y] = background_color;
       }
     }
@@ -211,26 +228,27 @@ can describe the algorithm in more detail using the following pseudocode:
 
   void renderPixel(x, y, z, color) {
     if (depth_test_is_enabled) {           // gl.enable(gl.DEPTH_TEST);
-      switch (depth_func_mode) {           // gl.depthFunc(enum func);
-        case NEVER:    condition = false;
-        case ALWAYS:   condition = true;
-        case LESS:     condition = (z <  zbuffer[x][y]);  // default
-        case EQUAL:    condition = (z == zbuffer[x][y]);
-        case LEQUAL:   condition = (z <= zbuffer[x][y]);
-        case GREATER:  condition = (z >  zbuffer[x][y]);
-        case GEQUAL:   condition = (z >= zbuffer[x][y]);
-        case NOTEQUAL: condition = (z != zbuffer[x][y]);
-      }
-      if (condition) {
-        if (depth_buffer_write_enabled) {  // gl.depthMask(true)
-          depth_buffer[x][y] = z;
-        }
+      if (passes_depth_test(x, y, z)) {
+        if (write_depth) depth_buffer[x][y] = z;
         color_buffer[x][y] = color;
       }
     } else {                               // gl.disable(gl.DEPTH_TEST);
-      // No hidden surface removal
       color_buffer[x][y] = color;
     }
+  }
+
+  boolean passes_depth_test(x, y, z) {
+    switch (depth_test_func) {             // gl.depthFunc(enum func);
+      case NEVER:    condition = false;
+      case ALWAYS:   condition = true;
+      case LESS:     condition = (z <  depth_buffer[x][y]);  // DEFAULT
+      case EQUAL:    condition = (z == depth_buffer[x][y]);
+      case LEQUAL:   condition = (z <= depth_buffer[x][y]);
+      case GREATER:  condition = (z >  depth_buffer[x][y]);
+      case GEQUAL:   condition = (z >= depth_buffer[x][y]);
+      case NOTEQUAL: condition = (z != depth_buffer[x][y]);
+    }
+    return condition;
   }
 
 WebGL Experimentation

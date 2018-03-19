@@ -30,11 +30,10 @@
 
 //-------------------------------------------------------------------------
 /**
- * Given a model description, create the buffer objects needed to render
- * the model. This is very closely tied to the shader implementations.
- * @param gl Object The WebGL state and API
- * @param program Object The shader program the will render the texture.
- * @param out Object Can display messages to the webpage.
+ * Render a shadow map.
+ * @param gl {WebGLRenderingContext} WebGL context
+ * @param program {WebGLProgram} a shader program
+ * @param out {ConsoleMessages} display messages to the web page
  * @constructor
  */
 window.RenderShadowMap = function (gl, program, out) {
@@ -73,10 +72,9 @@ window.RenderShadowMap = function (gl, program, out) {
    * @private
    */
   function _buildBufferObjects() {
-
+    // Define two triangles that cover the default clipping space.
     let vertices = new Float32Array([-1,+1, -1,-1, 1,-1, -1,+1, 1,-1, 1,1]);
     triangles_vertex_buffer_id = _createBufferObject(vertices);
-
   }
 
   //-----------------------------------------------------------------------

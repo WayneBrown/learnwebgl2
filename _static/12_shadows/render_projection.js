@@ -29,7 +29,7 @@
 "use strict";
 
 /**------------------------------------------------------------------------
- * A class to render models using a single color and the wireframe lines.
+ * Render a wireframe representation of a projection.
  * @param gl {WebGLRenderingContext} WebGL context
  * @param program {WebGLProgram} a shader program
  * @param out {ConsoleMessages} display messages to the web page
@@ -69,7 +69,7 @@ window.RenderProjection = function (gl, program, out) {
   let to_left = V.create();
   let to_down = V.create();
 
-  // The 8 points that define a perspective frustum
+  // The 8 points that define a projection
   let pts = [P4.create(), P4.create(), P4.create(), P4.create(),
              P4.create(), P4.create(), P4.create(), P4.create()];
 
