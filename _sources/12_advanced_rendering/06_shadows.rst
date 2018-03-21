@@ -643,6 +643,123 @@ Glossary
     of a *frame buffer*. This extension also adds the option to create a
     *texture map* that contains 32-bit unsigned integers for each value of the map.
 
+Self Assessment
+---------------
+
+.. mchoice:: 12.6.1
+  :random:
+
+  If light is blocked from hitting a surface, the surface should be colored using
+  what type of lighting?
+
+  - ambient light
+
+    + Correct. Ambient light has no specific source. Therefore it can't be blocked.
+
+  - diffuse light
+
+    - Incorrect. Diffuse light must strike the surface and reflect off.
+
+  - specular light
+
+    - Incorrect. Specular light must strike the surface and reflect off.
+
+  - attenuated light
+
+    - Incorrect. The attenuation of light is the decrease in a light's intensity
+      based on the distance between a light source and a surface.
+
+.. mchoice:: 12.6.2
+  :random:
+
+  A *shadow map* contains what type of information?
+
+  - the distance from a light source to the closest surface.
+
+    + Correct.
+
+  - a RGBA color of the closest surface to a light source.
+
+    - Incorrect.
+
+  - a boolean (true/false) value that indicates if a pixel is in a shadow.
+
+    - Incorrect.
+
+  - a floating point value in the range 0.0 to 1.0 that is a percentage of likelihood that
+    a pixel is in a shadow.
+
+    - Incorrect.
+
+.. mchoice:: 12.6.3
+  :random:
+
+    A *shadow map* is technically a *texture map* because ... ? (Select all that apply.)
+
+  - A :code:`texture2D` lookup on a *texture map* can be performed by a *fragment shader*
+    to retrieve a specific value.
+
+    + Correct.
+
+  - A *texture map* is stored in the GPU's memory and a *fragment shader* has very fast
+    access to it.
+
+    + Correct.
+
+  - A *texture map* can be the *depth buffer* of a *frame buffer*.
+
+    + Correct.
+
+  - *Texture maps* store 2D arrays of RGBA colors.
+
+    - Incorrect.
+
+.. dragndrop:: twelve_six_five
+  :feedback: Please try again!
+  :match_1: model space|||no calculations
+  :match_2: camera space|||lighting
+  :match_3: normalize device coordinates|||clipping, perspective division, and viewport mapping
+  :match_4: light source space|||shadow map lookups
+
+  Match each "3d space" with the calculations that are performed in that space.
+
+.. mchoice:: 12.6.5
+  :random:
+
+  Setting up a "camera" to create a *shadow map* for a *point light source* is problematic
+  because a camera has a line-of-sight, whereas a point light source shines light in all
+  directions. This lesson suggests a strategy for creating a "light source camera".
+  Using this strategy, which of the following are shared between a "scene camera"
+  and a "light source camera". (Select all that apply.)
+
+  - "Scene camera"'s center location.
+
+    + Correct.
+
+  - "Scene camera"'s up vector.
+
+    + Correct.
+
+  - "Scene camera"'s eye location.
+
+    - Incorrect.
+
+.. mchoice:: 12.6.6
+  :random:
+
+  Distance values retrieved from a *shadow map* must be used with a "tolerance" value
+  to compensate for losses in precision. Which type of projection has a fairly consistent
+  error over the entire range of distance values?
+
+  - Orthographic
+
+    + Correct. Because the mapping of z values to the *depth buffer* is linear.
+
+  - Perspective
+
+    - Incorrect. Because the mapping of z values to the *depth buffer* is non-linear.
+
+
 .. index:: shadow, shadow map, WebGL extension, depth_texture_extension
 
 .. _shadow: https://en.wikipedia.org/wiki/Shadow

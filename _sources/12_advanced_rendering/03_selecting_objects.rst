@@ -44,7 +44,7 @@ The scene is rendered twice. The *shader program* used for the first
 rendering puts a unique identifier into every pixel rendered for each unique
 model. Let's call this *shader program* :code:`selection_program`. The second
 rendering creates the image seen by the user. Let's call its *shader program*
-:code:`visible_program`. Here are the step to the selection algorithm, assuming
+:code:`visible_program`. Here are the steps to the selection algorithm, assuming
 that the user has clicked on the canvas location :code:`(mouse_x, mouse_y)`.
 
 #. :code:`gl.useProgram(selection_program)`
@@ -389,5 +389,144 @@ Glossary
     A JavaScript operator that performs a logical "and" operation on a bit-by-bit basis.
     For example, :code:`01001101 & 15` results in :code:`00001101` because :code:`15` in
     binary is :code:`00001111`.
+
+Self Assessment
+---------------
+
+.. mchoice:: 12.3.1
+  :random:
+
+  What WebGL command will retrieve values from a *color buffer*?
+
+  - :code:`gl.readPixels()`
+
+    + Correct.
+
+  - :code:`gl.readColorBuffer()`
+
+    - Incorrect. There is no such function.
+
+  - :code:`gl.getPixelColor()`
+
+    - Incorrect. There is no such function.
+
+  - :code:`gl.atPixel()`
+
+    - Incorrect. There is no such function.
+
+.. mchoice:: 12.3.2
+  :random:
+
+  When a color is read from a WebGL *color buffer*, what type of data is returned?
+
+  - four, unsigned bytes in the range 0 to 255.
+
+    + Correct.
+
+  - four, floating point values in the range 0.0 to 1.0.
+
+    - Incorrect. This is how colors are specified in a *fragment shader*,
+      but not how they are actually stored in the *color buffer*.
+
+  - one unsigned integer in the range 0 to 2\ :sup:`32`\ -1
+
+    - Incorrect.
+
+  - Three floating point values, RGB, in the range 0.0 to "max_color".
+
+    - Incorrect.
+
+.. mchoice:: 12.3.3
+  :random:
+
+  The coordinate system used for a canvas is different from the coordinate system
+  used for a *color buffer*. Which of the following is correct?
+
+  - canvas: Y axis down, origin in upper-left corner :raw-html:`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    color buffer: Y axis up, origin in lower-left corner
+
+    + Correct.
+
+  - canvas: Y axis up, origin in lower-left corner :raw-html:`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    color buffer: Y axis down, origin in upper-left corner
+
+    - Incorrect.
+
+  - canvas: Y axis up, origin in center :raw-html:`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    color buffer: Y axis up, origin in lower-left corner
+
+    - Incorrect.
+
+  - canvas: Y axis down, origin in center :raw-html:`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    color buffer: Y axis up, origin in center
+
+    - Incorrect.
+
+.. mchoice:: 12.3.4
+  :random:
+
+  If :code:`a` has the value of 6, what is :code:`a << 2`. (Six in binary is :code:`110`.)
+
+  - :code:`11000` (24)
+
+    + Correct. It is a left shift by 2 bits.
+
+  - :code:`00110` (6)
+
+    - Incorrect.
+
+  - :code:`1100` (12)
+
+    - Incorrect.
+
+  - :code:`11011` (27)
+
+    - Incorrect.
+
+.. mchoice:: 12.3.5
+  :random:
+
+  If :code:`a` has the value of 187, what is :code:`a >> 5`. (187 in binary is :code:`10111011`.)
+
+  - :code:`101` (5)
+
+    + Correct. It is a right shift by 5 bits.
+
+  - :code:`11011` (27)
+
+    - Incorrect.
+
+  - :code:`10111` (23)
+
+    - Incorrect.
+
+  - :code:`1110` (14)
+
+    - Incorrect.
+
+.. mchoice:: 12.3.6
+  :random:
+
+  Why are two separate *shader programs* needed to accomplish a selection? (Select all that apply.)
+
+  - The *shader program* that puts a unique identifier into the *color buffer* must not perform
+    lighting calculations because the lighting calculations would change the ID.
+
+    + Correct.
+
+  - The *shader program* that creates the visible rendering should create a realistic scene.
+
+    + Correct.
+
+  - The *shader program* that puts a unique identifier into the *color buffer* must ignore the
+    color properties of the model.
+
+    + Correct.
+
+  - The *shader program* that puts a unique identifier into the *color buffer* must deal
+    with light attenuation.
+
+    - Incorrect.
+
 
 .. index:: selection algorithm, gl.readPixels, bitwise operators

@@ -94,6 +94,8 @@ of extensions possibly limits the number of users that can view your WebGL
 program. Therefore, extensions should only be used if they are widely
 supported or if your users are known to use a specific browser.
 
+To use a WebGL extension it must be "activated" using a call to :code:`gl.getExtension(name)`.
+
 WebGL Buffers
 -------------
 
@@ -188,7 +190,7 @@ value.
   Most browsers do not seem to follow the WebGL specification for clearing buffers.
   Chrome and Firefox use a "clear color" that has an alpha value of 0.0 (or a clear color
   that is equal to a canvas' background color) when they automatically clear the *color buffer*,
-  regardless of what color is set by :code:`gl.clearColor(red, green,blue,alpha)`.
+  regardless of what color is set by :code:`gl.clearColor(red,green,blue,alpha)`.
   To clear the color buffer to a specific color the function :code:`gl.clear(gl.COLOR_BUFFER_BIT)`
   must be explicitly called at the beginning of a rendering.
 
@@ -237,6 +239,171 @@ Glossary
   double buffering
      Rendering to an *off-screen buffer* and copying it to an *on-screen buffer*
      only after the rendered image is totally complete.
+
+Self Assessment
+---------------
+
+.. mchoice:: 12.1.1
+  :random:
+
+  Which of the following WebGL commands will get your browser's WebGL version?
+
+  - :code:`gl.getParameter(gl.VERSION);`
+
+    + Correct. It returns a string description.
+
+  - :code:`gl.getVersion();`
+
+    - Incorrect. There is no such function.
+
+  - :code:`gl.WegGLinBrowser();`
+
+    - Incorrect. There is no such function.
+
+  - :code:`gl.version();`
+
+    - Incorrect. There is no such function.
+
+.. mchoice:: 12.1.2
+  :random:
+
+  Which of the following statements are true concerning WebGL extensions? (Select all that apply.)
+
+  - A WebGL extension adds functionality that was not defined in the original WebGL 1.0 specification.
+
+    + Correct.
+
+  - A WebGL extension can only be used if the current browser supports it and
+    it is "activated".
+
+    + Correct. :code:`gl.getExtension(name)` activates an extension.
+
+  - A WebGL extension can be used in all browsers that support WebGL 1.0.
+
+    - Incorrect. A browser may (or may not) support specific extensions.
+
+  - Using a WebGL extension makes your WebGL programs usable by a wider audience.
+
+    - Incorrect. It makes a WebGL program less accessible because there
+      are possibly browsers that can't execute it because they have not implemented
+      the required extension.
+
+.. mchoice:: 12.1.3
+  :random:
+
+  A *color buffer* holds what kind of data?
+
+  - Color values; typically RGBA values.
+
+    + Correct.
+
+  - "Distance from the camera" values.
+
+    - Incorrect. Such values are stored in a *depth buffer*.
+
+  - "This pixel can be changed" values.
+
+    - Incorrect. Such values are stored in a *stencil buffer*.
+
+  - Normal vectors.
+
+    - Incorrect. Such values are stored in a *vertex object buffer*.
+
+.. mchoice:: 12.1.4
+  :random:
+
+  Which of the following buffers are **required** for a "draw buffer"? (Select all that apply.)
+
+  - *color buffer*
+
+    + Correct.
+
+  - *depth buffer*
+
+    + Correct.
+
+  - *stencil buffer*
+
+    - Incorrect. A "draw buffer" can have an optional *stencil buffer*, but it is not required.
+
+  - *render buffer*
+
+    - Incorrect. A *render buffer* is a programmer defined buffer for holding rendering data.
+      A *render buffer* can be used as a *color buffer*, a *depth buffer*, or a *stencil buffer*.
+
+.. mchoice:: 12.1.5
+  :random:
+
+  Which of the following buffers are **required** for a "draw buffer"? (Select all that apply.)
+
+  - *color buffer*
+
+    + Correct.
+
+  - *depth buffer*
+
+    + Correct.
+
+  - *stencil buffer*
+
+    - Incorrect. A "draw buffer" can have an optional *stencil buffer*, but it is not required.
+
+  - *render buffer*
+
+    - Incorrect. A *render buffer* is a programmer defined buffer for holding rendering data.
+      A *render buffer* can be used as a *color buffer*, a *depth buffer*, or a *stencil buffer*.
+
+.. mchoice:: 12.1.6
+  :random:
+
+  Which of the following is true concerning *double buffering*? (Select all that apply.)
+
+  - The incremental changes to a *color buffer* are never visible to a user.
+
+    + Correct. The *offscreen* buffer is never copied to the *onscreen* buffer until a rendering
+      is finished.
+
+  - A rendering process that draws graphic primitives using :code:`gl.drawArrays()` can never
+    directly change the *onscreen* buffers.
+
+    + Correct. Rendering always changes the default *rendering target* which is the *offscreen* buffers.
+
+  - Double buffering is automatically set up and enabled by WebGL.
+
+    + Correct. No commands are required to enable double buffering and no commands are required
+      to switch buffers after rendering.
+
+  - Double buffering is an excellent feature but it slows down rendering.
+
+    - Incorrect. Double buffering has no impact on rendering speed.
+
+.. mchoice:: 12.1.7
+  :random:
+
+  To have a specific color for the background of a rendering, ...
+
+  - Set the color using :code:`gl.clearColor(red,green,blue,alpha)` and
+    call :code:`gl.clear(gl.COLOR_BUFFER_BIT)` at the beginning of each rendering.
+
+    + Correct.
+
+  - Set the color using :code:`gl.clearColor(red,green,blue,alpha)`. (Double
+    buffering automatically clears the *color buffer* after it has
+    been copied to the *onscreen* buffer.)
+
+    - Incorrect. Double buffering does automatically clear the *color buffer* but
+      it is set to the web page's background color, not the color set by :code:`gl.clearColor`.
+
+  - Call :code:`gl.clear(gl.COLOR_BUFFER_BIT)` at the beginning of each rendering.
+
+    - Incorrect. This does clear the *color buffer*, but it uses a default color
+      that is probably not the specific color desired.
+
+  - Set the color using :code:`gl.clearColor(red,green,blue,alpha)`.
+
+    - Incorrect. This sets the desired background color, but it does not change any
+      color values in the *color buffer*.
+
 
 .. index:: hidden surface removal, transparent, opaque, shadow, particle system, buffer, color buffer, depth buffer, stencil buffer, draw buffer, renderbuffer, framebuffer, double buffering
 

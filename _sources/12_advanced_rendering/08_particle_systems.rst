@@ -184,7 +184,7 @@ Implementation Details
 ......................
 
 To efficiently render a *particle system* the particle properties must
-be stored in GPU *vertex object buffers*, which is always a :code:`Float32Array`
+be stored in GPU *vertex object buffers*, which are always a :code:`Float32Array`
 for WebGL 1.0. Large arrays must be efficiently organized as new particles
 are added and other particles "die off". JavaScript allows for dynamic array growth,
 but at a cost of slower execution speeds. The following options assume that
@@ -238,7 +238,7 @@ the programming logic is a critical part of any *particle system* and simply
 storing the parameters that define the *particle system* are insufficient
 to re-create the same visual effects.
 
-Blender has an extensive *particle engine* that you can experiment with.
+Blender has an extensive *particle engine* that is fun to experiment with.
 To create a *particle system* in Blender, follow these basic steps:
 
 .. |particles_icon| image:: figures/particles_icon.png
@@ -264,6 +264,145 @@ Glossary
 
   particle engine
     a software system that facilitates the creation of a particle system.
+
+Self Assessment
+---------------
+
+.. mchoice:: 12.8.1
+  :random:
+
+  Which of the following real world phenomenon would be a good candidate for a particle system?
+  (Select all that apply.)
+
+  - a sparkler (as in 4th of July fireworks)
+
+    + Correct.
+
+  - waterfall
+
+    + Correct.
+
+  - bomb explosion
+
+    + Correct.
+
+  - wind tunnel simulation
+
+    + Correct.
+
+.. mchoice:: 12.8.2
+  :random:
+
+  Which of the following is least likely to be a property of a particle in a particle system?
+
+  - dead time
+
+    + Correct. Particles typically have a lifetime, but rarely would the length of
+      time that a particle has been "dead" be tracked.
+
+  - location
+
+    - Incorrect. Location is a standard property of a particle.
+
+  - speed
+
+    - Incorrect. Speed is a standard property of a particle.
+
+  - color
+
+    - Incorrect. Color is a standard property of a particle.
+
+.. mchoice:: 12.8.3
+  :random:
+
+  Particle data can be divided into two general types: 1) data needed for rendering,
+  and 2) data needed for updating a particle after each animation frame. Rendering data
+  must be copied to a GPU *vertex object buffer*; update data can be stored in JavaScript
+  arrays. Which of the following particle properties typically needs to copied to
+  the GPU before rendering?
+
+  - color
+
+    + Correct. The color of individual particles typically varies.
+
+  - speed
+
+    - Incorrect. The speed of a particle is used to update the location of a particle as it moves.
+
+  - direction
+
+    - Incorrect. The direction of a particle is used to update the location of a particle as it moves.
+
+  - lifetime
+
+    - Incorrect. The lifetime of a particle determines when a particle "dies".
+
+.. mchoice:: 12.8.4
+  :random:
+
+  When a new particle is added to a particle system, the initial values of its properties are typically ...
+
+  - assigned a random value in some specified range (e.g., in the range [4,8]).
+
+    + Correct.
+
+  - assigned a specific, constant value.
+
+    - Incorrect. Particle systems typically have some randomness.
+
+  - assigned from a table lookup (from a table of potential initial values).
+
+    - Incorrect. (Possible, but not typical.)
+
+  - assigned a random value in the range [0.0, 1.0].
+
+    - Incorrect. The values are typically random, but not from such a restricted range.
+
+.. mchoice:: 12.8.5
+  :random:
+
+  Why are the particles in a particle system often sorted before rendering?
+
+  - If the particles are transparent, the particles must be rendered from back to front.
+
+    + Correct.
+
+  - Some orderings of particles can better simulate a real world phenomenon.
+
+    - Incorrect. A user can't determine the order that particles are rendered. A
+      rendering is visible to a user only after it is totally finished.
+
+  - Sorting according to size can make the smaller particles appear closer to the camera.
+
+    - Incorrect. (That's silly!)
+
+  - Sorting according to color can make the rendering faster.
+
+    - Incorrect. (That's silly!)
+
+.. mchoice:: 12.8.6
+  :random:
+
+  What technique is used in the example WebGL program in this lesson to keep
+  particle data in an array in contiguous array positions?
+
+  - A particle that "dies" is overwritten by the last particle in an array.
+
+    + Correct. And the number of particles is decreased by one.
+
+  - Any particle that "dies" has its size set to -1.
+
+    - Incorrect. (This technique could be used, but it does not keep the data in the array contiguous.)
+
+  - Any particle that "dies" has its location set to (-999, -999, -999).
+
+    - Incorrect. (This technique could be used, but it does not keep the data in the array contiguous.)
+
+  - A particle that "dies" is overwritten by shifting all elements that have
+    greater array indexes over by 1 in the array.
+
+    - Incorrect. (This is very inefficient and should be avoided, if possible.)
+
 
 .. index:: particle system, particle engine
 

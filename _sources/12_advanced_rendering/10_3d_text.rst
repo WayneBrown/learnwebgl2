@@ -120,6 +120,105 @@ Glossary
   3D text
     a rendering of text in 3D space.
 
+Self Assessment
+---------------
+
+.. mchoice:: 12.10.1
+  :random:
+
+  Suppose the text string "Yeah" is needed in a 3D scene and it will never change.
+  How many models are needed to render this string into the scene?
+
+  - one
+
+    + Correct.
+
+  - four
+
+    - Incorrect. It could be modeled as four separate characters, but why go to the trouble?
+
+  - eight
+
+    - Incorrect. Each character could be modeled using two separate models, but why?
+
+  - none (just use the :code:`gl.renderText()` function)
+
+    - Incorrect. No such function in the WebGL API exists.
+
+.. mchoice:: 12.10.2
+  :random:
+
+  Suppose there is a need to display various text strings in a 3D scene, but
+  the characters in those strings are not know in advance. It is known that
+  examples include "This", "that", and "whatever." In addition, digits or
+  special characters will never be included.
+  How many models are needed to render these strings into the scene?
+
+  - 52
+
+    + Correct. Upper and lower case for each of the 26 letters in the English alphabet.
+
+  - 26 (each letter in the english alphabet)
+
+    - Incorrect. What about upper and lower case letters?
+
+  - 1
+
+    - Incorrect.
+
+  - 20
+
+    - Incorrect.
+
+.. mchoice:: 12.10.3
+  :random:
+
+  How does the WebGL program above decide the width of a "space" character?
+
+  - It uses the average width of all character models.
+
+    + Correct.
+
+  - It uses the width of the capital "A" character.
+
+    - Incorrect. The capital "A" character is used to set the :code:`baseline`
+      and :code:`character_height` values, but not the width of a space.
+
+  - It uses the width of the model that describes a "space".
+
+    - Incorrect. No such model is included in the character models. A "space"
+      model has no geometry, so it has no model.
+
+  - It uses the width of the "m" character.
+
+    - Incorrect.
+
+.. mchoice:: 12.10.4
+  :random:
+
+  The WebGL program above renders characters using models from a proportional font.
+  How could the program be simplified if the characters were defined from a
+  non-proportional font. (Select all that apply.)
+
+  - The variable :code:`sizes` would not need to be an array; it could be a
+    single set of MIN/MAX values.
+
+    + Correct. Because each model would have the same size.
+
+  - The doubly nested loop in :code:`_gatherCharacterInfo()` could be simplified
+    to a single loop.
+
+    + Correct. Because only one character would need to be tested for its size.
+
+  - The height of the characters could be hard-coded instead of calculated.
+
+    - Incorrect. The height could be hard-coded, but not because the font is non-proportional.
+
+  - The depth along the z axis of the characters could be set to zero instead of calculated.
+
+    - Incorrect. The depth could be hard-coded, but not because the font is non-proportional.
+
+
 .. index:: text 3D
 
 .. _kerning: https://en.wikipedia.org/wiki/Kerning

@@ -329,6 +329,165 @@ Glossary
     The rendering of a 2D image into a 3D scene, where the image is always directly
     facing the camera.
 
+Self Assessment
+---------------
+
+.. mchoice:: 12.7.1
+  :random:
+
+  The default rendering of a point (when :code:`gl_PointSize` is not set) colors how many pixels?
+
+  - 1
+
+    + Correct.
+
+  - 2
+
+    - Incorrect.
+
+  - 4
+
+    - Incorrect.
+
+  - 8
+
+    - Incorrect.
+
+.. mchoice:: 12.7.2
+  :random:
+
+  Anti-aliasing is a technique for ...
+
+  - partially coloring adjacent pixels to the edge of a graphic primitive if an edge
+    pixel is only partially covered by the edge.
+
+    + Correct.
+
+  - correcting aliasing, which is sampling error.
+
+    - (Kind of correct, but really meaningless jargon.)
+
+  - correcting errors.
+
+    - (What kind of errors? Too vague!)
+
+  - fixing the color of pixels at the center of a graphic primitive.
+
+    - Incorrect. Anti-aliasing works at the edges of a graphics primitive, not its center.
+
+.. mchoice:: 12.7.3
+  :random:
+
+  The *vertex shader* output variable, :code:`gl_PointSize`, is a measure of what?
+
+  - The dimensions of a square, in pixels.
+
+    + Correct.
+
+  - The number of pixels to color when rendering a point, in pixels.
+
+    - Incorrect.
+
+  - The dimensions of a square, in world units.
+
+    - Incorrect. :code:`gl_PointSize` is not in world units.
+
+  - The radius of a circle centered at a 3D location, in pixels.
+
+    - Incorrect.
+
+.. mchoice:: 12.7.4
+  :random:
+
+  The *fragment shader* input variable, :code:`gl_PointCoord`, is a :code:`vec2`
+  whose components are in what range?
+
+  - [0.0, 1.0]
+
+    + Correct. They are percentages that give the location of a fragment within
+      it's point rendering.
+
+  - [0.0, :code:`gl_PointSize`]
+
+    - Incorrect.
+
+  - [-1.0, 1.0]
+
+    - Incorrect.
+
+  - [:code:`-gl_PointSize`, :code:`gl_PointSize`]
+
+    - Incorrect.
+
+.. mchoice:: 12.7.5
+  :random:
+
+  What is the value of the *fragment shader* input variable, :code:`gl_PointCoord`, for
+  the pixel that is at the center of a point's rendering? (I.e., the exact location of a
+  point?)
+
+  - [0.5, 0.5]
+
+    + Correct. This is the center of the point's square.
+
+  - [0.0, 0.0]
+
+    - Incorrect. No, this is the upper-left corner pixel.
+
+  - [1.0, 1.0]
+
+    - Incorrect. No, this is the lower-right corner pixel.
+
+  - [0.75, 0.25]
+
+    - Incorrect. No, this pixel is to the right of center, and up from the center, of
+      the point's location.
+
+.. mchoice:: 12.7.6
+  :random:
+
+  What happens to the rendering of a point if the 3D location of the point is
+  not inside the projection's clipping volume?
+
+  - None of the point's square is rendered.
+
+    + Correct. A point's square is rendered or not rendered based on whether a single
+      3D location is inside the projection's clipping volume.
+
+  - The portion of the point's square that is visible from the camera is rendered.
+
+    - Incorrect.
+
+  - The location of the point is modified in 3D space to guarantee its entire rendering.
+
+    - Incorrect. The graphics pipeline never modifies geometric primitive data.
+
+  - The alpha component of the point's color is modified to make the point fade out.
+
+    - Incorrect. The graphics pipeline never modifies geometric primitive data.
+
+.. mchoice:: 12.7.7
+  :random:
+
+  Given the following options, which is simplest for a *fragment shader* to calculate?
+
+  - Map an entire *texture map* to a point's square.
+
+    + Correct. The *fragment shader* is a single line of code.
+
+  - Map a small sub-area of a *texture map* to a point's square.
+
+    - Incorrect. Calculations must be performed to get offsets to adjacent pixels.
+
+  - Render a point as a circle and *texture map* it.
+
+    - Incorrect. Requires at least two lines of *fragment shader* code.
+
+  - Render a point as a "bulls eye".
+
+    - Incorrect. Requires multiple lines of *fragment shader* code.
+
+
 .. index:: point rendering, gl_PointSize, gl_PointCoord, discard, billboard, sprite
 
 .. _particle system: https://en.wikipedia.org/wiki/Particle_system

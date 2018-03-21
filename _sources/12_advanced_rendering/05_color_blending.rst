@@ -262,7 +262,7 @@ Please verify that you understand the following blending settings and their resu
   of the *zbuffer algorithm* when *color blending* is disabled.
   :raw-html:`<br><br>`
 
-* :code:`gl.blendFunc(gl.SOURCE_ALPHA, gl.ONE_MINUS_SOURCE_ALPHA)` :raw-html:`<br>`
+* :code:`gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)` :raw-html:`<br>`
   This is the standard technique for transparency. The alpha value
   of a surface's color determines how much of the surface contributes to
   the color. (This WebGL program preforms no sorting. Therefore the
@@ -380,6 +380,96 @@ Glossary
   color blending
     The color of a pixel is calculated as a combination of two colors: a
     "destination" color and a "source" color.
+
+Self Assessment
+---------------
+
+.. mchoice:: 12.5.1
+  :random:
+
+  Which of the following settings for blending produces transparency?
+
+  - :code:`gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)`
+
+    + Correct. The source color's amount is controlled by the source alpha's value,
+      and the remaining percentage is used for the color already in the *color buffer*.
+
+  - :code:`gl.blendFunc(gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA)`
+
+    - Incorrect. The blending factors are reversed.
+
+  - :code:`gl.blendFunc(gl.SRC_ALPHA, gl.DST_ALPHA)`
+
+    - Incorrect.
+
+  - :code:`gl.blendFunc(gl.SRC_COLOR, gl.DST_COLOR)`
+
+    - Incorrect. This would add the colors, not blend them.
+
+.. mchoice:: 12.5.2
+  :random:
+
+  Which of the following settings for blending produces the same results as having blending disabled?
+
+  - :code:`gl.blendFunc(gl.ONE, gl.ZERO)`
+
+    + Correct. All of the source's color is used, while none of the destination's color is used.
+
+  - :code:`gl.blendFunc(gl.ZERO, gl.ONE)`
+
+    - Incorrect. This would leave the background color unchanged because the source color would never
+      be used.
+
+  - :code:`gl.blendFunc(gl.SRC_ALPHA, gl.DST_ALPHA)`
+
+    - Incorrect.
+
+  - :code:`gl.blendFunc(gl.SRC_COLOR, gl.DST_COLOR)`
+
+    - Incorrect.
+
+.. mchoice:: 12.5.3
+  :random:
+
+  What is the maximum color component value that can be calculated as a result of blending?
+
+  - 2.0
+
+    + Correct. The addition of 1.0 and 1.0.
+
+  - 1.0
+
+    - Incorrect. Although the final result of a color component is always clamped to the range 0.0 to 1.0.
+
+  - 3.0
+
+    - Incorrect.
+
+  - 2.5
+
+    - Incorrect.
+
+.. mchoice:: 12.5.4
+  :random:
+
+  What is the minimum color component value that can be calculated as a result of blending?
+
+  - -1.0
+
+    + Correct. The subtraction of 0.0 minus 1.0.
+
+  - 0.0
+
+    - Incorrect. Although the final result of a color component is always clamped to the range 0.0 to 1.0.
+
+  - -2.0
+
+    - Incorrect.
+
+  - -0.5
+
+    - Incorrect.
+
 
 .. index:: source color, destination color, color blending
 

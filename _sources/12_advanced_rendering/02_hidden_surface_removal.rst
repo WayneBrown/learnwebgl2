@@ -342,7 +342,143 @@ Glossary
   bit flags
     An integer number where each bit represents a different "flag".
 
-.. index:: hidden surface removal, painter's algorithm, z-buffer algorithm, bit flag
+Self Assessment
+---------------
+
+.. mchoice:: 12.2.1
+  :random:
+
+  The *painter's algorithm* performs "hidden surface removal" by ...
+
+  - rendering graphic primitives in sorted order, with the primitives furthest from
+    the camera rendered first and the primitives closest to the camera rendered last.
+
+    + Correct.
+
+  - rendering graphic primitives based on their color values, with the red primitives
+    first, the green primitives next, and the blue primitives last.
+
+    - Incorrect. That's silly!
+
+  - rendering graphic primitives in the order a programmer defines them.
+
+    - Incorrect.
+
+  - rendering graphic primitives in sorted order, with the primitives closets to
+    the camera rendered first and the primitives furthest from the camera rendered last.
+
+    - Incorrect. This is backwards.
+
+.. mchoice:: 12.2.2
+  :random:
+
+  The *painter's algorithm* is simple but has the following flaws. (Select all that apply.)
+
+  - Sorting graphic primitives based on their distance from the camera is slow.
+
+    + Correct.
+
+  - Sorting graphic primitives based on their distance from the camera requires that
+    the data that defines the graphic primitives be copied to the GPU over and over again.
+
+    + Correct.
+
+  - Graphic primitives that overlap in 3D space can't be sorted.
+
+    + Correct.
+
+  - Graphic primitive can be rendered in any order and still accomplish "hidden surface removal".
+
+    - Incorrect.
+
+.. mchoice:: 12.2.3
+  :random:
+
+    Which of the following are advantages of the z-buffer *hidden surface removal* algorithm? (Select all that apply.)
+
+  - No sorting of the graphic primitives is required.
+
+    + Correct.
+
+  - It requires a trivial amount of extra memory.
+
+    - Incorrect. The *depth buffer* requires a substantial about of memory.
+
+  - It is really, really fast because it only processes surfaces that are visible.
+
+    - Incorrect. Every pixel of every surface must be rendered even though many of them
+      may never change the *color buffer*.
+
+  - It's implementation is complex, but that's OK because it is really fast.
+
+    - Incorrect. It's implementation is almost trival.
+
+.. mchoice:: 12.2.4
+  :random:
+
+  Does the z-buffer algorithm perform *hidden surface removal* automatically in WebGL?
+
+  - No, it must be enabled using the command :code:`gl.enable(gl.DEPTH_TEST);`
+
+    + Correct.
+
+  - Yes, the default WebGL behaviour is to preform *hidden surface removal*.
+
+    - Incorrect.
+
+  - Sometimes, depending on the models in a scene.
+
+    - Incorrect.
+
+.. mchoice:: 12.2.5
+  :random:
+
+  When should a bit-wise OR operator, :code:`|`, be used?
+
+  - To combine bit-flags into a single value.
+
+    + Correct.
+
+  - To perform a boolean OR operation where the result is true if either value is true.
+
+    - Incorrect. The boolean OR operation is double bars, :code:`||`
+
+  - To add two bit-flags to get a single value.
+
+    - Incorrect. The :code:`|` does not perform an addition operation, but if two bit-flags
+      have different bits set, the result of a bit-wise OR and an algebraic addition
+      produces the same result. (Always use the bit-wise OR!)
+
+  - To combine two integers into their product.
+
+    - Incorrect.
+
+.. mchoice:: 12.2.6
+  :random:
+
+  What is "z-fighting"?
+
+  - When floating point round-off errors cause the color of two surfaces that
+    are in the same location in 3D space to alternate colors and cause strange
+    color patterns.
+
+    + Correct.
+
+  - When two surfaces have the exact same depth values.
+
+    - Incorrect. The problem is not when the values are the same; it is when the depth values alternate.
+
+  - When two different surfaces assign a different color to a fragment.
+
+    - Incorrect. If a surface assigns a color to a fragment, it overwrites the color that
+      was previously assigned.
+
+  - When more than two surfaces have the same color.
+
+    - Incorrect.
+
+
+.. index:: hidden surface removal, painter's algorithm, z-buffer algorithm, bit flag, z-fighting
 
 
 .. _hidden surface removal: https://en.wikipedia.org/wiki/Hidden_surface_determination

@@ -117,6 +117,7 @@ The HTML code looks like this, where the inner :code:`<div>` and the :code:`canv
 taking up the same area of the web page:
 
 .. Code-Block:: HTML
+  :linenos:
 
   <div id="graphics_under">
     <div id="W1_text">
@@ -638,6 +639,113 @@ Glossary
     Render an HTML element (and all of its children) to a window that covers
     the entire screen. All window borders and title bars disappear. You can
     exit *full screen mode* by hitting the ESC key.
+
+Self Assessment
+---------------
+
+.. mchoice:: 12.11.1
+  :random:
+
+  What are the two critical CSS properties that allow HTML elements to overlap
+  each other on a web page?
+
+  - :code:`position` and :code:`z-index`
+
+    + Correct. :code:`position` allows them to be in the same place, while
+      :code:`z-index` determines which one is in front.
+
+  - :code:`position` and :code:`width/height`
+
+    - Incorrect. The :code:`position` mode is critical, but width and height
+      are not critical because they only determine the amount of overlap.
+
+  - :code:`location` and :code:`size`
+
+    - Incorrect. Neither of these are CSS properties.
+
+  - :code:`position` and :code:`top`
+
+    - Incorrect. The :code:`position` mode is critical, but :code:`top`
+      is not critical because it only determines the amount of overlap.
+
+.. mchoice:: 12.11.2
+  :random:
+
+  Given the following CSS definitions, which HTML element will be rendered in front
+  of the other one?
+
+  .. Code-Block:: CSS
+
+    #element1 {
+      position: absolute;
+      z-index: 5;
+    }
+
+    #element2 {
+      position: absolute;
+      z-index: 3;
+    }
+
+  - :code:`element1`
+
+    + Correct. Because it has a greater :code:`z-index`.
+
+  - :code:`element2`
+
+    - Incorrect. :code:`element2` will be below :code:`element1` because it has a smaller :code:`z-index`.
+
+.. mchoice:: 12.11.3
+  :random:
+
+  A HTML canvas element has HTML properties of :code:`width` and :code:`height`. It can also have
+  CSS properties called :code:`width` and :code:`height`. This can be very confusing
+  because the properties control different things! Which
+  of the following correctly describes how these properties differ.
+
+  - HTML properties: control the size of the WebGL *draw buffers*. :raw-html:`<br>` :raw-html:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    CSS properties: control the size of the canvas on the web page.
+
+    + Correct.
+
+  - HTML properties: control the size of the canvas on the web page. :raw-html:`<br>` :raw-html:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    CSS properties: control the size of the WebGL *draw buffers*.
+
+    - Incorrect. It's backwards!
+
+  - HTML properties: are totally ignored if the CSS properties are defined. :raw-html:`<br>` :raw-html:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    CSS properties: control the size of the canvas on the web page.
+
+    - Incorrect.
+
+  - HTML properties: control the size of the canvas on the web page. :raw-html:`<br>` :raw-html:`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+    CSS properties: are totally ignored if the HTML properties are defined.
+
+    - Incorrect.
+
+.. mchoice:: 12.11.4
+  :random:
+
+  Why is the "fullscreen mode" code more complex than it will need to be in the future?
+
+  - Different browsers use different function calls, which will hopefully be standardized
+    in the near future.
+
+    + Correct.
+
+  - The code is complex because implementing "fullscreen mode" is a complex task that requires
+    complex logic. In the future the task will become simpler due to better technology.
+
+    - Incorrect.
+
+  - The code will become simpler because somebody will discover a simpler way to implement
+    "fullscreen mode".
+
+    - Incorrect.
+
+  - Programming code always becomes simpler over time because of better technology.
+
+    - Incorrect.
+
 
 .. index:: overlay, stack ordering, z-index, full screen mode
 

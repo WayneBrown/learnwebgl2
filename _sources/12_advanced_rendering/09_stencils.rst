@@ -794,29 +794,29 @@ Summary
 -------
 
 In summary, the *stencil buffer* can be used to control which pixels
-have their color modified. Using the *stencil buffer* typically requires
+can possibly have their color modified. Using the *stencil buffer* typically requires
 multiple renderings. One rendering will set the stencil; another rendering
 will update the *color buffer* based on the stencil.
 
-To create a stencil, make the "stencil test" always true and enable writing
-to the *stencil buffer*:
+To create a stencil, make the "stencil test" always true, enable writing
+to the *stencil buffer*, and set how the stencil value is updated based on
+the status of the stencil and depth tests.
 
 .. Code-Block:: JavaScript
 
   // Rendering pass to create a stencil.
   gl.stencilFunc(gl.ALWAYS, reference_value, mask);
   gl.stencilMask(0xFF);  // Stencil buffer can be changed
+  gl.stencilOp(stencil_failed_func, depth_test_failed_func, depth_test_passed_func);
 
 To use a stencil, set an appropriate "stencil test", disable writing
-to the *stencil buffer*, and set the operation to perform based on
-the status of the stencil and depth tests:
+to the *stencil buffer*:
 
 .. Code-Block:: JavaScript
 
   // Rendering pass to use a stencil.
   gl.stencilFunc(compare_func, reference_value, mask);
   gl.stencilMask(0x00);  // Stencil buffer can't be changed
-  gl.stencilOp(stencil_failed_func, depth_test_failed_func, depth_test_passed_func);
 
 The *stencil buffer* has many possible uses, as you will discover as you
 investigate more advanced rendering techniques.
@@ -856,5 +856,145 @@ Glossary
     logical AND operation between a number, :code:`n`, and a bit-mask
     guarantees that all bits in :code:`n` where there is a :code:`0` in
     the bit-mask there is a :code:`0` in the result.
+
+Self Assessment
+---------------
+
+.. mchoice:: 12.9.1
+  :random:
+
+  What is the size of a *stencil buffer*?
+
+  - it is a 2D array with the same dimensions as the *color buffer* and the *depth buffer*.
+
+    + Correct.
+
+  - it is always a 2D array that is 1024 by 512.
+
+    - Incorrect.
+
+  - it is a 2D array with the same dimensions as its associated canvas.
+
+    - Incorrect. (It is typically the same dimensions as the canvas, but it is not required to be.)
+
+  - it is a 1D array of pixels.
+
+    - Incorrect. (Not even close!)
+
+.. mchoice:: 12.9.2
+  :random:
+
+  What type of data is each element of a *stencil buffer*?
+
+  - unsigned byte
+
+    + Correct. It allows 8 bits to be used in any combination desired.
+
+  - integer
+
+    - Incorrect.
+
+  - RGBA color
+
+    - Incorrect.
+
+  - floating point number
+
+    - Incorrect.
+
+.. mchoice:: 12.9.3
+  :random:
+
+  A *stencil buffer* is desired that defines two separate "stencils".
+  The low-order bit of each element in the *stencil buffer* will be used
+  to define one "stencil", while the high-order bit will be used to define
+  the second one. What two values should be used for the :code:`mask` parameter
+  of the :code:`gl.stencilFunc` function to keep the stencils separate?
+
+  - 0x01 and 0x80.
+
+    + Correct.
+
+  - 0xFF and 0x01.
+
+    - Incorrect. 0xFF enables all 8 bits in the stencil values.
+
+  - 0x02 and 0x04.
+
+    - Incorrect. This uses the 2nd and 3rd low-order bits.
+
+  - 0x0F and 0xF0
+
+    - Incorrect. This uses 4 bits for each mask -- instead of one bit.
+
+.. mchoice:: 12.9.4
+  :random:
+
+  How many rendering passes does it typically take to use a *stencil buffer*
+  to control which *color buffer* pixels can be modified?
+
+  - two
+
+    + Correct. One rendering pass to set the *stencil buffer* values, and
+      a second rendering pass to use the *stencil buffer* to control writing
+      to the *color buffer*.
+
+  - one
+
+    - Incorrect.
+
+  - none
+
+    - Incorrect.
+
+  - four
+
+    - Incorrect. Certainly four passes might be used, but that is not typical.
+
+.. mchoice:: 12.9.5
+  :random:
+
+  How do you guarantee that a rendering pass does not modify the *stencil buffer*?
+
+  - :code:`gl.stencilMask(0x00)`
+
+    + Correct.
+
+  - :code:`gl.stencilMask(0xFF)`
+
+    - Incorrect. This makes every bit in the stencil buffer changeable.
+
+  - :code:`gl.stencilMask(0x01)`
+
+    - Incorrect. This allows the low-order bit of every *stencil buffer* element to be changed.
+
+  - :code:`gl.stencilMask(0xF0)`
+
+    - Incorrect. This allows any of the four high-order bits of every *stencil buffer* element to be changed.
+
+.. mchoice:: 12.9.6
+  :random:
+
+  A rendering pass is desired that increments a *stencil buffer* element
+  if the "depth test" fails on a fragment.
+  Which of the following parameters to :code:`gl.stencilOp` would accomplish this?
+
+  - :code:`gl.stencilOp( gl.KEEP, gl.INCR, gl.KEEP )`
+
+    + Correct.
+
+  - :code:`gl.stencilOp( gl.KEEP, gl.KEEP, gl.INCR )`
+
+    - Incorrect. The parameters are in the wrong position.
+
+  - :code:`gl.stencilOp( gl.ZERO, gl.INCR, gl.ZERO )`
+
+    - Incorrect. This also changes a *stencil buffer* element to zero when the "stencil test"
+      fails or the "depth test" passes -- actions that are not desired.
+
+  - :code:`gl.stencilOp( gl.KEEP, gl.REPLACE, gl.KEEP )`
+
+    - Incorrect. This replaces the value of a *stencil buffer* element, it doesn't
+      increment it.
 
 .. index:: stencil, stencil buffer, bit-mask

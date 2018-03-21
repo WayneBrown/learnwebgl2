@@ -151,7 +151,7 @@ Here are the major steps needed to render a scene that contains transparent surf
 
    b. Render the transparent model.
 
-The sorting in steps 5 and 7a make this algorithm very inefficient. Careful analysis
+The sorting in steps 5 and 7a slows down rendering significantly. Careful analysis
 of specific scenes might allow you to eliminate the sorting. For example, consider these
 special scenarios:
 
@@ -504,6 +504,120 @@ Glossary
   alpha blending
     The color of a pixel is calculated as a combination of two colors: the
     the destination color and the source color.
+
+Self Assessment
+---------------
+
+.. mchoice:: 12.4.1
+  :random:
+
+  Transparency is accomplished by combining the color that is currently in the
+  *color buffer* with a color from the surface that light passes through using this
+  equation:
+
+  .. Code-Block:: C
+
+    color_buffer[x][y].rgb = color.rgb * color.a
+                           + color_buffer[x][y].rgb * (1.0 - color.a);
+
+  If :code:`color` is equal to :code:`(1.0, 0.0, 0.0, 0.6)` and the :code:`color_buffer[x][y]`
+  is equal to :code:`(0.0, 1.0, 0.0, 1.0)`, what is the new value of
+  the *color buffer*, i.e., :code:`color_buffer[x][y].rgb`?
+
+  - (0.6, 0.4, 0.0)
+
+    + Correct. :code:`(1.0*0.6, 0.0*0.6, 0.0*0.6) + (0.0*0.4, 1.0*0.4, 0.0*0.4)`
+
+  - (0.4, 0.6, 0.0)
+
+    - Incorrect.
+
+  - (1.0, 1.0, 0.0)
+
+    - Incorrect.
+
+  - (0.5, 0.5, 0.5)
+
+    - Incorrect.
+
+.. mchoice:: 12.4.2
+  :random:
+
+  To render transparent surfaces correctly, all models in a scene must be sorted from
+  back to front order relative to the camera, with the closest surfaces to the camera rendered last.
+
+  - False.
+
+    + Correct. **All** models do not have to be sorted. Only the models that contain transparent surfaces.
+
+  - True.
+
+    - Incorrect. **All** models do not have to be sorted. Only the models that contain transparent surfaces.
+
+.. mchoice:: 12.4.3
+  :random:
+
+  To render transparent surfaces correctly, models must be sorted, but individual triangles
+  that compose a model can be rendered in any order.
+
+  - False.
+
+    + Correct. Transparent surfaces must be drawn in a "back-to-front" order, especially individual
+      triangles within a model.
+
+  - True.
+
+    - Incorrect. Transparent surfaces must be drawn in a "back-to-front" order, especially individual
+      triangles within a model.
+
+.. mchoice:: 12.4.4
+  :random:
+
+  What is the fastest algorithm for sorting data that is already almost sorted?
+
+  - Insertion sort.
+
+    + Correct.
+
+  - Quicksort
+
+    - Incorrect.
+
+  - Mergesort
+
+    - Incorrect.
+
+  - Radix sort
+
+    - Incorrect.
+
+.. mchoice:: 12.4.5
+  :random:
+
+  If two separate models contain transparent surfaces and the models intersect in 3D space,
+  what is required to render them accurately?
+
+  - The models must be defined by high resolution triangular meshes and the models must be
+    combined into a single model so that the triangles can be sorted and rendered back-to-front.
+
+    + Correct.
+
+  - The models must be defined using the minimal number of triangles and the models must be
+    combined into a single model so that the triangles can be sorted and rendered back-to-front.
+
+    - Incorrect. Using the minimal number of triangles means the triangles will intersect and
+      can't be sorted in the proper order.
+
+  - The models must be defined by high resolution triangular meshes and rendered separately,
+    one at a time.
+
+    - Incorrect.
+
+  - The models must be defined by high resolution triangular meshes and the models must be
+    combined into a single model so that the triangles can be sorted and rendered front-to-back.
+
+    - Incorrect. The triangles must be rendered from back to front.
+
 
 .. index:: transparency, opaque, insertion sort, index sort, destination color, source color, alpha blending
 
