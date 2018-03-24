@@ -43,7 +43,7 @@ The following assumptions are made about a scene:
 The scene is rendered twice. The *shader program* used for the first
 rendering puts a unique identifier into every pixel rendered for each unique
 model. Let's call this *shader program* :code:`selection_program`. The second
-rendering creates the image seen by the user. Let's call its *shader program*
+rendering creates the image seen by the user. Let's call this *shader program*
 :code:`visible_program`. Here are the steps to the selection algorithm, assuming
 that the user has clicked on the canvas location :code:`(mouse_x, mouse_y)`.
 
@@ -70,7 +70,7 @@ complete implementation of this algorithm.
 Reading Pixels From the *Color Buffer*
 ......................................
 
-After a rendering operation you can access the resulting *color buffer*
+After a rendering operation, you can access the resulting *color buffer*
 using the :code:`gl.readPixels()` function. This allows you to read a
 rectangular section of the image into a 1D array of color component values.
 WebGL 1.0 only supports one image format: 8 bits per component with 4 components per pixel (RGBA).
@@ -183,7 +183,7 @@ operations, as shown in the following code:
 Converting a Color to an Integer Identifier
 ...........................................
 
-When a color is retrieved from the *color buffer* using :code:`gl.readPixels()`
+When a color is retrieved from the *color buffer* using :code:`gl.readPixels()`,
 the value is an array of four integers. To convert the four integers
 into a single integer identifier, the values are shifted and added like this:
 
@@ -366,7 +366,7 @@ Experiments:
 * Note that rendering the scene twice for selection has no effect on
   the frame rate of the animation. What happens if you increase the number of
   cubes's from 30 to 300 in line 54? How about 3000? How about 30000?
-  (Looks kind of like a Borg spaceship from Star Trek -- don't you think!)
+  (Looks kind of like a Borg spaceship from Star Trek -- don't you think?)
 
 Glossary
 --------
@@ -419,16 +419,16 @@ Self Assessment
 
   When a color is read from a WebGL *color buffer*, what type of data is returned?
 
-  - four, unsigned bytes in the range 0 to 255.
+  - Four unsigned bytes in the range 0 to 255.
 
     + Correct.
 
-  - four, floating point values in the range 0.0 to 1.0.
+  - Four floating point values in the range 0.0 to 1.0.
 
     - Incorrect. This is how colors are specified in a *fragment shader*,
       but not how they are actually stored in the *color buffer*.
 
-  - one unsigned integer in the range 0 to 2\ :sup:`32`\ -1
+  - One unsigned integer in the range 0 to 2\ :sup:`32`\ -1
 
     - Incorrect.
 

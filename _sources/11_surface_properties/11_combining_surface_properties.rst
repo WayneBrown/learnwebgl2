@@ -252,5 +252,5 @@ please try them again!
 
 .. index:: combining surface properties
 
-.. _water.png: _static/images/water.png
+.. _water.png: ../_images/water.png
 .. _leather-bump-map.jpg: http://ftextures.com/textures/leather-bump-map.jpg

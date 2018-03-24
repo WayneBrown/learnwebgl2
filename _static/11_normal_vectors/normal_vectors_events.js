@@ -116,7 +116,7 @@ window.NormalVectorsEvents = function (id, scene) {
       + Number($('#' + id + '_red').val()).toFixed(2) + ', '
       + Number($('#' + id + '_green').val()).toFixed(2) + ', '
       + Number($('#' + id + '_blue').val()).toFixed(2) + ')</strong>');
-    $('#' + id + '_ambient_text').html('<strong>ambient intensities ('
+    $('#' + id + '_ambient_text').html('<strong>ambient intensities<br> ('
       + Number($('#' + id + '_ambient_red').val()).toFixed(2) + ', '
       + Number($('#' + id + '_ambient_green').val()).toFixed(2) + ', '
       + Number($('#' + id + '_ambient_blue').val()).toFixed(2) + ')</strong>');

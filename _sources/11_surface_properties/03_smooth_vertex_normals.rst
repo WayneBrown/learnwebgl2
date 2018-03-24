@@ -316,5 +316,5 @@ Self Assessment
 
 .. index:: Phong shading, triangle normal vector, smooth normal vector
 
-.. _Phong shading: https://en.wikipedia.org/wiki/Phong_shading:
+.. _Phong shading: https://en.wikipedia.org/wiki/Phong_shading
 

@@ -66,7 +66,7 @@ Javascript Coding Standards
 
 * Always include :code:`"use strict";` to force the declaration of variables.
 * Avoid global variables whenever possible.
-* Use JSLint to check for errors and style issues. (Most IDE's will do this for you, including `Pycharm`_.)
+* Use JSLint to check for errors and style issues. (Most IDE's will do this for you, including `Pycharm`_ or `WebStorm`_.)
 * Use two-space indentation.
 * Use shorthand for conditional statements where appropriate: :code:`var results = (test === 5) ? alert(1) : alert(2);`
 * Closing braces should be on the same indent as the original statement. For example,
@@ -206,6 +206,7 @@ Self-Assessments
 .. _JavaScript Naming Conventions: http://www.j-io.org/Javascript-Naming_Conventions
 .. _OpenGLSL (Open Graphics Language Shader Language): https://www.opengl.org/wiki/GLSL_:_recommendations
 .. _Pycharm: https://www.jetbrains.com/pycharm/
+.. _WebStorm: https://www.jetbrains.com/webstorm/
 .. _YUIDoc: https://github.com/yui/yuidoc
 
 

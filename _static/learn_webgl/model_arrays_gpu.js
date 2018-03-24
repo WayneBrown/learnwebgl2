@@ -85,23 +85,23 @@ window.ModelArraysGPU = function (gl, model_arrays, out) {
    */
   self.delete = function () {
     if (self.points !== null && self.points.number > 0) {
-      gl.deleteBuffer(self.points.vertices.id);
-      gl.deleteBuffer(self.points.colors.id);
+      if (self.points.vertices) gl.deleteBuffer(self.points.vertices.id);
+      if (self.points.colors)   gl.deleteBuffer(self.points.colors.id);
     }
     if (self.lines !== null && self.lines.number > 0) {
-      gl.deleteBuffer(self.lines.vertices.id);
-      gl.deleteBuffer(self.lines.colors.id);
-      gl.deleteBuffer(self.lines.textures.id);
+      if (self.lines.vertices) gl.deleteBuffer(self.lines.vertices.id);
+      if (self.lines.colors)   gl.deleteBuffer(self.lines.colors.id);
+      if (self.lines.textures) gl.deleteBuffer(self.lines.textures.id);
     }
     if (self.triangles !== null && self.triangles.number > 0) {
-      gl.deleteBuffer(self.triangles.vertices.id);
-      gl.deleteBuffer(self.triangles.colors.id);
-      gl.deleteBuffer(self.triangles.flat_normals.id);
-      gl.deleteBuffer(self.triangles.smooth_normals.id);
-      gl.deleteBuffer(self.triangles.textures.id);
+      if (self.triangles.vertices)       gl.deleteBuffer(self.triangles.vertices.id);
+      if (self.triangles.colors)         gl.deleteBuffer(self.triangles.colors.id);
+      if (self.triangles.flat_normals)   gl.deleteBuffer(self.triangles.flat_normals.id);
+      if (self.triangles.smooth_normals) gl.deleteBuffer(self.triangles.smooth_normals.id);
+      if (self.triangles.textures)       gl.deleteBuffer(self.triangles.textures.id);
     }
     if (self.wireframe !== null && self.wireframe.number > 0) {
-      gl.deleteBuffer(self.wireframe.vertices.id);
+      if (self.wireframe.vertices) gl.deleteBuffer(self.wireframe.vertices.id);
     }
   };
 

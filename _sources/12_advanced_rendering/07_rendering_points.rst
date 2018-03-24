@@ -143,12 +143,12 @@ Experiments:
 
 * In the *fragment shader*, change the greater-than sign in the distance test to a
   less-than sign. (I.e., :code:`if (distance(center, gl_PointCoord) < 0.5)`. :raw-html:`<br>`
-  Predict the results and then verify you predicted correctly.
+  Predict the results and then verify that you predicted correctly.
   :raw-html:`<br>`
 
 * Change the *fragment shader* to the single line: :raw-html:`<br>`
   :code:`gl_FragColor = vec4(gl_PointCoord, 0.0, 1.0);` :raw-html:`<br>`
-  Study the resulting output until is makes sense. (Note that the upper-left corner
+  Study the resulting output until it makes sense. (Note that the upper-left corner
   of each square is black, which means that :code:`gl_PointCoord` must be :code:`(0,0)`
   for the upper-left pixel.)
   :raw-html:`<br>`
@@ -249,13 +249,21 @@ component like this:
 Modify the *fragment shader* above to verify that this flips the
 *texture map* image to its original orientation.
 
-Notice that translating the scene left or right moves some
-of the points outside the viewing volume causing them to be
-clipped from the scene. Clipping is based on the single :code:`(x,y,z)`
+Clipping Points
+^^^^^^^^^^^^^^^
+
+The clipping of points is not consistent across all browsers.
+
+On Macintosh systems, clipping is based on the single :code:`(x,y,z)`
 location of the point. This can cause the rendering of a point
 to "pop-in" and "pop-out" of a scene. If a *billboard* or *sprite*
 needs to be partially clipped against a viewing volume, it
 must be rendered using triangles.
+
+On Windows and Linux systems, clipping is based on the entire
+square rendering of a point and any portion of a point's square
+that is visible is rendered, even if the point itself is outside
+the clipping volume.
 
 2) Map Adjacent Pixels to a "Point"
 ...................................

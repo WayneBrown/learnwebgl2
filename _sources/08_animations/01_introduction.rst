@@ -49,7 +49,7 @@ values between the starting and ending values based on a frame number is
 .. admonition:: In Summary
 
   An animation is produced by rendering a series of images at a specific
-  frame rate, where the objects and/or the camera has changing over time.
+  frame rate, where the objects and/or the camera has changed over time.
 
 Let's discuss how a computer actually creates a series of scene renderings
 that a viewer perceives as a smooth motion animation.

@@ -129,9 +129,6 @@ window.AnimateScene = function (id, download, vshaders_dictionary,
     x_axis.delete(gl);
     y_axis.delete(gl);
     z_axis.delete(gl);
-    x_axis.delete(gl);
-    y_axis.delete(gl);
-    z_axis.delete(gl);
 
     self.events.removeAllEventHandlers();
   };

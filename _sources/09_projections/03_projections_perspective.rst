@@ -7,6 +7,9 @@
   the license is included in the section entitled "GNU Free Documentation
   License".
 
+.. role:: raw-html(raw)
+  :format: html
+
 9.3 - Perspective Projections
 :::::::::::::::::::::::::::::
 
@@ -28,6 +31,7 @@ The Viewing Volume of a Perspective Projection
   :alt: Viewing Frustum
   :align: right
 
+  :raw-html:`<style> span.caption-text { display: block; text-align: center} </style>`
   (`Source 1`_)
 
 A *perspective projection* defines a 3D volume that projects out from the
@@ -154,6 +158,7 @@ Experiment with the parameters using the following demo.
   :height: 300
   :width2: 200
   :height2: 200
+
 
 As you experiment with the *frustum* parameters, please verify that
 you understand the following ideas:

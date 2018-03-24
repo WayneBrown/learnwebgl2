@@ -115,11 +115,6 @@ window.BezierChainedEvents = function (id, scene) {
     let one = 0.0;
     frame.val(one);
     frame.prev().html(one.toFixed(0));
-
-    let frames = $('#' + id + '_frames');
-    let thirty = 30;
-    frames.val(thirty);
-    frames.prev().html(thirty.toFixed(0));
   };
 
   //------------------------------------------------------------------------------
@@ -156,15 +151,9 @@ window.BezierChainedEvents = function (id, scene) {
 
     scene.angle_x = 0.0;
     scene.angle_y = 0.0;
-    scene.path.current_frame = 20;
-    scene.path.start_frame = 30;
-    scene.path.end_frame = 60;
+    scene.current_frame = 0;
 
-    _set_start_frame(scene.path.start_frame);
-    _set_end_frame(scene.path.end_frame);
-    _set_scale_vector(0.1);
-
-    self.resetSliders(scene.path.current_frame);
+    self.resetSliders(scene.current_frame);
 
     scene.render();
   };
@@ -205,7 +194,7 @@ window.BezierChainedEvents = function (id, scene) {
   self.removeAllEventHandlers = function () {
     $('#' + id + '_animate').unbind("click", self.start_animate);
     $('#' + id + '_reset').unbind("click", self.reset);
-    $('#' + id + '_frame').unbind("click", self.frame);
+    $('#' + id + '_frame').unbind("input change", self.frame);
     $('#' + id + '_display_curve0').unbind("click", self.display_curve);
     $('#' + id + '_display_curve1').unbind("click", self.display_curve);
     $('#' + id + '_display_curve2').unbind("click", self.display_curve);

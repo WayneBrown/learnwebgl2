@@ -181,12 +181,16 @@ window.CameraTruckScene = function (id, download, vshaders_dictionary,
     gl.deleteShader(program.vShader);
     gl.deleteShader(program.fShader);
     gl.deleteProgram(program);
+    gl.deleteShader(ray_program.vShader);
+    gl.deleteShader(ray_program.fShader);
+    gl.deleteProgram(ray_program);
 
     // Delete each model's VOB
     model_names = Object.keys(render_models);
     for (let j = 0; j < model_names.length; j += 1) {
       render_models[model_names[j]].delete(gl);
     }
+    up_ray.delete(gl);
 
     // Remove all event handlers
     events.removeAllEventHandlers();

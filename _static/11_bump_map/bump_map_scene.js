@@ -226,6 +226,8 @@ window.BumpMapScene = function (id, download, vshaders_dictionary,
 
     // Disable any animation
     self.animate_active = false;
+
+    scene2.delete();
   };
 
   //-----------------------------------------------------------------------

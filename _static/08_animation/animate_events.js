@@ -43,7 +43,7 @@ window.AnimateEvents = function (id, scene) {
 
   // Remember the current state of events
   let start_of_mouse_drag = null;
-  let animate_is_on = scene.animate_active;
+  let animate_is_on = false;
 
   // Animation values
   let previous_time = 0;
@@ -197,6 +197,9 @@ window.AnimateEvents = function (id, scene) {
     $( cid ).unbind("mousedown", self.mouse_drag_started );
     $( cid ).unbind("mouseup",   self.mouse_drag_ended );
     $( cid ).unbind("mousemove", self.mouse_dragged );
+
+    // Stop any animation
+    animate_is_on = false;
   };
 
   //------------------------------------------------------------------------------

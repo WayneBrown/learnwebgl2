@@ -241,7 +241,7 @@ Notes about 3D Graphics Under Text:
   :raw-html:`<br><br>`
 
 * The alpha value of the canvas' background color can be used to
-  blending the canvas with the web page's background. If you set the
+  blend the canvas with the web page's background. If you set the
   alpha value of the "clear color" to 1.0, the area covered by the canvas will
   have the color of the canvas. If you set the
   alpha value of the "clear color" to 0.0, the area covered by the canvas will
@@ -436,7 +436,7 @@ Example:
 Full Screen Rendering
 ---------------------
 
-HTML elements can be rendered in *full screen mode*, but as of early 2018
+HTML elements can be rendered in *full screen mode*, but as of early 2018,
 the interface to the functionality has not been standardized.
 Each browser uses different naming conventions. To make *full screen mode*
 function correctly for all browsers, the code must include all
@@ -586,6 +586,7 @@ A Fullscreen Example
   :htmlprogram: _static/12_bunny/bunny.html
   :editlist: _static/12_bunny/bunny_events.js, _static/12_bunny/bunny_scene.js
   :hidecode:
+
 
 Experiments concerning *full screen mode*:
 

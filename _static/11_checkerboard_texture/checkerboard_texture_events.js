@@ -133,7 +133,7 @@ window.CheckerboardTextureEvents = function (id, scene) {
   };
 
   //------------------------------------------------------------------------------
-  self.scale = function () {
+  self.scale = function (event) {
     let control = $(event.target);
     scene.checkerboard_scale = Number(control.val());
 

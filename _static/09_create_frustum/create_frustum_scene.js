@@ -219,7 +219,7 @@ window.CreateFrustumScene = function (id, download, vshaders_dictionary,
 
   frustum_model = new FrustumModel2(gl, uniform_program, [0.5,0.5,0.5,1]);
 
-  let right_canvas = new PerspectiveScene(id, download, vshaders_dictionary,
+  let right_canvas = new FrustumScene(id, download, vshaders_dictionary,
                                           fshaders_dictionary, models, self);
 
   // Set up callbacks for user and timer events

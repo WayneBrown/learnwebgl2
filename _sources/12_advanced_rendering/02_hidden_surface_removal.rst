@@ -37,7 +37,7 @@ drawbacks:
   a model's triangles breaks this scheme.
 * If triangles intersect, they can't be sorted such that one of them is closer
   to the camera than the other one. To render them accurately, their
-  intersection but be found, or the triangles must be split into smaller
+  intersection must be found, or the triangles must be split into smaller
   triangles that don't intersect and then sorted.
 
 This is called the `painter's algorithm`_ and it is rarely used because of
@@ -61,12 +61,12 @@ the *z-buffer*. If the z-component is less than the value in the
 *z-buffer*, this object is closer to the camera, so its color is
 placed in the *color buffer* and the *z-buffer*'s value is update.
 If an object's z value is greater than the current *z-buffer*
-value the object is not visible to the camera because there is a closer object
+value, the object is not visible to the camera because there is a closer object
 in front of it. This algorithm is explained nicely in the following pseudocode. The
 *clearBuffers* function is called once to initialize a rendering. The *renderPixel*
 function is called for each pixel of every primitive that is rendered. (Note:
-These pseudocode functions are builtin to the graphics pipeline; you don't implement
-them.)
+These pseudocode functions are "hardcoded" into the graphics pipeline hardware;
+you don't implement them.)
 
 .. Code-Block:: JavaScript
 
@@ -160,7 +160,7 @@ WebGL Context Configuration
 ...........................
 
 The default behaviour of a WebGL context is to automatically clear the
-"off-screen frame buffer" after it is copied the "on-screen canvas window".
+"off-screen frame buffer" after it is copied to the "on-screen canvas window".
 You can modify this behaviour by setting the :code:`preserveDrawingBuffer`
 attribute of the WebGL context to :code:`true`. This must be done when the
 context is initially created like this:
@@ -179,7 +179,7 @@ Preserving the contents of the *draw buffers* between rendering cycles is not re
 Fine Grain Control of a Depth Buffer
 ....................................
 
-WebGL provides tools for fine grain control its z-buffer (*depth buffer*) for special
+WebGL provides tools for fine grain control of its z-buffer (*depth buffer*) for special
 rendering problems.
 
 * :code:`gl.depthMask(bool flag)` : Enables or disables writing to the *depth buffer*.
@@ -308,6 +308,7 @@ changes to see the effect of these z-buffer commands on a rendering.
   :htmlprogram: _static/01_example01/scale_about_origin.html
   :editlist: _static/01_example01/scale_about_origin_scene.js
 
+
 Summary
 -------
 
@@ -364,7 +365,7 @@ Self Assessment
 
     - Incorrect.
 
-  - rendering graphic primitives in sorted order, with the primitives closets to
+  - rendering graphic primitives in sorted order, with the primitives closest to
     the camera rendered first and the primitives furthest from the camera rendered last.
 
     - Incorrect. This is backwards.
@@ -378,7 +379,7 @@ Self Assessment
 
     + Correct.
 
-  - Sorting graphic primitives based on their distance from the camera requires that
+  - Sorting graphic primitives based on their distance from the camera requires
     the data that defines the graphic primitives be copied to the GPU over and over again.
 
     + Correct.
@@ -404,7 +405,7 @@ Self Assessment
 
     - Incorrect. The *depth buffer* requires a substantial about of memory.
 
-  - It is really, really fast because it only processes surfaces that are visible.
+  - It is super fast because it only processes surfaces that are visible.
 
     - Incorrect. Every pixel of every surface must be rendered even though many of them
       may never change the *color buffer*.
@@ -422,7 +423,7 @@ Self Assessment
 
     + Correct.
 
-  - Yes, the default WebGL behaviour is to preform *hidden surface removal*.
+  - Yes, the default WebGL behaviour is to perform *hidden surface removal*.
 
     - Incorrect.
 
@@ -459,7 +460,7 @@ Self Assessment
   What is "z-fighting"?
 
   - When floating point round-off errors cause the color of two surfaces that
-    are in the same location in 3D space to alternate colors and cause strange
+    are in the same location in 3D space to alternate colors and cause random
     color patterns.
 
     + Correct.

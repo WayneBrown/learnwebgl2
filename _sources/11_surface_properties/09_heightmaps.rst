@@ -21,6 +21,14 @@ of a surface.
 
 This lesson explains how to use a "mapping" to modify the geometry of a surface.
 
+.. admonition:: Note:
+
+  Technically WebGL 1.0 does not allow :code:`texture2D` function calls in
+  *vertex shaders* (only in *fragment shaders*). If the WebGL programs in this
+  lesson do not work for you, it is probably because your browser does not
+  support :code:`texture2D` function calls in *vertex shaders*. To experiment
+  with the WebGL programs, please use a different browser and/or operating system.
+
 Heightmaps
 ----------
 

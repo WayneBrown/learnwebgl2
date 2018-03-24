@@ -31,7 +31,7 @@ understand several programming languages:
 * GLSL which allows a programmer to control certain stages of a graphics pipeline.
 
 Thankfully, you do not have to become an expert at all of these languages, but
-you will have to become familiar with the basics for each one.
+you will have to become familiar with the basics of each one.
 
 In addition to the programming languages, you will have to learn how to create
 3D geometric models. For this textbook we will use Blender.

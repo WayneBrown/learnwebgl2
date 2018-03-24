@@ -490,6 +490,17 @@ window.ParticleSystem = function (max_particles, center, gl, program,
     }
   };
 
+  /**----------------------------------------------------------------------
+   * Render a particle system
+   * @param gl {WebGLRenderingContext}
+   */
+  self.delete = function (gl) {
+    if (location_buffer_id)            gl.deleteBuffer(location_buffer_id);
+    if (size_buffer_id)                gl.deleteBuffer(size_buffer_id);
+    if (texture_coordinates_buffer_id) gl.deleteBuffer(texture_coordinates_buffer_id);
+    if (color_alpha_buffer_id)         gl.deleteBuffer(color_alpha_buffer_id);
+  };
+
   //-----------------------------------------------------------------------
   // Constructor:
   // Create and initialize the particles in the system.

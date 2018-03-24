@@ -119,7 +119,7 @@ window.ScaleAboutOriginEvents = function (id, scene) {
     scene.angle_x = 0.0;
     scene.angle_y = 0.0;
     scene.scale = 1.0;
-    scene.render();
+    if (!animate_is_on) scene.render();
 
     // Update the value of the slider
     let slider = control.prev().prev();
@@ -136,7 +136,7 @@ window.ScaleAboutOriginEvents = function (id, scene) {
 
     let scale = Number(control.val());
     scene.scale = scale;
-    scene.render();
+    if (!animate_is_on) scene.render();
 
     // Update the value of the slider
     control.prev().html(scale.toFixed(2));
@@ -168,7 +168,7 @@ window.ScaleAboutOriginEvents = function (id, scene) {
   self.removeAllEventHandlers = function () {
     $('#' + id + '_animate_status').unbind("click", self.animation_status);
     $('#' + id + '_reset').unbind("click", self.reset);
-    $('#' + id + '_scale').unbind("click", self.scale);
+    $('#' + id + '_scale').unbind("input change", self.scale);
 
     let cid = '#' + id + "_canvas";
     $( cid ).unbind("mousedown", self.mouse_drag_started );

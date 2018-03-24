@@ -148,6 +148,7 @@ Please note the functions used to create and manage a *particle system*:
   :editlist: _static/12_particles1/particle_system.js
   :hideoutput:
 
+
 As you experiment with the above WebGL program, please ensure
 that you observed the following:
 

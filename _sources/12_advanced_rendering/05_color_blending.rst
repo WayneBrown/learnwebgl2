@@ -233,7 +233,7 @@ Experiments
 -----------
 
 Please experiment with the following WebGL program by selecting
-various combinations of blending factors. Please note that the background color
+various combinations of blending factors. Note that the background color
 of a canvas impacts blending because the "destination" color is always
 the background color when the first change is made to a pixel.
 
@@ -266,8 +266,8 @@ Please verify that you understand the following blending settings and their resu
   This is the standard technique for transparency. The alpha value
   of a surface's color determines how much of the surface contributes to
   the color. (This WebGL program preforms no sorting. Therefore the
-  transparency is possibly correctly in some areas of the scene and
-  incorrectly in other areas.)
+  transparency is correct in some areas of the scene and
+  incorrect in other areas.)
   :raw-html:`<br><br>`
 
 * :code:`gl.blendFunc(gl.CONSTANT_COLOR, gl.CONSTANT_COLOR)` :raw-html:`<br>`
@@ -354,7 +354,7 @@ Some observations concerning the *color blending* equations:
 
 * If the final value of a pixel has an alpha value that is less than 1.0, it
   is blended with the color of the web page behind the canvas. Therefore,
-  not only does a canvas's background color affect blending, the color of
+  not only does the background color of the canvas affect blending, the color of
   the web page does as well.
 
 Summary

@@ -2,18 +2,17 @@
 precision mediump int;
 precision mediump float;
 
+// Scene transformations
+uniform mat4 u_To_clipping_space; // Projection, camera, model transform
+uniform mat4 u_To_camera_space;   // Camera, model transform
+
 // Light model
 struct light_info {
   vec3  position;
   vec3  color;
   bool  is_on;
   mat4  transform;  // The matrix transform used to create the light's shadow map.
-  sampler2D texture_unit;  // Which texture unit holds the shadow map.
 };
-
-// Scene transformations
-uniform mat4 u_To_clipping_space; // Projection, camera, model transform
-uniform mat4 u_To_camera_space;   // Camera, model transform
 
 // An array of lights
 const int NUMBER_LIGHTS = 2;

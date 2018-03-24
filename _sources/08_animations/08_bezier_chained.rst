@@ -86,7 +86,6 @@ Please experiment with this WebGL program and then study the comments below.
   :width: 300
   :height: 300
 
-
 Please note the following characteristics of the above demonstration program:
 
 * The first segment of the path sets :code:`p0` and :code:`p1` at the same location.

@@ -37,54 +37,60 @@ values, simply leave off the :code:`options` parameter, as in:
 
 The options, as described by https://www.khronos.org/registry/webgl/specs/1.0/#5.2.1, are:
 
-* **alpha** {Boolean} (default is :code:`true`) :raw-html:`<br>`
+* **alpha** {Boolean} : default is :code:`true` :raw-html:`<br>`
   "If the value is true, the drawing buffer has an alpha channel for the
   purposes of performing OpenGL destination alpha operations and compositing with
   the (web) page. If the value is false, no alpha buffer is available."
-  :raw-html:`<br><br>`
+  :raw-html:`<br>`
 
-  Comments:
+  Comments: Blending a HTML canvas with other HTML elements allows for "overlays".
+  See `lesson 12.11`_ for details.
+  :raw-html:`<br>`
 
-* **depth** {Boolean} (default is :code:`true`) :raw-html:`<br>`
+* **depth** {Boolean} : default is :code:`true` :raw-html:`<br>`
   "If the value is true, the drawing buffer has a depth buffer of at least 16 bits.
   If the value is false, no depth buffer is available."
-  :raw-html:`<br><br>`
+  :raw-html:`<br>`
 
   Comments: A *depth buffer* is required for *hidden-surface removal*. There
   might be rare cases where *hidden-surface removal* is not needed and in such cases
-  setting the **depth** option to *false* would save significant memory.
-  :raw-html:`<br><br>`
+  setting the **depth** option to *false* would reduce memory requirements.
+  :raw-html:`<br>`
 
-* **stencil** {Boolean} (default is :code:`false`) :raw-html:`<br>`
+* **stencil** {Boolean} : default is :code:`false` :raw-html:`<br>`
   "If the value is true, the drawing buffer has a stencil buffer
   of at least 8 bits. If the value is false, no stencil buffer is available."
-  :raw-html:`<br><br>`
+  :raw-html:`<br>`
 
-  Comments:
-  :raw-html:`<br><br>`
+  Comments: The *stencil buffer* is useful for various rendering algorithms.
+  See `lesson 12.9`_ for details.
+  :raw-html:`<br>`
 
-* **antialias** {Boolean} (default is :code:`true`) :raw-html:`<br>`
+* **antialias** {Boolean} : default is :code:`true` :raw-html:`<br>`
   "If the value is true and the implementation supports antialiasing
   the drawing buffer will perform antialiasing using its choice of technique
   (multisample/supersample) and quality. If the value is false or the
   implementation does not support antialiasing, no antialiasing is performed."
-  :raw-html:`<br><br>`
+  :raw-html:`<br>`
 
-  Comments:
-  :raw-html:`<br><br>`
+  Comments: Antialiasing is discussed in `lesson 12.7`_. Antialiasing reduces
+  the jagged edges of geometric primitives due to sampling error. It should
+  typically be left enabled.
+  :raw-html:`<br>`
 
-* **premultipliedAlpha** {Boolean} (default is :code:`true`) :raw-html:`<br>`
+* **premultipliedAlpha** {Boolean} : default is :code:`true` :raw-html:`<br>`
   "If the value is true the page compositor will assume the drawing
   buffer contains colors with premultiplied alpha. If the value is false
   the page compositor will assume that colors in the drawing buffer are
-  not premultiplied. This flag is ignored if the alpha flag is false.
-  See Premultiplied Alpha for more information on the effects of the premultipliedAlpha flag."
-  :raw-html:`<br><br>`
+  not premultiplied. This flag is ignored if the alpha flag is false."
+  :raw-html:`<br>`
 
-  Comments:
-  :raw-html:`<br><br>`
+  Comments: If :code:`true`, the alpha value in each pixel of a *color buffer*
+  has already been applied to the pixel. Leave this enabled under almost
+  all circumstances.
+  :raw-html:`<br>`
 
-* **preserveDrawingBuffer** {Boolean} (default is :code:`false`) :raw-html:`<br>`
+* **preserveDrawingBuffer** {Boolean} : default is :code:`false` :raw-html:`<br>`
   "If false, once the drawing buffer is presented as described in
   the Drawing Buffer section, the contents of the drawing buffer
   are cleared to their default values. All elements of the drawing buffer
@@ -93,23 +99,25 @@ The options, as described by https://www.khronos.org/registry/webgl/specs/1.0/#5
   until cleared or overwritten by the author. On some hardware
   setting the preserveDrawingBuffer flag to true can have significant performance
   implications."
-  :raw-html:`<br><br>`
+  :raw-html:`<br>`
 
-  Comments:
-  :raw-html:`<br><br>`
+  Comments: Determines whether the *color buffer*, the *depth buffer*, and
+  *stencil buffer* are automatically cleared. (Calling :code:`gl.clear()`
+  is not needed by a WebGL program.) See the discussion in `lesson 12.1`_.
+  :raw-html:`<br>`
 
-* **preferLowPowerToHighPerformance** {Boolean} (default is :code:`false`) :raw-html:`<br>`
+* **preferLowPowerToHighPerformance** {Boolean} : default is :code:`false` :raw-html:`<br>`
   "Provides a hint to the implementation suggesting that, if possible, it
   creates a context that optimizes for power consumption over performance.
   For example, on hardware that has more than one GPU, it may be the case
   that one of them is less powerful but also uses less power. An
   implementation may choose to, and may have to, ignore this hint."
-  :raw-html:`<br><br>`
+  :raw-html:`<br>`
 
-  Comments:
-  :raw-html:`<br><br>`
+  Comments: Typically keep default value of :code:`false`.
+  :raw-html:`<br>`
 
-* **failIfMajorPerformanceCaveat** {Boolean} (default is :code:`false`) :raw-html:`<br>`
+* **failIfMajorPerformanceCaveat** {Boolean} : default is :code:`false` :raw-html:`<br>`
   "If the value is true, context creation will fail if the implementation
   determines that the performance of the created WebGL context
   would be dramatically lower than that of a native application making
@@ -125,8 +133,14 @@ The options, as described by https://www.khronos.org/registry/webgl/specs/1.0/#5
   path such as a 2D canvas context. Alternatively the application can retry
   WebGL context creation with this parameter set to false, with the knowledge
   that a reduced-fidelity rendering mode should be used to improve performance."
-  :raw-html:`<br><br>`
+  :raw-html:`<br>`
 
-  Comments:
-  :raw-html:`<br><br>`
+  Comments: Implementing code that performs reasonably if this option is
+  set to :code:`true` and the creation of a WebGL context fails, requires significant
+  amounts of extra coding.
+  :raw-html:`<br>`
 
+.. _lesson 12.11: ../12_advanced_rendering/11_overlays.html
+.. _lesson 12.9: ../12_advanced_rendering/09_stencils.html
+.. _lesson 12.7: ../12_advanced_rendering/07_rendering_points.html
+.. _lesson 12.1: ../12_advanced_rendering/01_introduction.html#double-buffering-and-canvas-updates

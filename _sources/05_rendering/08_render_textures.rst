@@ -47,7 +47,6 @@ A Texture Map Example
   :width: 300
   :height: 300
 
-
 Summary
 -------
 

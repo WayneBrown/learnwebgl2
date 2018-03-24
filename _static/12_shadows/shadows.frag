@@ -2,20 +2,22 @@
 precision mediump int;
 precision mediump float;
 
+// Scene transformations
+uniform mat4 u_To_clipping_space; // Projection, camera, model transform
+uniform mat4 u_To_camera_space;   // Camera, model transform
+
 // Light model
 struct light_info {
   vec3  position;
   vec3  color;
   bool  is_on;
   mat4  transform;  // The matrix transform used to create the light's shadow map.
-  sampler2D texture_unit;  // Which texture unit holds the shadow map.
 };
-
-const vec3 black = vec3(0.0, 0.0, 0.0);
 
 // An array of 2 lights
 const int NUMBER_LIGHTS = 2;
-uniform light_info u_Lights[NUMBER_LIGHTS];
+uniform light_info  u_Lights[NUMBER_LIGHTS];
+uniform sampler2D   texture_units[NUMBER_LIGHTS];
 
 // Ambient lighting
 uniform vec3 u_Ambient_intensities;
@@ -34,6 +36,8 @@ varying vec3 v_Vertex;
 varying vec4 v_Color;
 varying vec3 v_Normal;
 varying vec4 v_Vertex_shadow_map[NUMBER_LIGHTS];
+
+const vec3 black = vec3(0.0, 0.0, 0.0);
 
 //-------------------------------------------------------------------------
 // Determine if this fragment is in a shadow based on a particular light source.
@@ -64,7 +68,8 @@ bool in_shadow(vec4 vertex_relative_to_light, sampler2D shadow_map) {
 // calculate the fragment's color using diffuse and specular lighting.
 vec3 light_calculations(vec3        fragment_normal,
                         light_info  light,
-                        vec4        vertex_shadow_map) {
+                        vec4        vertex_shadow_map,
+                        sampler2D   shadow_map_texture_unit) {
 
   vec3 specular_color;
   vec3 diffuse_color;
@@ -76,7 +81,7 @@ vec3 light_calculations(vec3        fragment_normal,
   float attenuation;
   vec3 color;
 
-  if (in_shadow(vertex_shadow_map, light.texture_unit)) {
+  if (in_shadow(vertex_shadow_map, shadow_map_texture_unit)) {
     return black; // no light reflection
   }
 
@@ -153,7 +158,8 @@ void main() {
   for (int j=0; j < NUMBER_LIGHTS; j += 1) {
     if (u_Lights[j].is_on) {
       color = color + light_calculations(fragment_normal, u_Lights[j],
-                                         v_Vertex_shadow_map[j]);
+                                         v_Vertex_shadow_map[j],
+                                         texture_units[j]);
     }
   }
 

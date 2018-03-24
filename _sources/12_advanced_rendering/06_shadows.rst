@@ -271,8 +271,9 @@ lookups into the *texture maps* as accurate as possible. (You can experiment wit
 the WebGL program below and change the filters to :code:`gl.NEAREST`, but the results
 will be very poor.) The "wrapping" parameters of the *texture maps* are also important.
 There is no good choice for the *texture map* behaviour if a *texture coordinate*
-is outside the *texture map*'s boundaries, but perhaps the least bad choice is to
-repeat the values of the *shadow map* at its edges (:code:`gl.CLAMP_TO_EDGE`).
+is outside the *texture map*'s boundaries. This example code
+repeats the values of the *shadow map* at its edges (:code:`gl.CLAMP_TO_EDGE`),
+but this will be wrong most of the time.
 
 .. admonition:: WebGL 1.0 *framebuffer* limitations
 
@@ -307,7 +308,7 @@ has a single, specific direction and orientation. A "light source camera" must
 be based on the direction and orientation of the "scene camera" so that the maximum
 information about visible surfaces can be gathered.
 
-To define a "light source camera" its location and
+To define a "light source camera", its location and
 its orientation (i.e., its local coordinate system) must be set. The location is easy:
 it is the 3D location of the light source. The orientation is a harder problem!
 It turns out that the exact line-of-sight direction is not critical.
@@ -400,12 +401,12 @@ The following is an example *vertex shader* that calculates these locations.
     vec3  position;
     vec3  color;
     mat4  transform;  // The matrix transform used to create the light's shadow map.
-    sampler2D texture_unit;  // Which texture unit holds the shadow map.
   };
 
   // An array of lights
   const int NUMBER_LIGHTS = 2;
   uniform  light_info  u_Lights[NUMBER_LIGHTS];
+  uniform  sampler2D   texture_units[NUMBER_LIGHTS];
 
   // Original model data (in "model space")
   attribute vec3 a_Vertex;
@@ -515,7 +516,7 @@ A WebGL *Shadow Map* Program
 
 Please experiment with the following WebGL program that implements *shadow maps*.
 The program will render correct shadows in some configurations and not
-other. Please attempt to manipulate the scene to create incorrect shadows
+others. Please attempt to manipulate the scene to create incorrect shadows
 and then discern why the errors are occurring.
 
 .. webglinteractive:: W1

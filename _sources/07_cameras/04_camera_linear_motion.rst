@@ -39,6 +39,7 @@ Use :code:`lookat` Parameters
    :alt: Truck camera motion
    :align: right
 
+
 The function :code:`LookAt` requires two points and one vector to set a camera
 transformation matrix. Specifically, it needs 1) the location of the camera,
 2) the location of a point along it's line-of-sight, and 3) what direction is upwards.

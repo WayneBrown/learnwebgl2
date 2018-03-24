@@ -57,13 +57,15 @@ window.RenderShadows = function (gl, program, model_buffers, out, number_lights)
   program.u_To_camera_space     = gl.getUniformLocation(program, "u_To_camera_space");
 
   program.lights = new Array(number_lights);
+  program.texture_units = new Array(number_lights);
   for (let j=0; j<number_lights; j += 1) {
     program.lights[j] = {};
     program.lights[j].position = gl.getUniformLocation(program, "u_Lights[" + j + "].position");
     program.lights[j].color = gl.getUniformLocation(program,    "u_Lights[" + j + "].color");
     program.lights[j].is_on = gl.getUniformLocation(program,    "u_Lights[" + j + "].is_on");
     program.lights[j].transform = gl.getUniformLocation(program,"u_Lights[" + j + "].transform");
-    program.lights[j].texture_unit = gl.getUniformLocation(program,"u_Lights[" + j + "].texture_unit");
+
+    program.texture_units[j] = gl.getUniformLocation(program,"texture_units[" + j + "]");
   }
 
   program.u_Z_tolerance = gl.getUniformLocation(program, "u_Z_tolerance");

@@ -190,7 +190,7 @@ There are two types of sorts required for rendering transparency:
 The implementation details for each sorting task are very different.
 However, in both cases the sorting needs to be as efficient as possible.
 Using a Quicksort for these sorting tasks is a big mistake.
-A Quicksort can have very bad performance on data that is almost sorted.
+A Quicksort can have awful performance on data that is almost sorted.
 Consider that if models in a scene are moving (or if the camera is moving),
 the changes from one frame to the next in an animation are typically small.
 Given a sorted list of models from a previous rendering, the sorted order
@@ -483,7 +483,7 @@ Glossary
 
   transparency
     A percentage of the light that strikes a surface passes through the surface and
-    other surfaces may be partially visible.
+    reflects off other surfaces.
 
   opaque
     All light that strikes a surface is reflected. Opaque means no transparency.

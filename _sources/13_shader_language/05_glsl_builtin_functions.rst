@@ -112,4 +112,4 @@ a *fragment shader* to create multiple images that can be "composited" into
 a single final rendering. WebGL 1.0 does not support multiple *color buffers*
 without using extensions, so we will not discuss them here.
 
-.. _Quick Reference Card: _static/documents/webgl-reference-card-1_0.pdf
+.. _Quick Reference Card: ../_static/documents/webgl-reference-card-1_0.pdf

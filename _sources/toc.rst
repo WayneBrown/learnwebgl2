@@ -238,10 +238,7 @@ Appendices
   appendices/derivatives
   appendices/mapping
   appendices/webgl_context_options
-
-.. Appendices/errorsAndDebug.rst
-
-.. SimplePythonData/at_1_1.rst
+  appendices/textbook_errors
 
 References
 ----------

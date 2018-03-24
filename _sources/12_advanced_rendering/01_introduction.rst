@@ -172,8 +172,8 @@ Double Buffering and Canvas Updates
 -----------------------------------
 
 *Double buffering* was explained in `lesson 8.1`_. As a refresher, rendering is
-output to an *off-screen frame buffer* to prevent a user from seeing incremental
-versions of a rendered image. When a rendering is finished the image in the "off-screen
+written to an *off-screen frame buffer* to prevent a user from seeing incremental
+versions of a rendered image. When a rendering is finished, the image in the "off-screen
 buffer" is copied to an
 "on-screen buffer" to make the rendering visible to a user. The *off-screen frame buffer*
 is the *color buffer* of the *draw buffer*. The *on-screen buffer* is a sub-section
@@ -246,7 +246,7 @@ Self Assessment
 .. mchoice:: 12.1.1
   :random:
 
-  Which of the following WebGL commands will get your browser's WebGL version?
+  Which of the following WebGL commands will retrieve your browser's WebGL version?
 
   - :code:`gl.getParameter(gl.VERSION);`
 
@@ -273,8 +273,8 @@ Self Assessment
 
     + Correct.
 
-  - A WebGL extension can only be used if the current browser supports it and
-    it is "activated".
+  - A WebGL extension can only be used if it is supported by the current browser and
+    if it is "activated".
 
     + Correct. :code:`gl.getExtension(name)` activates an extension.
 
@@ -282,7 +282,7 @@ Self Assessment
 
     - Incorrect. A browser may (or may not) support specific extensions.
 
-  - Using a WebGL extension makes your WebGL programs usable by a wider audience.
+  - Using a WebGL extension makes your WebGL programs executable by a wider audience.
 
     - Incorrect. It makes a WebGL program less accessible because there
       are possibly browsers that can't execute it because they have not implemented

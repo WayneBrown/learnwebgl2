@@ -165,13 +165,13 @@ pseudocode demonstrates the functionality.
   }
 
 For example, :code:`gl.stencilFunc( gl.EQUAL, 2, 0x02 )` would configure
-the stencil test to be true for a pixel at :code:`(x,y)` if the value
+the stencil test to be true for a pixel at :code:`(x,y)`, if the value
 at :code:`stencil_buffer[x][y]` has its low order 2nd bit set to 1.
 Note that performing a bit-wise AND operation
 using a mask of :code:`0x02` will produce either a value of :code:`2` or :code:`0`.
 
 For another example, :code:`gl.stencilFunc( gl.GREATER, 15, 0xF0 )` would configure
-the stencil test to be true for a pixel at :code:`(x,y)` if the value
+the stencil test to be true for a pixel at :code:`(x,y)`, if the value
 at :code:`stencil_buffer[x][y]` has any of its four high order bits set to one.
 Note that performing a bit-wise AND operation
 using a mask of :code:`0xF0` will produce one of the following 16 values:
@@ -207,9 +207,9 @@ into the graphics pipeline. The programmer's responsibilities is
 to assign appropriate parameters to the **stencil operation** parameters before
 a rendering is performed.
 
-Please study the following pseudocode which described the internal workings of the
+Please study the following pseudocode which describes the internal workings of the
 graphics pipeline and shows when a *stencil operation*
-is preformed and the data it uses. Please notice the following:
+is performed and the data it uses. Please notice the following:
 
 * To simplify the pseudocode, tests to determine if the :code:`gl.STENCIL_TEST`
   is enabled have been left out. However, stencil operations are only performed

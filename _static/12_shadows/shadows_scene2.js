@@ -319,7 +319,7 @@ window.ShadowsScene2 = function (id, download, vshaders_dictionary,
 
       gl.activeTexture(gl.TEXTURE0 + j);
       gl.bindTexture(gl.TEXTURE_2D, scene.lights[j].shadow_map);
-      gl.uniform1i(shadow_program.lights[j].texture_unit, j);
+      gl.uniform1i(shadow_program.texture_units[j], j);
     }
 
     gl.uniform1f(shadow_program.u_Tolerance_constant, 0.001);

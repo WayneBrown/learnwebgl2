@@ -66,7 +66,7 @@ WebGL 1.0 API Quick Reference Card - https://www.khronos.org/files/webgl/webgl-r
 A GLSL online manual (of sorts): http://www.shaderific.com/glsl/
 
 .. _GLSL wikipedia page: https://en.wikipedia.org/wiki/OpenGL_Shading_Language
-.. _GLSL 1.0 specification: documents/_GLSL_ES_Specification_1.0.17.pdf
+.. _GLSL 1.0 specification: ../_static/documents/_GLSL_ES_Specification_1.0.17.pdf
 
 .. _Data types and variables: 02_glsl_data_types.html
 .. _Control structures: 03_glsl_control_structures.html
